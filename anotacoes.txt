@@ -1,0 +1,39 @@
+# Compartilhamento de rede
+BASE_UNC: str = r"\\10.0.0.237\visonet\Sistemas\FileSystem\WSVISOparser"
+
+COMPARAR_URL: str = "http://10.0.0.106:8100/comparar"  # <-- AGORA É CONSTANTE
+
+# Endpoints do backend
+ENDPOINTS: Dict[str, str] = {
+"NFE": "http://10.0.0.106:8100/nfe_router/nfe",
+"IMPO1": "http://10.0.0.106:8100/di_router/IMPO1",
+"IMPO8": "http://10.0.0.106:8100/di_router/IMPO8",
+"SPED": "http://10.0.0.106:8100/sped_router/sped",
+# Alternativas locais (comente/descomente se necessário)
+# "NFE": "http://127.0.0.1:8100/nfe_router/nfe",
+# "IMPO1": "http://127.0.0.1:8100/di_router/IMPO1",
+# "IMPO8": "http://127.0.0.1:8100/di_router/IMPO8",
+# "SPED": "http://127.0.0.1:8100/sped_router/sped",
+}
+
+PADRAO_JSON: str = "padrao.json"
+
+Ordem segura (sempre nessa sequência)
+
+Desenhe o fluxo (1 frase): o que o usuário clica e o que deve acontecer (entrada → chamada → saída).
+
+Crie o canal IPC no main (nomeie bem: módulo:ação), com mock de retorno.
+
+Exponha no preload uma função que chama esse canal (ex.: window.api.ws.nfe()).
+
+Chame no renderer (UI): botão → await window.api.ws.nfe(...) → renderize resultado.
+
+Teste só com mock (sem rede). Ver se UI e ponte estão ok.
+
+Troque mock por chamada real (fetch no main), adicione: timeout, retry, validação.
+
+Tratamento de erro/UX (mensagens, loading, disable/enable de botões).
+
+Logue (console do main + DevTools do renderer) e isole segredos (só no main).
+
+Refatore (se precisar) em módulos por domínio: ipc/ws/*, ipc/fs/*.

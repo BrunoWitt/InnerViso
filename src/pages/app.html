@@ -1,0 +1,28 @@
+<!-- src/pages/app.html -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- caminho correto -->
+  <link rel="stylesheet" href="../styles/main.css">
+  <title>InnerViso</title>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">Visonet</div>
+      <nav class="menu">
+        <button class="menu-item" data-view="hub">Hub</button>
+        <button class="menu-item" data-view="wsvisoparser">WSVisoParser</button>
+        <button class="menu-item" data-view="comparador">Comparador</button>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <div id="content"><p>Carregando…</p></div>
+    </main>
+  </div>
+
+  <script src="../scripts/router.js"></script>
+  <script src="../scripts/main.js"></script>
+  <script src="../scripts/src_parser.js"></script>
+</body>

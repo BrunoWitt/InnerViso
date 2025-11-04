@@ -1,0 +1,41 @@
+/* src/styles/main.css */
+html, body { height:100%; margin:0; font-family:system-ui, Arial; }
+.layout { display:grid; grid-template-columns: 260px 1fr; min-height:100vh; }
+.sidebar { border-right:1px solid #ddd; padding:16px; }
+.brand { font-weight:700; margin-bottom:16px; }
+.menu { display:flex; flex-direction:column; gap:8px; }
+.menu-item { text-align:left; padding:8px 10px; border:0; background:#f3f3f3; cursor:pointer; }
+.menu-item.active { background:#e5e5e5; font-weight:600; }
+.content { padding:20px; }
+.grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; align-items:start; }
+.panel { border:1px solid #e5e5e5; padding:12px 14px; border-radius:10px; background:#fff; min-height:280px; }
+.panel h2 { margin-top:0; font-size:1.1rem; }
+.news-item { margin:10px 0; }
+.news-item h3 { margin:0 0 4px; font-size:0.98rem; }
+.news-item small { color:#666; display:block; margin-bottom:4px; }
+.news-item p { margin:0; font-size:0.9rem; }
+
+
+/* layout do shell você já tem. agora os cards do hub: */
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.panel {
+  border: 1px solid #e5e5e5;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #fff;
+  min-height: 280px;
+}
+
+.panel h2 { margin-top: 0; font-size: 1.1rem; }
+
+.news-item { margin: 10px 0; }
+.news-item h3 { margin: 0 0 4px; font-size: 0.98rem; }
+.news-item small { color: #666; display: block; margin-bottom: 4px; }
+.news-item p { margin: 0; font-size: 0.9rem; }
+
