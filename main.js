@@ -9,6 +9,33 @@ function getJsonPath() {
   return path.join(app.getPath('userData'), 'noticias.json');
 }
 
+function getBackendPath(...paths) {
+  if (app.isPackaged) {
+    // dentro do app empacotado → o backend foi desembrulhado pra dentro de resources/app/
+    return path.join(process.resourcesPath, 'app', 'backend', ...paths);
+  } else {
+    // ambiente de desenvolvimento
+    return path.join(__dirname, 'backend', ...paths);
+  }
+}
+
+ipcMain.handle('scraper:run', async () => {
+  const out = getJsonPath();
+  const script = getBackendPath('hub', 'get_notices.py');
+  const py = process.platform === 'win32' ? 'python' : 'python3';
+
+  return new Promise((resolve, reject) => {
+    const child = spawn(py, [script, out], { stdio: ['ignore', 'pipe', 'pipe'] });
+    let stderr = '';
+    child.stderr.on('data', (d) => (stderr += d.toString()));
+    child.on('close', (code) => {
+      if (code === 0) resolve({ ok: true, out });
+      else reject(new Error(`get_notices.py saiu com código ${code}: ${stderr}`));
+    });
+  });
+});
+
+
 function createWindow() {
   const win = new BrowserWindow({
     width: 1920,
@@ -60,15 +87,13 @@ autoUpdater.on('update-downloaded', () => {
 // --- IPC: executa o Python e gera o arquivo JSON ---
 ipcMain.handle('scraper:run', async () => {
   const out = getJsonPath();
-  const script = path.join(__dirname, 'backend', 'hub', 'get_notices.py');
+  const script = getBackendPath('hub', 'get_notices.py');
   const py = process.platform === 'win32' ? 'python' : 'python3';
 
   return new Promise((resolve, reject) => {
     const child = spawn(py, [script, out], { stdio: ['ignore', 'pipe', 'pipe'] });
-
     let stderr = '';
     child.stderr.on('data', (d) => (stderr += d.toString()));
-
     child.on('close', (code) => {
       if (code === 0) resolve({ ok: true, out });
       else reject(new Error(`get_notices.py saiu com código ${code}: ${stderr}`));
@@ -88,6 +113,7 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
 
+//Carrega a página HTML pelo nome da view
 ipcMain.handle('views:load', async (_e, viewName) => {
     const filePath = path.join(__dirname, 'src', 'pages', 'views', `${viewName}.html`);
     return fs.readFile(filePath, 'utf-8');
