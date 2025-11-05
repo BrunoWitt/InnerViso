@@ -1,4 +1,100 @@
-<!-- src/pages/views/wsvisoparser.html -->
-<h1>WSVisoParser</h1>
-<button id="btn-test">Testar</button>
-<pre id="out"></pre>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>WS VisoParser</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #e7e5e0;
+      margin: 20px;
+    }
+    h1 { margin-bottom: 10px; }
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      background-color: #f9f9f9;
+    }
+    button {
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      background: #f3f3f3;
+      transition: 0.2s;
+    }
+    button:hover { background: #eaeaea; }
+    .btn-primary {
+      background: #1a73e8;
+      color: white;
+      border: none;
+    }
+    .parser-type {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 4px;
+      background: #f6f6f6;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>WS VisoParser</h1>
+
+  <div class="input-row">
+    <input type="text" id="zipPath" placeholder="Nenhuma pasta/ZiP selecionado. Selecione ou arraste aqui" readonly>
+    <button id="btnSelectZip" title="Selecionar pasta ou ZIP">📁</button>
+  </div>
+
+  <div class="input-row">
+    <input type="text" id="folderPath" placeholder="Nenhuma pasta selecionada. Selecione ou arraste aqui" readonly>
+    <button id="btnSelectFolder" title="Selecionar pasta">📁</button>
+  </div>
+
+  <div class="input-row">
+    <button class="btn-primary" id="btnOpen">Abrir pasta</button>
+    <button id="btnCopy">Copiar caminho</button>
+  </div>
+
+  <div class="parser-type">
+    <label><input type="radio" name="parser" value="nfe" checked> NFE</label>
+    <label><input type="radio" name="parser" value="impo1"> IMPO1</label>
+    <label><input type="radio" name="parser" value="impo8"> IMPO8</label>
+    <label><input type="radio" name="parser" value="sped"> SPED</label>
+  </div>
+
+  <div class="input-row" style="margin-top:15px;">
+    <button>Salvar como padrão</button>
+    <button>Limpar configurações</button>
+  </div>
+
+  <button class="btn-primary" style="margin-top:15px;">Executar Parser</button>
+
+  <script>
+    // Lógica de seleção de arquivos/pastas usando API do Electron
+    document.getElementById('btnSelectZip').addEventListener('click', async () => {
+      const path = await window.api.selectFileOrFolder(['zip']);
+      if (path) document.getElementById('zipPath').value = path;
+    });
+
+    document.getElementById('btnSelectFolder').addEventListener('click', async () => {
+      const path = await window.api.selectFolder();
+      if (path) document.getElementById('folderPath').value = path;
+    });
+
+    document.getElementById('btnCopy').addEventListener('click', () => {
+      const folderPath = document.getElementById('folderPath').value;
+      if (folderPath) navigator.clipboard.writeText(folderPath);
+    });
+  </script>
+</body>
+</html>

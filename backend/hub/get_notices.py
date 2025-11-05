@@ -1,6 +1,8 @@
 # backend/hub/get_notices.py
 import sys, json, requests
 from bs4 import BeautifulSoup
+import sys, json, bs4, requests
+
 
 def scrape(url: str, limit: int = 5):
     resp = requests.get(url, timeout=30)

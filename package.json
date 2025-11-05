@@ -1,6 +1,6 @@
 {
   "name": "innerviso",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Software interno da Visonet",
   "main": "main.js",
   "author": "Bruno Witt",
@@ -14,11 +14,9 @@
   "build": {
     "appId": "com.visonet.innerviso",
     "productName": "InnerViso",
-
     "directories": {
       "output": "dist"
     },
-
     "files": [
       "src/**/*",
       "backend/**/*",
@@ -30,7 +28,6 @@
     "asarUnpack": [
       "backend/**"
     ],
-
     "publish": [
       {
         "provider": "github",
@@ -39,12 +36,12 @@
         "releaseType": "draft"
       }
     ],
-
     "win": {
       "target": "nsis",
       "icon": "src/assets/icon.ico"
     }
   },
+
 
   "dependencies": {
     "cheerio": "^1.1.2",

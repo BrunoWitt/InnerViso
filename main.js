@@ -11,30 +11,19 @@ function getJsonPath() {
 
 function getBackendPath(...paths) {
   if (app.isPackaged) {
-    // dentro do app empacotado → o backend foi desembrulhado pra dentro de resources/app/
-    return path.join(process.resourcesPath, 'app', 'backend', ...paths);
+    // dentro do app empacotado → fica direto em resources/backend/
+    return path.join(process.resourcesPath, 'backend', ...paths);
   } else {
     // ambiente de desenvolvimento
     return path.join(__dirname, 'backend', ...paths);
   }
 }
 
-ipcMain.handle('scraper:run', async () => {
-  const out = getJsonPath();
-  const script = getBackendPath('hub', 'get_notices.py');
-  const py = process.platform === 'win32' ? 'python' : 'python3';
-
-  return new Promise((resolve, reject) => {
-    const child = spawn(py, [script, out], { stdio: ['ignore', 'pipe', 'pipe'] });
-    let stderr = '';
-    child.stderr.on('data', (d) => (stderr += d.toString()));
-    child.on('close', (code) => {
-      if (code === 0) resolve({ ok: true, out });
-      else reject(new Error(`get_notices.py saiu com código ${code}: ${stderr}`));
-    });
-  });
-});
-
+function getPythonPath() {
+  // usa o Python da venv se existir, senão o global do sistema
+  const localVenv = path.join(__dirname, 'venv', 'Scripts', 'python.exe');
+  return require('fs').existsSync(localVenv) ? localVenv : 'python';
+}
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -47,7 +36,7 @@ function createWindow() {
     },
   });
 
-  win.removeMenu(); //Tira o menu de cima
+  //win.removeMenu(); //Tira o menu de cima
 
   win.loadFile('src/pages/app.html');
 }
@@ -59,6 +48,8 @@ app.whenReady().then(() => {
   if (app.isPackaged) {
     autoUpdater.checkForUpdatesAndNotify();
   }
+
+  console.log('Versão atual:', app.getVersion());
 });
 
 // Eventos do auto-updater
@@ -84,11 +75,17 @@ autoUpdater.on('update-downloaded', () => {
     });
 });
 
-// --- IPC: executa o Python e gera o arquivo JSON ---
+// --- IPC: executa o Python global e gera o arquivo JSON ---
 ipcMain.handle('scraper:run', async () => {
   const out = getJsonPath();
-  const script = getBackendPath('hub', 'get_notices.py');
-  const py = process.platform === 'win32' ? 'python' : 'python3';
+
+  // durante empacotamento o backend fica em resources/app/backend/
+  const script = app.isPackaged
+    ? path.join(process.resourcesPath, 'app.asar.unpacked', 'backend', 'hub', 'get_notices.py')
+    : path.join(__dirname, 'backend', 'hub', 'get_notices.py');
+
+  const py = getPythonPath(); // usa sua função que verifica a venv
+  console.log("Executando script:", script);
 
   return new Promise((resolve, reject) => {
     const child = spawn(py, [script, out], { stdio: ['ignore', 'pipe', 'pipe'] });
@@ -100,6 +97,7 @@ ipcMain.handle('scraper:run', async () => {
     });
   });
 });
+
 
 // --- IPC: lê o arquivo JSON e envia para o renderer ---
 ipcMain.handle('scraper:read', async () => {
