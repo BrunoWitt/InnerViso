@@ -12,6 +12,10 @@ async function loadView(viewName) {
   if (!container) return;
 
   container.innerHTML = '<p>Carregando…</p>';
+  if (viewName === "wsvisoparser" && window.initParser) {
+  window.initParser();
+  }
+
 
   try {
     // pega o HTML pelo IPC (fs no main)

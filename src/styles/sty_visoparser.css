@@ -1,0 +1,172 @@
+body {
+  background: #f7f7f7;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: #222;
+  margin: 0;
+  padding: 0;
+}
+
+.parser-container {
+  max-width: 700px;
+  margin: 40px auto;
+  background: #f7f7f7;
+  padding: 20px 30px;
+  border-radius: 8px;
+}
+
+h2 {
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.path-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.path-input {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #eee;
+  font-size: 14px;
+}
+
+.btn-icon {
+  margin-left: 8px;
+  background: #0078d7;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  width: 42px;
+  height: 34px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-icon:hover {
+  background: #005fa3;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0 20px 0;
+}
+
+.fieldset-parser {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #e8e7e4;
+  padding: 10px 15px;
+  margin-bottom: 20px;
+}
+
+.fieldset-parser legend {
+  font-weight: 600;
+}
+
+.fieldset-parser label {
+  margin-right: 20px;
+}
+
+.buttons-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 250px;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-executar {
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary {
+  background: #0078d7;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #005fa3;
+}
+
+.btn-secondary {
+  background: #e6e6e6;
+  border: 1px solid #ccc;
+}
+
+.btn-secondary:hover {
+  background: #dcdcdc;
+}
+
+.btn-executar {
+  background: #0078d7;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+}
+
+.btn-executar:hover {
+  background: #0060b8;
+}
+
+.status-box {
+  margin-top: 15px;
+  padding: 10px;
+  background: #efefef;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  color: #333;
+}
+
+/* ===== POPUP DE RESUMO ===== */
+.popup-resumo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.popup-content {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px 25px;
+  width: 480px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.popup-content h3 {
+  margin-top: 0;
+}
+
+.popup-content pre {
+  background: #f3f3f3;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.popup-content .fechar {
+  margin-top: 15px;
+  width: 100%;
+}

@@ -5,5 +5,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('api', {
   runScraper: () => ipcRenderer.invoke('scraper:run'),
   readNotices: () => ipcRenderer.invoke('scraper:read'),
-  loadView: (name) => ipcRenderer.invoke('views:load', name), 
+  loadView: (name) => ipcRenderer.invoke('views:load', name),
+  selectFolder: () => ipcRenderer.invoke("dialog:select-folder"),
+  iniciarParser: (entrada, saida, tipoParser) => ipcRenderer.invoke("parser:start", { entrada, saida, tipoParser }),
 });

@@ -1,100 +1,76 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>WS VisoParser</title>
-  <style>
-    body {
-      font-family: "Segoe UI", sans-serif;
-      background: #e7e5e0;
-      margin: 20px;
-    }
-    h1 { margin-bottom: 10px; }
-    .input-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-    input[type="text"] {
-      flex: 1;
-      padding: 6px;
-      border: 1px solid #ccc;
-      border-radius: 3px;
-      background-color: #f9f9f9;
-    }
-    button {
-      cursor: pointer;
-      padding: 6px 12px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      background: #f3f3f3;
-      transition: 0.2s;
-    }
-    button:hover { background: #eaeaea; }
-    .btn-primary {
-      background: #1a73e8;
-      color: white;
-      border: none;
-    }
-    .parser-type {
-      margin-top: 20px;
-      border: 1px solid #ccc;
-      padding: 10px;
-      border-radius: 4px;
-      background: #f6f6f6;
-    }
-  </style>
+  <link rel="stylesheet" href="../styles/sty_visoparser.css" />
 </head>
 <body>
 
-  <h1>WS VisoParser</h1>
+  <div class="parser-container">
+    <h2>WS VisoParser</h2>
 
-  <div class="input-row">
-    <input type="text" id="zipPath" placeholder="Nenhuma pasta/ZiP selecionado. Selecione ou arraste aqui" readonly>
-    <button id="btnSelectZip" title="Selecionar pasta ou ZIP">📁</button>
+    <!-- Caminhos -->
+    <div class="path-row">
+      <input id="entradaLabel" class="path-input" type="text" value="Nenhum selecionado" readonly />
+      <button id="btnSelectEntrada" class="btn-icon" title="Selecionar entrada">📁</button>
+    </div>
+
+    <div class="path-row">
+      <input id="saidaLabel" class="path-input" type="text" value="Nenhum selecionado" readonly />
+      <button id="btnSelectSaida" class="btn-icon" title="Selecionar saída">📁</button>
+    </div>
+
+    <!-- Botões extras -->
+    <div class="actions">
+      <button id="btnAbrir" class="btn-primary">Abrir pasta</button>
+      <button id="btnCopiar" class="btn-secondary">Copiar caminho</button>
+    </div>
+
+    <!-- Tipo de parser -->
+    <fieldset class="fieldset-parser">
+      <legend>Tipo de Parser</legend>
+      <label><input type="radio" name="parser" value="NFE" checked> NFE</label>
+      <label><input type="radio" name="parser" value="IMPO1"> IMPO1</label>
+      <label><input type="radio" name="parser" value="IMPO8"> IMPO8</label>
+      <label><input type="radio" name="parser" value="SPED"> SPED</label>
+    </fieldset>
+
+    <!-- Controles -->
+    <div class="buttons-bottom">
+      <button id="btnSalvar" class="btn-secondary">Salvar como padrão</button>
+      <button id="btnLimpar" class="btn-secondary">Limpar configurações</button>
+      <button id="btnIniciar" class="btn-executar">▶️ Executar Parser</button>
+    </div>
+
+    <!-- Status -->
+    <div class="status-box">
+      <span id="statusLabel">Aguardando início...</span>
+    </div>
   </div>
 
-  <div class="input-row">
-    <input type="text" id="folderPath" placeholder="Nenhuma pasta selecionada. Selecione ou arraste aqui" readonly>
-    <button id="btnSelectFolder" title="Selecionar pasta">📁</button>
+  <!-- POPUP DE RESUMO -->
+<div id="popupResumo" class="popup-resumo" style="display:none;">
+  <div class="popup-content">
+    <h3>Resumo da execução</h3>
+    <p><strong>Status:</strong> <span id="resStatus">—</span></p>
+    <p><strong>Início:</strong> <span id="resInicio">—</span></p>
+    <p><strong>Fim:</strong> <span id="resFim">—</span></p>
+    <p><strong>Duração:</strong> <span id="resDuracao">—</span></p>
+    <p><strong>Arquivos encontrados:</strong> <span id="resArq">—</span></p>
+    <p><strong>Processados OK:</strong> <span id="resOk">—</span></p>
+    <p><strong>Qtd. erros:</strong> <span id="resErros">—</span></p>
+
+    <h4>Erros (se houver):</h4>
+    <pre id="resListaErros">—</pre>
+
+    <h4>Trecho do log:</h4>
+    <pre id="resLog"></pre>
+
+    <button id="btnFecharPopup" class="btn-secondary fechar">Fechar</button>
   </div>
+</div>
 
-  <div class="input-row">
-    <button class="btn-primary" id="btnOpen">Abrir pasta</button>
-    <button id="btnCopy">Copiar caminho</button>
-  </div>
 
-  <div class="parser-type">
-    <label><input type="radio" name="parser" value="nfe" checked> NFE</label>
-    <label><input type="radio" name="parser" value="impo1"> IMPO1</label>
-    <label><input type="radio" name="parser" value="impo8"> IMPO8</label>
-    <label><input type="radio" name="parser" value="sped"> SPED</label>
-  </div>
-
-  <div class="input-row" style="margin-top:15px;">
-    <button>Salvar como padrão</button>
-    <button>Limpar configurações</button>
-  </div>
-
-  <button class="btn-primary" style="margin-top:15px;">Executar Parser</button>
-
-  <script>
-    // Lógica de seleção de arquivos/pastas usando API do Electron
-    document.getElementById('btnSelectZip').addEventListener('click', async () => {
-      const path = await window.api.selectFileOrFolder(['zip']);
-      if (path) document.getElementById('zipPath').value = path;
-    });
-
-    document.getElementById('btnSelectFolder').addEventListener('click', async () => {
-      const path = await window.api.selectFolder();
-      if (path) document.getElementById('folderPath').value = path;
-    });
-
-    document.getElementById('btnCopy').addEventListener('click', () => {
-      const folderPath = document.getElementById('folderPath').value;
-      if (folderPath) navigator.clipboard.writeText(folderPath);
-    });
-  </script>
 </body>
 </html>
