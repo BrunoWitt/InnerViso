@@ -1,2 +1,49 @@
-<h1>Comparador</h1>
-<p>Em breve…</p>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WS Comparador</title>
+  <link rel="stylesheet" href="../styles/common.css" />
+  <link rel="stylesheet" href="../styles/sty_comparador.css" />
+</head>
+<body>
+
+<main class="compare-wrapper" role="main">
+  <div class="main-card" role="region" aria-labelledby="compare-title">
+    <h2 id="compare-title" class="compare-title">Comparador de listas</h2>
+
+    <!-- Lista 1 -->
+    <div class="input-group">
+      <label for="lista1">Lista 1 (valores separados por vírgula)</label>
+      <input id="lista1" class="input-text" type="text" placeholder="ex: 123,456,789" aria-label="Lista 1" />
+    </div>
+
+    <!-- Lista 2 -->
+    <div class="input-group">
+      <label for="lista2">Lista 2 (valores separados por vírgula)</label>
+      <input id="lista2" class="input-text" type="text" placeholder="ex: 123,456,789" aria-label="Lista 2" />
+    </div>
+
+    <!-- Botões -->
+    <div class="button-row">
+      <button id="btnComparar" class="btn-primary" type="button" aria-label="Comparar listas">Comparar</button>
+      <button id="btnLimpar" class="btn-light" type="button" aria-label="Limpar campos">Limpar</button>
+    </div>
+
+    <!-- Resultado -->
+    <div class="result-box" aria-live="polite">
+      <h3>Resultado</h3>
+      <label for="lista3">Lista 3 (diferenças unidas):</label>
+      <textarea id="lista3" class="result-textarea" rows="5" readonly aria-label="Resultado da comparação"></textarea>
+
+      <div class="result-footer">
+        <span id="qtdItens">Quantidade de itens: 0</span>
+        <button id="btnCopiar" class="btn-secondary" type="button" aria-label="Copiar resultado">Copiar resultado</button>
+      </div>
+    </div>
+  </div>
+</main>
+<div id="toast" class="toast">Resultado copiado!</div>
+</body>
+</html>

@@ -170,3 +170,128 @@ h2 {
   margin-top: 15px;
   width: 100%;
 }
+
+/* === MODAL DE CARREGAMENTO === */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loading-box {
+  background: #ffffff;
+  padding: 30px 40px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  width: 360px;
+}
+
+.spinner {
+  border: 4px solid #ccc;
+  border-top: 4px solid #0078d7;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 20px auto;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.progress-container {
+  width: 100%;
+  height: 10px;
+  background: #eee;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 15px;
+}
+
+.progress-bar {
+  height: 10px;
+  width: 0%;
+  background: #0078d7;
+  transition: width 0.3s ease;
+}
+
+.progress-count {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0078d7;
+  margin-bottom: 8px;
+}
+
+/* Btn de seleção */
+
+.dropdown {
+  position: absolute;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  display: none;
+  flex-direction: column;
+  min-width: 180px;
+  z-index: 9999;
+}
+
+.dropdown button {
+  background: none;
+  border: none;
+  padding: 10px 14px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.dropdown button:hover {
+  background-color: #f2f2f2;
+}
+
+/* ======== RESPONSIVIDADE ======== */
+@media (max-width: 1024px) {
+  .parser-container {
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 768px) {
+  .parser-container {
+    max-width: 95%;
+    padding: 15px;
+  }
+
+  .path-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-icon {
+    width: 100%;
+    height: 38px;
+  }
+
+  .actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .buttons-bottom {
+    width: 100%;
+    max-width: none;
+  }
+
+  .btn-primary,
+  .btn-secondary,
+  .btn-executar {
+    width: 100%;
+  }
+}

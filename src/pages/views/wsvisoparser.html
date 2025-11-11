@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <title>WS VisoParser</title>
+  <link rel="stylesheet" href="../styles/common.css" />
   <link rel="stylesheet" href="../styles/sty_visoparser.css" />
 </head>
 <body>
 
-  <div class="parser-container">
+  <div class="main-card">
     <h2>WS VisoParser</h2>
 
     <!-- Caminhos -->
@@ -70,6 +71,25 @@
     <button id="btnFecharPopup" class="btn-secondary fechar">Fechar</button>
   </div>
 </div>
+
+<!-- MODAL DE CARREGAMENTO -->
+<div id="loadingOverlay" class="loading-overlay" style="display:none;">
+  <div class="loading-box">
+    <p id="progressCount" class="progress-count">—/—</p>
+    <div class="spinner"></div>
+    <p id="loadingText">Iniciando parser...</p>
+
+    <div class="progress-container">
+      <div id="progressBar" class="progress-bar"></div>
+    </div>
+
+    <button id="btnCancelar" class="btn-secondary">Cancelar</button>
+  </div>
+</div>
+
+
+<script defer src="../scripts/main.js"></script>
+<script defer src="../scripts/router.js"></script>
 
 
 </body>

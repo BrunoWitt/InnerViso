@@ -1,6 +1,6 @@
 {
   "name": "innerviso",
-  "version": "1.0.9",
+  "version": "1.0.0",
   "description": "Software interno da Visonet",
   "main": "main.js",
   "author": "Bruno Witt",
@@ -25,7 +25,7 @@
       "!**/*.pyc"
     ],
     "asarUnpack": [
-      "backend/**"
+      "src/scripts/preload.js"
     ],
     "publish": [
       {
@@ -37,7 +37,7 @@
     ],
     "win": {
       "target": "nsis",
-      "icon": "src/assets/icon.ico",
+      "icon": "src/assets/Vicon.ico",
       "artifactName": "${productName}-Setup-${version}.${ext}"
     }
   },

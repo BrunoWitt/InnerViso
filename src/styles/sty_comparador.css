@@ -1,0 +1,235 @@
+body {
+  background: #f5f6f8;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: #1e1e1e;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Estrutura Principal --- */
+.compare-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 40px;
+}
+
+.compare-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  width: 600px;
+  padding: 30px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  transition: box-shadow 0.3s ease;
+}
+
+.compare-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* --- Título --- */
+.compare-title {
+  text-align: center;
+  color: #0078d7;
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+/* --- Inputs --- */
+/* === Inputs em formato vertical === */
+.input-group {
+  display: flex;
+  flex-direction: column;  /* coloca o label acima do input */
+  gap: 6px;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.input-group label {
+  display: inline-block;
+  width: 100%;
+  max-width: 480px; /* aumenta horizontalmente */
+  margin: 0 auto;   /* centraliza dentro do card */
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #444;
+  text-align: left;
+}
+
+.input-text{ 
+  width: 100%;
+  max-width: 660px; /* acompanha o label */
+  margin: 0 auto;
+  display: block;
+
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Efeito de foco sutil */
+.input-text:focus {
+  border-color: #0078d7;
+  box-shadow: 0 0 3px rgba(0, 120, 215, 0.4);
+  outline: none;
+}
+
+
+/* --- Botões --- */
+.button-row {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-primary {
+  background: #0078d7;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+
+.btn-primary:hover {
+  background: #005fa3;
+}
+
+.btn-light {
+  background: #f2f2f2;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+
+.btn-light:hover {
+  background: #e5e5e5;
+}
+
+.btn-secondary {
+  background: #0078d7;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+
+.btn-secondary:hover {
+  background: #0060b8;
+}
+
+/* --- Resultado --- */
+.result-box {
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px 18px;
+}
+
+.result-box h3 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.result-textarea {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 14px;
+  resize: none;
+  background: #fff;
+}
+
+.result-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+/* ===== TOAST (mensagem temporária) ===== */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #0078d7;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 14px;
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 9999;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ======== RESPONSIVIDADE ======== */
+@media (max-width: 1024px) {
+  .compare-card {
+    width: 80%;
+  }
+}
+
+@media (max-width: 768px) {
+  .compare-wrapper {
+    padding: 20px;
+  }
+
+  .compare-card {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .button-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .btn-primary,
+  .btn-light {
+    width: 100%;
+  }
+
+  .result-footer {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .compare-title {
+    font-size: 1.3rem;
+  }
+
+  .input-group label {
+    font-size: 0.85rem;
+  }
+
+  .input-text {
+    font-size: 13px;
+  }
+}

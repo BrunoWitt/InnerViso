@@ -1,11 +1,68 @@
 // src/scripts/preload.js
 const { contextBridge, ipcRenderer } = require('electron');
+const fs = require('fs');
+const path = require('path');
 
-//Aqui faz uma api de funções que o renderer pode chamar
-contextBridge.exposeInMainWorld('api', {
-  runScraper: () => ipcRenderer.invoke('scraper:run'),
-  readNotices: () => ipcRenderer.invoke('scraper:read'),
-  loadView: (name) => ipcRenderer.invoke('views:load', name),
-  selectFolder: () => ipcRenderer.invoke("dialog:select-folder"),
-  iniciarParser: (entrada, saida, tipoParser) => ipcRenderer.invoke("parser:start", { entrada, saida, tipoParser }),
-});
+console.log('[preload] carregado');
+
+try {
+  contextBridge.exposeInMainWorld('api', {
+    runScraper: () => ipcRenderer.invoke('scraper:run'),
+    readNotices: () => ipcRenderer.invoke('scraper:read'),
+    loadView: (name) => ipcRenderer.invoke('views:load', name),
+    selectFolder: (tipo) => ipcRenderer.invoke('dialog:select-folder', tipo),
+    selectFileZip: () => ipcRenderer.invoke('select-file-zip'),
+    openFolder: (caminho) => ipcRenderer.invoke('dialog:open-folder', caminho),
+    savePath: (caminho_entrada, caminho_saida) => ipcRenderer.invoke('save-path', caminho_entrada, caminho_saida),
+    fileExists: (caminho) => ipcRenderer.invoke('open-json', caminho),
+    clearPaths: () => ipcRenderer.invoke("clear-paths"),
+    compararListas: (list1, list2) => ipcRenderer.invoke("comparar-listas", list1, list2),
+    getNotices: () => ipcRenderer.invoke("get-notices"),
+
+    // Parser WSViso
+
+    prepararParser: () => ipcRenderer.invoke('parser:prepare'),
+    iniciarParser: (entrada, saidaLocal, tipoParser, token, saidaServidor) =>
+      ipcRenderer.invoke('iniciar-parser', entrada, saidaLocal, tipoParser, token, saidaServidor),
+
+    copiarSaida: (remoto, local) => ipcRenderer.invoke('copiar-saida', remoto, local),
+
+    lerProgresso(saidaServidor, token) {
+      try {
+        const progressFile = path.join(saidaServidor, `.progress_${token}`);
+        if (fs.existsSync(progressFile)) return fs.readFileSync(progressFile, 'utf-8');
+        return '';
+      } catch (err) {
+        console.error('[preload] Erro lendo progresso:', err);
+        return '';
+      }
+    },
+    existeDone: (saidaServidor, token) => {
+      try { return fs.existsSync(path.join(saidaServidor, `.done_${token}`)); }
+      catch { return false; }
+    },
+    existeErro: (saidaServidor, token) => {
+      try { return fs.existsSync(path.join(saidaServidor, `.error_${token}`)); }
+      catch { return false; }
+    },
+    lerResultado: (saidaServidor, token) => {
+      try {
+        const f = path.join(saidaServidor, `.result_${token}.json`);
+        if (fs.existsSync(f)) return JSON.parse(fs.readFileSync(f, 'utf-8'));
+        return null;
+      } catch { return null; }
+    },
+    lerErro: (saidaServidor, token) => {
+      try {
+        const f = path.join(saidaServidor, `.error_${token}`);
+        if (fs.existsSync(f)) return fs.readFileSync(f, 'utf-8');
+        return null;
+      } catch { return null; }
+    },
+
+  });
+
+  console.log('[preload] API exposta com sucesso');
+} catch (e) {
+  console.error('[preload] Falha ao expor API:', e);
+}

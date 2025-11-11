@@ -2,40 +2,157 @@
 const { app, BrowserWindow, dialog, ipcMain } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const log = require('electron-log'); // <<--- IMPORTANTE
-const path = require('path');
 const { spawn } = require('child_process');
-const fs = require('fs/promises');
+const fs = require('fs-extra');
+const path = require('path');
+
+//Botões secundarios do Parser
+ipcMain.handle("dialog:open-folder", async (_event, caminho) => {
+  if (!caminho) return;
+  // Opens folder in Windows Explorer
+  spawn('explorer.exe', [caminho]);
+});
+
+ipcMain.handle("open-json", async (_event, caminho) => {
+  const jsonPath = path.join(app.getPath('userData'), 'padrao.json');
+  if (!fs.existsSync(jsonPath)) return null;
+  const data = JSON.parse(await fs.promises.readFile(jsonPath, 'utf-8'));
+  return data;
+});
+
+ipcMain.handle('save-path', async (_event, caminho_entrada, caminho_saida) => {
+  const dados = {
+    entrada: caminho_entrada,
+    saida: caminho_saida,
+  };
+
+  const jsonString = JSON.stringify(dados, null, 2);
+
+  const fs = require('fs');
+
+  const jsonPath = path.join(app.getPath('userData'), 'padrao.json');
+  fs.writeFile(jsonPath, jsonString, (err) => {
+    if (err) {
+      console.error('Erro ao salvar o arquivo JSON:', err);
+      return { success: false, message: 'Erro ao salvar o arquivo JSON.' };
+    }
+    console.log('Arquivo JSON salvo com sucesso!');
+    })
+  });
+
+  ipcMain.handle("clear-paths", async () => {
+  const fs = require("fs");
+  const path = require("path");
+
+  try {
+    const jsonPath = path.join(app.getPath("userData"), "padrao.json");
+
+    if (fs.existsSync(jsonPath)) {
+      fs.unlinkSync(jsonPath); // remove o arquivo
+      console.log("🧹 padrao.json removido com sucesso!");
+      return { success: true };
+    } else {
+      console.log("⚠️ Nenhum padrao.json encontrado para limpar.");
+      return { success: false, message: "Arquivo não existe." };
+    }
+  } catch (err) {
+    console.error("❌ Erro ao limpar padrao.json:", err);
+    return { success: false, message: err.message };
+  }
+  });
+
+
 
 function getJsonPath() {
-  return path.join(app.getPath('userData'), 'noticias.json');
+  // arquivo onde o Python salva/onde o renderer lê
+  const p = path.join(app.getPath('userData'), 'noticias.json');
+  // garante a pasta do arquivo
+  fs.ensureDirSync(path.dirname(p));
+  return p;
 }
 
-function getBackendPath(...paths) {
-  if (app.isPackaged) {
-    return path.join(process.resourcesPath, 'backend', ...paths);
-  } else {
-    return path.join(__dirname, 'backend', ...paths);
+function ensureNoticesFile() {
+  const out = getJsonPath();
+  if (!fs.existsSync(out)) {
+    // inicia vazio para evitar erro no primeiro read
+    fs.writeFileSync(out, '[]', { encoding: 'utf-8' });
   }
+  return out;
 }
 
-function getPythonPath() {
-  const localVenv = path.join(__dirname, 'venv', 'Scripts', 'python.exe');
-  return require('fs').existsSync(localVenv) ? localVenv : 'python';
+function getPythonPath() { const localVenv = path.join(__dirname, 'venv', 'Scripts', 'python.exe'); return require('fs').existsSync(localVenv) ? localVenv : 'python'; }
+
+
+// ...
+
+function resolvePreloadPath() {
+  // Caminho durante o desenvolvimento
+  const dev = path.resolve(app.getAppPath(), 'src', 'scripts', 'preload.js');
+
+  // Caminho durante o executável (fora do .asar)
+  const prod = path.join(process.resourcesPath, 'app.asar.unpacked', 'src', 'scripts', 'preload.js');
+
+  return app.isPackaged ? prod : dev;
+}
+
+
+function resolveAppHtml() {
+  // carrega o app.html da pasta src/pages (dev e prod)
+  const htmlDev = path.resolve(app.getAppPath(), 'src', 'pages', 'app.html');
+  return htmlDev;
 }
 
 function createWindow() {
+  const preloadPath = resolvePreloadPath();
+  const appHtml = resolveAppHtml();
+
+  console.log('[Electron] preload path =>', preloadPath, '| existe?', fs.existsSync(preloadPath));
+  console.log('[Electron] app.html =>', appHtml, '| existe?', fs.existsSync(appHtml));
+
   const win = new BrowserWindow({
-    width: 1920,
-    height: 1080,
+    width: 1940,
+    height: 1120,
+    autoHideMenuBar: true,
+    icon: path.join(__dirname, 'src', 'assets', 'Vicon.ico'), // 👈 AQUI
     webPreferences: {
-      preload: path.join(__dirname, 'src', 'scripts', 'preload.js'),
+      preload: preloadPath,
       contextIsolation: true,
       nodeIntegration: false,
+      sandbox: false,
     },
   });
-  // win.removeMenu();
-  win.loadFile('src/pages/app.html');
+
+  win.loadFile(appHtml);
+
+
+  win.loadFile(appHtml);
+
+  // log de sanidade no renderer
+  win.webContents.on('did-finish-load', () => {
+    win.webContents.executeJavaScript('console.log("[renderer] window.api =", typeof window.api)');
+  });
+
+  // 🔹 Adicione AQUI dentro da função
+  const { shell } = require("electron");
+
+  // Garante que links externos abram no navegador padrão
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith("http")) {
+      shell.openExternal(url);
+      return { action: "deny" };
+    }
+    return { action: "allow" };
+  });
+
+  // Também intercepta cliques diretos em <a href="http...">
+  win.webContents.on("will-navigate", (event, url) => {
+    if (url.startsWith("http")) {
+      event.preventDefault();
+      shell.openExternal(url);
+    }
+  });
 }
+
 
 app.whenReady().then(() => {
   createWindow();
@@ -88,15 +205,15 @@ app.whenReady().then(() => {
   autoUpdater.checkForUpdates();
 });
 
-// --- IPCs (iguais aos seus) ---
+// --- IPCs do Hub ---
 ipcMain.handle('scraper:run', async () => {
-  const out = getJsonPath();
+  const out = ensureNoticesFile(); // <— garante arquivo
   const script = app.isPackaged
     ? path.join(process.resourcesPath, 'app.asar.unpacked', 'backend', 'hub', 'get_notices.py')
     : path.join(__dirname, 'backend', 'hub', 'get_notices.py');
 
   const py = getPythonPath();
-  console.log("Executando script:", script);
+  console.log('[Hub] Executando script:', script, '=>', out);
 
   return new Promise((resolve, reject) => {
     const child = spawn(py, [script, out], { stdio: ['ignore', 'pipe', 'pipe'] });
@@ -110,9 +227,14 @@ ipcMain.handle('scraper:run', async () => {
 });
 
 ipcMain.handle('scraper:read', async () => {
-  const out = getJsonPath();
-  const txt = await fs.readFile(out, 'utf-8');
-  return JSON.parse(txt);
+  const out = ensureNoticesFile(); // <— garante arquivo
+  try {
+    const txt = await fs.readFile(out, 'utf-8');
+    return JSON.parse(txt || '[]');
+  } catch (e) {
+    console.error('[Hub] Falha lendo', out, e);
+    return []; // fallback seguro
+  }
 });
 
 app.on('window-all-closed', () => {
@@ -124,40 +246,228 @@ ipcMain.handle('views:load', async (_e, viewName) => {
   return fs.readFile(filePath, 'utf-8');
 });
 
-ipcMain.handle("dialog:select-folder", async () => {
+const os = require("os");
+
+const BASE_UNC = "\\\\10.0.0.237\\visonet\\Sistemas\\FileSystem\\WSVISOparser";
+
+// Funções auxiliares
+function selecionar_pasta_wb() {
+  const nomeMaquina = os.hostname();
+  const raiz = path.join(BASE_UNC, nomeMaquina);
+  fs.ensureDirSync(raiz);
+  return raiz;
+}
+
+function salvar_pasta_wb(pastaMaquina) {
+  let n = 0;
+  while (true) {
+    const alvo = path.join(pastaMaquina, n.toString());
+    if (!fs.existsSync(alvo)) {
+      fs.ensureDirSync(alvo);
+      return alvo;
+    }
+    n++;
+  }
+}
+
+ipcMain.handle("dialog:select-folder", async (event, tipo) => {
+  try {
+    // se tipo = true → ENTRADA (copiar pro servidor)
+    if (tipo === true) {
+      const pasta_maquina = selecionar_pasta_wb();
+      const pasta_num = salvar_pasta_wb(pasta_maquina);
+
+      const result = await dialog.showOpenDialog({
+        properties: ["openDirectory"],
+      });
+      if (result.canceled) return null;
+
+      const origem = result.filePaths[0];
+      const subdir_nome = path.basename(origem);
+      const destino_final = path.join(pasta_num, subdir_nome);
+
+      await fs.copy(origem, destino_final, { overwrite: true });
+      console.log("✅ Pasta copiada para o servidor:", destino_final);
+      return destino_final;
+    }
+
+    // se tipo = false → SAÍDA (somente escolher)
+    else {
+      const result = await dialog.showOpenDialog({
+        properties: ["openDirectory"],
+      });
+      return result.canceled ? null : result.filePaths[0];
+    }
+  } catch (err) {
+    console.error("❌ Erro ao selecionar/copiar pasta:", err);
+    return null;
+  }
+});
+
+ipcMain.handle("select-file-zip", async () => {
   const result = await dialog.showOpenDialog({
-    properties: ["openDirectory"],
+    filters: [{ name: "Arquivos ZIP", extensions: ["zip"] }],
+    properties: ["openFile"],
   });
   return result.canceled ? null : result.filePaths[0];
 });
 
-ipcMain.handle("parser:start", async(_e, { entrada, saida, tipoParser }) => {
+const axios = require("axios");
+const fssync = require("fs");
 
-  let endPoints = {
-    "NFE": "http://10.0.0.106:8100/nfe_router/nfe",
-    "IMPO1": "http://10.0.0.106:8100/di_router/IMPO1",
-    "IMPO8": "http://10.0.0.106:8100/di_router/IMPO8",
-    "SPED": "http://10.0.0.106:8100/sped_router/sped",
+function criar_pasta_saida_servidor() {
+  const nomeMaquina = os.hostname();
+  const pastaMaquina = path.join(BASE_UNC, nomeMaquina);
+
+  fs.ensureDirSync(pastaMaquina);
+
+  // cria pasta numerada única
+  let n = 0;
+  while (true) {
+    const alvo = path.join(pastaMaquina, `saida_${n}`);
+    if (!fs.existsSync(alvo)) {
+      fs.ensureDirSync(alvo);
+      console.log("📁 Pasta de saída criada no servidor:", alvo);
+      return alvo;
+    }
+    n++;
   }
+}
+
+// ---- EXECUÇÃO DO PARSER VIA WEBSERVICE ----
+async function executarParser(pathIn, pathOut, tipo, token) {
+  const endpoints = {
+    NFE: "http://10.0.0.106:8100/nfe_router/nfe",
+    IMPO1: "http://10.0.0.106:8100/di_router/IMPO1",
+    IMPO8: "http://10.0.0.106:8100/di_router/IMPO8",
+    SPED: "http://10.0.0.106:8100/sped_router/sped",
+    //NFE: "http://127.0.0.1:8000/nfe_router/nfe",
+    //IMPO1: "http://127.0.0.1:8000/di_router/IMPO1",
+    //IMPO8: "http://127.0.0.1:8000/di_router/IMPO8",
+    //SPED: "http://127.0.0.1:8000/sped_router/sped",
+  };
+
+  const url = endpoints[tipo];
+  if (!url) throw new Error(`Tipo de parser desconhecido: ${tipo}`);
 
   try {
-    let url = endPoints[tipoParser];
+    console.log(`➡️ Iniciando parser ${tipo}...`);
+    console.log(`Entrada: ${pathIn}`);
+    console.log(`Saída: ${pathOut}`);
+    console.log(`Token: ${token}`);
 
-    const axios = require('axios');
     const response = await axios.get(url, {
-      params: {
-        pathIn: entrada,
-        pathOut: saida,
-        token: "electron-ui",
-      },
-      timeout: 60000,
+      params: { pathIn, pathOut, token: token || "electron-ui" },
+      timeout: 0, // sem limite, para permitir execução longa
     });
 
-    console.log("Resposta do parser:", response.data);
-    return { success: true, data: response.data };
+    console.log("✅ Resposta do parser:", response.data);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Erro ao executar parser:", err.message);
+    throw err;
+  }
+}
 
-  } catch (error) {
-    console.error("Erro ao iniciar o parser:", error);
-    return { success: false, error: error.message };
+ipcMain.handle('copiar-saida', async (_event, pathRemoto, pathLocal) => {
+  try {
+    console.log("➡️ Copiando saída do servidor para local...");
+    console.log("Origem:", pathRemoto);
+    console.log("Destino:", pathLocal);
+
+    // Verifica se ambos os caminhos existem
+    if (!fs.existsSync(pathRemoto)) throw new Error("Pasta remota não encontrada.");
+    await fs.ensureDir(pathLocal);
+
+    // Copia todo o conteúdo do servidor para o local
+    await fs.copy(pathRemoto, pathLocal, { overwrite: true });
+    console.log("✅ Cópia concluída com sucesso!");
+    return { success: true };
+  } catch (err) {
+    console.error("❌ Erro ao copiar saída:", err);
+    return { success: false, error: err.message };
+  }
+});
+
+// main.js (trechos novos/alterados)
+
+ipcMain.handle("parser:prepare", async () => {
+  const saidaServidor = criar_pasta_saida_servidor();
+  return { saidaServidor };
+});
+
+ipcMain.handle("iniciar-parser", async (_event, entradaLocal, saidaLocal, tipo, token, saidaServidor) => {
+  // se não veio de fora, cria aqui (backward compat)
+  if (!saidaServidor) saidaServidor = criar_pasta_saida_servidor();
+
+  // dispara em background (não await)
+  (async () => {
+    try {
+      const result = await executarParser(entradaLocal, saidaServidor, tipo, token);
+
+      // persiste o JSON de resultado para a UI ler
+      const resultPath = path.join(saidaServidor, `.result_${token}.json`);
+      await fs.writeJson(resultPath, result, { spaces: 2 });
+
+      // copia saída para a pasta local escolhida
+      await fs.ensureDir(saidaLocal);
+      await fs.copy(saidaServidor, saidaLocal, { overwrite: true });
+
+      // marca finalização
+      await fs.writeFile(path.join(saidaServidor, `.done_${token}`), "OK");
+    } catch (err) {
+      try {
+        await fs.writeFile(path.join(saidaServidor, `.error_${token}`), String(err?.message || err));
+      } catch {}
+    }
+  })();
+
+  // retorna imediatamente para a renderer poder iniciar o polling
+  return { started: true, saidaServidor };
+});
+
+ipcMain.handle("comparar-listas", async (_event, list1, list2) => {
+  const url = "http://10.0.0.106:8100/comparar_ws";//"http://127.0.0.1:8000/comparar_ws"//;
+
+  console.log(">>> IPC comparar-listas - list1:", list1);
+  console.log(">>> IPC comparar-listas - list2:", list2);
+
+  try {
+    const response = await axios.post(
+      url,
+      { list1, list2 }, // BODY JSON
+      {
+        timeout: 0,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
+    console.log(">>> Resposta FastAPI:", response.data);
+    const data = response.data;
+
+    if (typeof data === "object" && data.resultado) {
+      return data.resultado;
+    }
+    if (typeof data === "string") {
+      return data;
+    }
+
+    return JSON.stringify(data);
+  } catch (err) {
+    console.error("Erro no comparar-listas:", err.response?.data || err);
+    return `Erro: ${err.message}`;
+  }
+});
+
+ipcMain.handle("get-notices", async () => {
+  const url = "http://10.0.0.106:8100/notices";
+  try {
+    console.log("Buscando notícias do gov...");
+    const response = await axios.get(url, { timeout: 60000 });
+    console.log("✅ Notícias carregadas:", Object.keys(response.data));
+    return response.data;
+  } catch (err) {
+    console.error("❌ Erro ao obter notícias:", err.message);
+    return { erro: err.message };
   }
 });
