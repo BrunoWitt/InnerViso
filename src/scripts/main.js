@@ -9,10 +9,10 @@ async function carregarNoticias() {
     }
   });
 
-
   const expC = document.getElementById('news-exp');
   const impC = document.getElementById('news-imp');
   const sisC = document.getElementById('news-sis');
+  const lastUpdateEl = document.getElementById('last-update');
 
   if (!expC || !impC || !sisC) return;
 
@@ -20,9 +20,19 @@ async function carregarNoticias() {
     '<div class="loading">🔄 Carregando notícias...</div>';
 
   try {
-    const data = await window.api.getNotices();
+    const data = await window.api.getNoticesCached();
 
-    if (data.erro) throw new Error(data.erro);
+    if (!data || data.erro) {
+      throw new Error(data?.erro || "Falha ao carregar dados");
+    }
+
+    // Mostrar hora da última atualização
+    if (data.last_update && lastUpdateEl) {
+      const d = new Date(data.last_update);
+      const hh = d.getHours().toString().padStart(2, '0');
+      const mm = d.getMinutes().toString().padStart(2, '0');
+      lastUpdateEl.textContent = `Notícias atualizadas às: ${hh}:${mm}`;
+    }
 
     const exp = Array.isArray(data.noticias_ex) ? data.noticias_ex : [];
     const imp = Array.isArray(data.noticias_im) ? data.noticias_im : [];

@@ -57,31 +57,50 @@ btnClean.addEventListener("click", async () => {
 
 
   // 🔹 Aguarda o DOM da view finalizar antes de anexar listeners
-  requestAnimationFrame(() => {
-    const btnAbrir = document.getElementById("btnAbrir");
-    console.log("🔍 btnAbrir encontrado?", !!btnAbrir);
+  // ---- Abrir pasta (sem duplicar e sem reentrada) ----
+let openingFolder = false;
 
-    if (btnAbrir) {
-      btnAbrir.addEventListener("click", () => {
-        console.log("✅ Clique detectado em Abrir pasta!");
-        const pasta_saida = lblSai.value;
-        if (!pasta_saida || pasta_saida === "Nenhum selecionado") {
-          console.warn("⚠️ Nenhuma pasta de saída selecionada ainda.");
-          alert("Selecione uma pasta de saída antes de abrir.");
-          return;
-        }
+requestAnimationFrame(() => {
+  const btnAbrir = document.getElementById("btnAbrir");
+  const lblSai   = document.getElementById("saidaLabel");
 
-        // Se a API de abrir pasta estiver disponível no preload:
-        if (window.api?.openFolder) {
-          window.api.openFolder(pasta_saida);
-        } else {
-          console.log("📂 Caminho da pasta:", pasta_saida);
-        }
-      });
-    } else {
-      console.warn("⚠️ Botão 'Abrir pasta' não encontrado no DOM.");
+  bindSafe(btnAbrir, "click", async () => {
+    if (openingFolder) return;           // evita abrir 2x se o usuário clicar rápido
+    const pasta_saida = (lblSai?.value || "").trim();
+
+    if (!pasta_saida || /nenhum selecionado/i.test(pasta_saida)) {
+      alert("Selecione uma pasta de saída antes de abrir.");
+      return;
+    }
+
+    if (!window.api?.openFolder) {
+      console.warn("API openFolder indisponível no preload.");
+      alert("Não foi possível abrir a pasta (API indisponível).");
+      return;
+    }
+
+    openingFolder = true;
+    try {
+      const r = await window.api.openFolder(pasta_saida);
+      if (!r?.ok) {
+        console.error("Falha ao abrir pasta:", r?.error);
+        alert(`Não consegui abrir a pasta:\n${pasta_saida}\n\nDetalhe: ${r?.error || 'erro desconhecido'}`);
+      }
+    } finally {
+      openingFolder = false;
     }
   });
+});
+
+
+function bindSafe(el, event, handler) {
+  if (!el) return;
+  const key = `__handler_${event}`;
+  if (el[key]) el.removeEventListener(event, el[key]);
+  el.addEventListener(event, handler);
+  el[key] = handler;
+}
+
 
   if (!btnEnt || !btnSai || !btnRun) {
     console.warn("⚠️ Elementos da view wsvisoparser ainda não estão disponíveis.");
@@ -122,9 +141,7 @@ btnClean.addEventListener("click", async () => {
     }
   });
 
-  // ==============================
   // Ações das opções do dropdown
-  // ==============================
   optPasta.addEventListener("click", async () => {
     dropdown.style.display = "none";
     const caminho = await window.api.selectFolder(true);
@@ -133,21 +150,26 @@ btnClean.addEventListener("click", async () => {
 
   optZip.addEventListener("click", async () => {
     dropdown.style.display = "none";
-    const caminho = await window.api.selectFileZip();
-    if (caminho) lblEnt.value = caminho;
-  });
 
-  // ==============================
+    if (!window.api?.selectFileZip) {
+      alert("Função selectFileZip não está disponível.");
+      return;
+    }
+
+    const caminho = await window.api.selectFileZip(); // já vem UNC no servidor
+    if (caminho) {
+      lblEnt.value = caminho; // ex.: \\10.0.0.237\...\hostname\0\DI_2025.zip
+      console.log("📦 ZIP de entrada (no servidor):", caminho);
+    }
+  });
+  
   // Selecionar pasta de saída
-  // ==============================
   btnSai.addEventListener("click", async () => {
     const caminho = await window.api.selectFolder(false);
     if (caminho) lblSai.value = caminho;
   });
 
-  // ==============================
   // Botão EXECUTAR PARSER
-  // ==============================
   btnRun.addEventListener("click", async () => {
   const entrada = lblEnt.value;
   const saida = lblSai.value;

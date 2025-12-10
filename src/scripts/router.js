@@ -5,6 +5,7 @@ const initializers = {
   hub:         () => window.carregarNoticias?.(window.hubLoaded),
   wsvisoparser:() => window.initParser?.(),
   comparador:  () => window.initComparador?.(),
+  expo8: () => window.initExpo8?.(),
 };
 
 // util: aguarda o preload expor window.api.loadView

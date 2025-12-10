@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>WS Expo8</title>
+
+    <!-- Estilo global Visonet -->
+    <link rel="stylesheet" href="../styles/common.css" />
+    <!-- Estilo específico do Expo8 -->
+    <link rel="stylesheet" href="../styles/sty_expo8.css" />
+  </head>
+
+  <body>
+    <div class="main-card expo8-container">
+      <h1>Parser de Códigos</h1>
+      <p class="subtitle">
+        Adicione os códigos, escolha uma pasta de saída e execute o parser.
+      </p>
+
+      <!-- ENTRADA DE STRINGS -->
+      <div class="section">
+        <div class="section-title">Entrada de códigos</div>
+
+        <div class="field-row">
+          <input
+            type="text"
+            id="code-input"
+            placeholder="Digite o código e clique em 'Adicionar'"
+          />
+          <button id="add-code-btn" class="primary">
+            + Adicionar código
+          </button>
+        </div>
+
+        <div class="hint">
+          Você pode adicionar vários códigos; eles serão listados abaixo.
+        </div>
+
+        <!-- Lista de códigos adicionados -->
+        <div id="codes-list" class="codes-list"></div>
+      </div>
+
+      <!-- ESCOLHER PASTA DE SAÍDA -->
+      <div class="section">
+        <div class="section-title">Pasta de saída</div>
+
+        <div class="field-row">
+          <input
+            type="text"
+            id="output-path-input"
+            placeholder="Nenhuma pasta selecionada"
+            readonly
+          />
+          <button id="choose-folder-btn" class="secondary">
+            Escolher pasta
+          </button>
+        </div>
+
+        <div class="hint">
+          A pasta será usada para salvar os arquivos gerados pelo parser.
+        </div>
+
+        <!-- Botões: copiar e abrir pasta -->
+        <div style="margin-top: 12px; display: flex; gap: 8px;">
+          <button id="open-folder-btn" class="secondary">
+            Abrir pasta
+          </button>
+        </div>
+      </div>
+
+      <!-- BOTÃO PARA FAZER O PARSER -->
+      <div class="footer-actions">
+        <button id="run-parser-btn" class="primary">
+          ▶ Fazer parser
+        </button>
+      </div>
+    </div>
+
+    <!-- MODAL DE CARREGAMENTO -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+      <div class="loading-box">
+        <div class="spinner"></div>
+        <p>Processando DUEs, isso pode levar alguns minutos...</p>
+      </div>
+    </div>
+
+    <script src="../scripts/src_expo8.js"></script>
+  </body>
+</html>

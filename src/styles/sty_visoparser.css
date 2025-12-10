@@ -22,7 +22,16 @@ h2 {
 .path-row {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 0;           /* tira o espaço depois do input */
+}
+
+/* apenas hints logo após um path-row */
+.path-row + .hint {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: -10px;            /* encosta bem no input */
+  margin-bottom: 6px;         /* espacinho mínimo antes do próximo bloco */
+  line-height: 1.2;           /* deixa o texto mais compacto */
 }
 
 .path-input {
@@ -294,4 +303,7 @@ h2 {
   .btn-executar {
     width: 100%;
   }
+
+
 }
+

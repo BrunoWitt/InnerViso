@@ -12,12 +12,17 @@ try {
     loadView: (name) => ipcRenderer.invoke('views:load', name),
     selectFolder: (tipo) => ipcRenderer.invoke('dialog:select-folder', tipo),
     selectFileZip: () => ipcRenderer.invoke('select-file-zip'),
-    openFolder: (caminho) => ipcRenderer.invoke('dialog:open-folder', caminho),
+    openFolder: (absPath) => ipcRenderer.invoke('fs:open-folder', absPath),
     savePath: (caminho_entrada, caminho_saida) => ipcRenderer.invoke('save-path', caminho_entrada, caminho_saida),
     fileExists: (caminho) => ipcRenderer.invoke('open-json', caminho),
     clearPaths: () => ipcRenderer.invoke("clear-paths"),
     compararListas: (list1, list2) => ipcRenderer.invoke("comparar-listas", list1, list2),
     getNotices: () => ipcRenderer.invoke("get-notices"),
+    getNoticesCached: () => ipcRenderer.invoke("get-notices-cached"),
+    saveNotices: (data) => ipcRenderer.invoke("salvar-notices", data),
+    parserExpo8: (listCodes, caminho_saida) => ipcRenderer.invoke("parserExpo8", listCodes, caminho_saida),
+    readExpo8Log: () => ipcRenderer.invoke("readExpo8Log"),
+    runExpo8: (dues, saida) => ipcRenderer.invoke("run-expo8", dues, saida),
 
     // Parser WSViso
 
@@ -62,7 +67,13 @@ try {
 
   });
 
+  contextBridge.exposeInMainWorld("api", {
+    runExpo8: (dues, output) => ipcRenderer.invoke("run-expo8", dues, output),
+  });
+
+
   console.log('[preload] API exposta com sucesso');
 } catch (e) {
   console.error('[preload] Falha ao expor API:', e);
 }
+

@@ -25,7 +25,8 @@ body {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 }
 
-h2, h3 {
+h2,
+h3 {
   text-align: center;
   color: #0078d7;
   font-weight: 600;
@@ -55,6 +56,14 @@ h2, h3 {
   border-radius: 6px;
   background: #fafafa;
   font-size: 14px;
+}
+
+/* Hint global (texto embaixo de inputs) */
+.hint {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 2px;
+  margin-bottom: 6px;
 }
 
 /* ===== BOTÕES ===== */
@@ -135,7 +144,7 @@ h2, h3 {
   padding-top: 40px;
 }
 
-/* ===== POPUP E MODAIS (PARSER) ===== */
+/* ===== POPUP E MODAIS (PARSER / GERAL) ===== */
 .popup-resumo,
 .loading-overlay {
   position: fixed;
@@ -167,8 +176,17 @@ h2, h3 {
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Classe utilitária */
+.hidden {
+  display: none;
 }
 
 /* ======== RESPONSIVIDADE ======== */
@@ -206,11 +224,13 @@ h2, h3 {
     padding: 15px;
   }
 
-  h2, h3 {
+  h2,
+  h3 {
     font-size: 1rem;
   }
 
-  .input-text, .path-input {
+  .input-text,
+  .path-input {
     font-size: 13px;
   }
 }

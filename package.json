@@ -1,8 +1,8 @@
 {
-  "name": "innerviso",
-  "version": "1.0.0",
+  "name": "CIV2",
+  "version": "1.0.1",
   "description": "Software interno da Visonet",
-  "main": "main.js",
+  "main": "src/main/main.js",
   "author": "Bruno Witt",
   "license": "ISC",
   "scripts": {
@@ -12,7 +12,7 @@
   },
   "build": {
     "appId": "com.visonet.innerviso",
-    "productName": "InnerViso",
+    "productName": "CIV2",
     "directories": {
       "output": "dist"
     },
