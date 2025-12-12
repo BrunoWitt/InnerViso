@@ -4,117 +4,150 @@ const fs = require('fs-extra');
 const path = require('path');
 const os = require('os');
 const axios = require('axios');
+const tokenToSaidaServidor = new Map();
 
 const BASE_UNC = '\\\\10.0.0.237\\visonet\\Sistemas\\FileSystem\\WSVISOparser';
 
-// guarda a última estrutura criada (data/entrada/saida)
-let ultimaExecucao = null;
-
-//Seleciona a pasta da maquina do usuário
-function selecionar_pasta_wb() {
-  const nomeMaquina = os.hostname();
-  const raiz = path.join(BASE_UNC, nomeMaquina);
-  fs.ensureDirSync(raiz);
-  return raiz;
+// --- helpers de data + nome único (Windows-safe) ---
+function dataHoraBRExibicao() {
+  const d = new Date();
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+  const hh = String(d.getHours()).padStart(2, "0");
+  const min = String(d.getMinutes()).padStart(2, "0");
+  return `${dd}/${mm}/${yyyy}-${hh}:${min}`; // <- bom pra mostrar
 }
 
-// Cria a pasta da DATA/HORA e as subpastas "entrada" e "saida"
-function salvar_pasta_wb(pastaMaquina) {
-  const date = new Date();
-  const pad = (n) => String(n).padStart(2, '0');
+function dataHoraBRParaNome() {
+  const d = new Date();
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+  const hh = String(d.getHours()).padStart(2, "0");
+  const min = String(d.getMinutes()).padStart(2, "0");
+  return `${dd}-${mm}-${yyyy}-${hh}-${min}`; // <- bom pra pasta/arquivo
+}
 
-  // dd-mm-aaaa_hh-mm
-  const baseNome = `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()}_${pad(date.getHours())}-${pad(date.getMinutes())}`;
+/**
+ * Gera um nome único: "stamp", "stamp_2", "stamp_3"...
+ * @param {string} baseDir pasta onde as execuções ficam (ex: \\server\...\HOST)
+ * @param {string} stampBase ex: "12-12-2025-16-27"
+ */
+async function gerarStampUnico(baseDir, stampBase) {
+  let stamp = stampBase;
+  let i = 1;
 
-  let n = 0;
-  let pastaBase;
-
-  while (true) {
-    const nomePasta = n === 0 ? baseNome : `${baseNome}_${n}`;
-    const tentativa = path.join(pastaMaquina, nomePasta);
-
-    if (!fs.existsSync(tentativa)) {
-      fs.ensureDirSync(tentativa);
-      pastaBase = tentativa;
-      break;
-    }
-    n++;
+  while (await fs.pathExists(path.join(baseDir, stamp))) {
+    i += 1;
+    stamp = `${stampBase}_${i}`;
   }
 
-  const pastaEntrada = path.join(pastaBase, 'entrada');
-  const pastaSaida   = path.join(pastaBase, 'saida');
-
-  fs.ensureDirSync(pastaEntrada);
-  fs.ensureDirSync(pastaSaida);
-
-  // guarda pra outras funções (parser:prepare / criar_pasta_saida_servidor)
-  ultimaExecucao = {
-    pastaBase,
-    pastaEntrada,
-    pastaSaida,
-  };
-
-  // mantém compatível com o restante do código:
-  // quem chama usa o retorno como "onde vou jogar os arquivos de entrada"
-  return pastaEntrada;
+  return stamp;
 }
 
-function criar_pasta_saida_servidor() {
-  // se já houve seleção de pasta de entrada, reaproveita a mesma execução
-  if (ultimaExecucao && ultimaExecucao.pastaSaida) {
-    return ultimaExecucao.pastaSaida;
-  }
-
-  // fallback: se chamarem parser:prepare ANTES de escolher entrada
-  const pastaMaquina = selecionar_pasta_wb();
-  salvar_pasta_wb(pastaMaquina); // isso já preenche ultimaExecucao
-  return ultimaExecucao.pastaSaida;
-}
-
-// ---------------- HTTP / parser ----------------
-async function executarParser(pathIn, pathOut, tipo, token) {
+async function executarParser(pathInServer, pathOutServer, tipoParser, token) {
+  /**
+   * Faz contato com o webservice para executar o parser.
+   * @param pathInServer: Pasta de entrada do servidor
+   * @param pathOutSErver: Pasta de saída do servidor
+   * @param tipo: Tipo do parser à ser chamado
+   * @param token: Token responsável pela tela de carregamento
+   * @return response.data: Retorna 
+   */
+  
   const endpoints = {
-    NFE: 'http://127.0.0.1:8000/nfe_router/nfe',
-    //NFE:   'http://10.0.0.106:8100/nfe_router/nfe',
-    IMPO1: 'http://10.0.0.106:8100/di_router/IMPO1',
-    IMPO8: 'http://10.0.0.106:8100/di_router/IMPO8',
-    SPED:  'http:// 10.0.0.106:8100/sped_router/sped',
-    BASE:  'http://10.0.0.106:8100/nfe_router/base_reintegra',
-  };
-  const url = endpoints[tipo];
-  if (!url) throw new Error(`Tipo de parser desconhecido: ${tipo}`);
+      NFE:  'http://127.0.0.1:8000/nfe_router/nfe',
+      IMPO1:'http://10.0.0.106:8100/di_router/IMPO1',
+      IMPO8:'http://10.0.0.106:8100/di_router/IMPO8',
+      SPED: 'http://10.0.0.106:8100/sped_router/sped', 
+      BASE: 'http://10.0.0.106:8100/nfe_router/base_reintegra',
+    };
+
+  const url = endpoints[tipoParser];
+  if (!url) throw new Error(`Tipo de parser inválido: ${tipoParser}`);
 
   const response = await axios.get(url, {
-    params: { pathIn, pathOut, token: token || 'electron-ui' },
+    params: {
+      pathIn: pathInServer,
+      pathOut: pathOutServer,
+      token: String(token || 'electron-ui'),
+    },
     timeout: 0,
+    validateStatus: () => true, // ok, mas agora vamos checar manualmente
   });
+
+
+  if (response.status < 200 || response.status >= 300) {
+    const detalhe =
+      typeof response.data === "string"
+        ? response.data
+        : JSON.stringify(response.data, null, 2);
+
+    throw new Error(`HTTP ${response.status} em ${url}\n${detalhe}`);
+  }
+
   return response.data;
 }
 
-function registerParserIpc() {
+async function criar_pastas(entradaLocal, tipoParser) {
+  /**
+   * Cria as pastas de entrada e saída no servidor
+   * Copia os arquivos de entrada local e cola na pasta do servidor
+   * @param {string} entradaLocal é o caminho local da máquina do usuário
+   * @param {string} tipoParser é responsável por definir a pasta onde estará os arquivos copiados para o servidor
+   * @returns pastasEntradas e pastaSaida do servidor
+   */
 
+  const nomeMaquina = os.hostname();
+
+  const baseExecDir = path.join(BASE_UNC, nomeMaquina);
+  await fs.ensureDir(baseExecDir);
+
+  const stampBase = dataHoraBRParaNome();        // ex: 12-12-2025-16-27
+  const stamp = await gerarStampUnico(baseExecDir, stampBase); // ex: ... ou ..._2
+
+  console.log("Execução:", dataHoraBRExibicao(), "=> pasta:", stamp);
+
+  const enderecoFinal = path.join(baseExecDir, tipoParser, stamp);
+
+  const pastaEntradas = path.join(enderecoFinal, "entrada");
+  const pastaSaida    = path.join(enderecoFinal, "saida");
+
+  await fs.ensureDir(pastaEntradas);
+  await fs.ensureDir(pastaSaida);
+
+  const st = await fs.stat(entradaLocal);
+
+  if (st.isFile() && entradaLocal.toLowerCase().endsWith(".zip")) {
+    const destZip = path.join(pastaEntradas, path.basename(entradaLocal));
+    await fs.copy(entradaLocal, destZip, { overwrite: true });
+    return { entradaServidor: destZip, saidaServidor: pastaSaida };
+  }
+
+  await fs.copy(entradaLocal, pastaEntradas, { overwrite: true });
+  return { entradaServidor: pastaEntradas, saidaServidor: pastaSaida };
+}
+
+function registerParserIpc() {
   // ---------- selecionar pasta (entrada / saída local) ----------
   ipcMain.handle('dialog:select-folder', async (_event, tipo) => {
+
+    /**
+     * Função que seleciona a entrada de arquivos
+     * parametro tipo = pasta ou zip
+     */
+
     try {
-      if (tipo === true) { // ENTRADA → copiar pro servidor
-        const pasta_maquina = selecionar_pasta_wb();
-        const pastaEntradaData = salvar_pasta_wb(pasta_maquina); // ...\MAQUINA\<data>\entrada
+      if (tipo === true) {
 
         const result = await dialog.showOpenDialog({ properties: ['openDirectory'] });
         if (result.canceled) return null;
 
         const origem = result.filePaths[0];
-        const subdir_nome = path.basename(origem);
 
-        // arquivos vão para ...\<data>\entrada\<nome_original>
-        const destino_final = path.join(pastaEntradaData, subdir_nome);
-
-        await fs.copy(origem, destino_final, { overwrite: true });
-        console.log('✅ Pasta copiada para o servidor:', destino_final);
-
-        // o backend usa esse caminho como pathIn
-        return destino_final;
-      } else { // SAÍDA LOCAL → apenas escolher
+        return origem;
+      } else {
         const result = await dialog.showOpenDialog({ properties: ['openDirectory'] });
         return result.canceled ? null : result.filePaths[0];
       }
@@ -135,35 +168,25 @@ function registerParserIpc() {
 
       const origemZip = result.filePaths[0];
 
-      const pastaMaquina = selecionar_pasta_wb();
-      const pastaEntradaData = salvar_pasta_wb(pastaMaquina); // ...\<data>\entrada
-
       const nomeZip = path.basename(origemZip);
-      const destinoZipServidor = path.join(pastaEntradaData, nomeZip);
 
-      await fs.copy(origemZip, destinoZipServidor, { overwrite: true });
-      console.log('✅ ZIP copiado para o servidor:', destinoZipServidor);
-
-      return destinoZipServidor;
+      return origemZip;
     } catch (err) {
       console.error('❌ Erro ao selecionar/copiar ZIP:', err);
       return null;
     }
   });
 
-  // ---------- pasta de saída no servidor ----------
-  ipcMain.handle('parser:prepare', async () => {
-    const saidaServidor = criar_pasta_saida_servidor(); // ...\<data>\saida
-    return { saidaServidor };
-  });
-
   // ---------- iniciar parser ----------
-  ipcMain.handle('iniciar-parser', async (_event, entradaLocal, saidaLocal, tipo, token, saidaServidor) => {
-    if (!saidaServidor) saidaServidor = criar_pasta_saida_servidor();
+  ipcMain.handle('iniciar-parser', async (_event, entradaLocal, saidaLocal, tipoParser, token) => {
+    
+    const { entradaServidor, saidaServidor } = await criar_pastas(entradaLocal, tipoParser); //Cria as pastas no servidor para o WB ler
+
+    tokenToSaidaServidor.set(String(token), saidaServidor);
 
     (async () => {
       try {
-        const result = await executarParser(entradaLocal, saidaServidor, tipo, token);
+        const result = await executarParser(entradaServidor, saidaServidor, tipoParser, token);
 
         const resultPath = path.join(saidaServidor, `.result_${token}.json`);
         await fs.writeJson(resultPath, result, { spaces: 2 });
@@ -181,46 +204,85 @@ function registerParserIpc() {
         });
 
         await fs.writeFile(path.join(saidaServidor, `.done_${token}`), 'OK');
-
-        try {
-          const items = await fs.readdir(saidaServidor);
-          await Promise.all(
-            items
-              .filter(n => n.startsWith('.progress_'))
-              .map(n => fs.remove(path.join(saidaServidor, n)))
-          );
-        } catch {}
       } catch (err) {
         try {
-          await fs.writeFile(path.join(saidaServidor, `.error_${token}`), String(err?.message || err));
+          const saidaSrv = tokenToSaidaServidor.get(String(token)) || saidaServidor;
+
+          const msg = err?.message || String(err);
+          await fs.writeFile(path.join(saidaSrv, `.error_${token}`), msg);
+
+          console.error("❌ Erro no parser:", msg);
         } catch {}
       }
     })();
 
-    return { started: true, saidaServidor };
+    return { started: true }; // ✅ não expõe saidaServidor
   });
 
-  // ---------- copiar saída pra pasta local ----------
-  ipcMain.handle('copiar-saida', async (_event, pathRemoto, pathLocal) => {
-    try {
-      if (!await fs.pathExists(pathRemoto)) throw new Error('Pasta remota não encontrada.');
-      await fs.ensureDir(pathLocal);
+  // ---------- status só por token ----------
+  ipcMain.handle('parser:status', async (_event, token) => {
+    const saidaServidor = tokenToSaidaServidor.get(String(token));
+    if (!saidaServidor) return { ok: false, error: 'Token não registrado no Node.' };
 
-      await fs.copy(pathRemoto, pathLocal, {
-        overwrite: true,
-        filter: (src) => {
-          const base = path.basename(src);
-          if (base.startsWith('.')) return false;
-          if (base.toLowerCase() === '.log' || base.toLowerCase() === '._log') return false;
-          return true;
-        },
-      });
+    const donePath   = path.join(saidaServidor, `.done_${token}`);
+    const errorPath  = path.join(saidaServidor, `.error_${token}`);
+    const resultPath = path.join(saidaServidor, `.result_${token}.json`);
 
-      return { success: true };
-    } catch (err) {
-      return { success: false, error: err.message };
+    if (await fs.pathExists(errorPath)) {
+      const msg = await fs.readFile(errorPath, 'utf8').catch(() => '');
+      return { ok: true, state: 'error', message: msg };
     }
+
+    if (await fs.pathExists(donePath)) {
+      const result = await fs.readJson(resultPath).catch(() => null);
+      return { ok: true, state: 'done', result };
+    }
+
+    return { ok: true, state: 'running' };
   });
+
+  // ---------- progresso só por token ----------
+ipcMain.handle('parser:progress', async (_event, token) => {
+  const saidaServidor = tokenToSaidaServidor.get(String(token));
+  if (!saidaServidor) return { ok: false, error: 'Token não registrado no Node.' };
+
+  const progPath = path.join(saidaServidor, `.progress_${token}`);
+
+  try {
+    if (!await fs.pathExists(progPath)) {
+      return { ok: true, exists: false };
+    }
+
+    const raw = (await fs.readFile(progPath, 'utf8')).trim(); // ex: "6/20"
+    const [current, total] = raw.split('/').map(n => parseInt(n || '0', 10));
+
+    return {
+      ok: true,
+      exists: true,
+      raw,
+      current: Number.isFinite(current) ? current : 0,
+      total: Number.isFinite(total) ? total : 0,
+    };
+  } catch (err) {
+    return { ok: false, error: err?.message || String(err) };
+  }
+});
+
+// ---------- pedir cancelamento (cria flag no servidor) ----------
+ipcMain.handle('parser:cancel', async (_event, token) => {
+  const saidaServidor = tokenToSaidaServidor.get(String(token));
+  if (!saidaServidor) return { ok: false, error: 'Token não registrado no Node.' };
+
+  const cancelPath = path.join(saidaServidor, `.cancel_${token}`);
+  try {
+    await fs.ensureDir(saidaServidor);
+    await fs.writeFile(cancelPath, '1');
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err?.message || String(err) };
+  }
+});
+
 }
 
 module.exports = { registerParserIpc };

@@ -26,9 +26,10 @@ try {
 
     // Parser WSViso
 
-    prepararParser: () => ipcRenderer.invoke('parser:prepare'),
-    iniciarParser: (entrada, saidaLocal, tipoParser, token, saidaServidor) =>
-      ipcRenderer.invoke('iniciar-parser', entrada, saidaLocal, tipoParser, token, saidaServidor),
+    iniciarParser: (entrada, saida, tipoParser, token) => ipcRenderer.invoke('iniciar-parser', entrada, saida, tipoParser, token),
+    parserStatus: (token) => ipcRenderer.invoke('parser:status', token),
+    parserProgress: (token) => ipcRenderer.invoke('parser:progress', token),
+    parserCancel:   (token) => ipcRenderer.invoke('parser:cancel', token),
 
     copiarSaida: (remoto, local) => ipcRenderer.invoke('copiar-saida', remoto, local),
 
