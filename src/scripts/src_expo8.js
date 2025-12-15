@@ -1,3 +1,4 @@
+//src_expo8.js
 function initExpo8() {
     console.log("[expo8] iniciado");
 
@@ -10,9 +11,12 @@ function initExpo8() {
     const lblSaida = document.getElementById("output-path-input")
     const listContainer = document.getElementById("codes-list");
     const loadingOverlay = document.getElementById("loading-overlay");
+    const btnCancelar = document.getElementById("cancel-parser-btn");
+
+    let cancelRequested = false;
 
     // lista global (caso queira usar fora)
-    window.listCodes = [];
+    window.listCodes = ['25BR0006635014',];
     console.log(listCodes)
 
     // Função que re-renderiza a lista no HTML
@@ -49,31 +53,31 @@ function initExpo8() {
     }
 
     function setLoading(isLoading) {
-        if (isLoading) {
-            loadingOverlay.classList.remove("hidden");
-        } else {
-            loadingOverlay.classList.add("hidden")
-        }
+        if (isLoading) loadingOverlay.classList.remove("hidden");
+        else loadingOverlay.classList.add("hidden");
 
         btnAdicionar.disabled = isLoading;
         btnAdicionarSaida.disabled = isLoading;
         btnParser.disabled = isLoading;
         lblCode.disabled = isLoading;
+
+        // botão cancelar
+        if (btnCancelar) {
+        btnCancelar.disabled = !isLoading;
+        btnCancelar.textContent = cancelRequested ? "Cancelando..." : "Cancelar";
+        }
     }
 
-    function mostrarResultado(resultado, log) {
+    function mostrarResultado({ status, mensagem, log }) {
         const modal = document.createElement("div");
         modal.className = "resultado-modal";
 
-        const titulo =
-            resultado.SUCESSO ||
-            resultado.ERRO ||
-            resultado.message ||
-            "Resultado do processamento";
+        const ok = String(status).toLowerCase() === "sucesso";
 
         modal.innerHTML = `
             <div class="resultado-box">
-            <h2>${titulo}</h2>
+            <h2>${ok ? "Sucesso" : "Erro"}</h2>
+            <p style="margin: 6px 0 14px;"><b>${mensagem}</b></p>
 
             <h3>Log do processo:</h3>
             <pre class="log-box">${log || "(sem log disponível)"}</pre>
@@ -83,12 +87,28 @@ function initExpo8() {
         `;
 
         document.body.appendChild(modal);
-
         document.getElementById("fechar-modal").onclick = () => modal.remove();
     }
 
+    if (btnCancelar) {
+        btnCancelar.addEventListener("click", async () => {
+        if (cancelRequested) return;
+        cancelRequested = true;
+        btnCancelar.disabled = true;
+        btnCancelar.textContent = "Cancelando...";
+
+        try {
+            await window.api.cancelExpo8(); // <- novo
+        } catch (e) {
+            console.warn("Falha ao solicitar cancelamento:", e);
+        }
+        });
+    }
+
+
     // Adicionar novo código
     btnAdicionar.addEventListener("click", () => {
+        renderList()
         const codeAtual = lblCode.value
         
         if (!codeAtual) return;
@@ -141,7 +161,7 @@ function initExpo8() {
 
         try{
             const r = await window.api.openFolder(pasta_saida);
-            if (!r?.ok) {
+            if (!r?.status) {
             console.error("Falha ao abrir pasta:", r?.error);
             alert(`Não consegui abrir a pasta:\n${pasta_saida}\n\nDetalhe: ${r?.error || 'erro desconhecido'}`);
         }
@@ -164,30 +184,27 @@ function initExpo8() {
         return;
     }
 
+    cancelRequested = false;
+    setLoading(true);
+
     try {
-        setLoading(true);
 
         const result = await window.api.parserExpo8(window.listCodes, pathOut);
-        // result = { ok, message, log }
+        // result = { status, message, log }
 
-        mostrarResultado(
-        result.ok
-            ? { SUCESSO: result.message }
-            : { ERRO: result.message },
-        result.log
-        );
+        mostrarResultado(result)
 
     } catch (err) {
-        mostrarResultado(
-        { ERRO: err.message },
-        err.stack || "Erro inesperado."
-        );
+    mostrarResultado({
+        status: "erro",
+        mensagem: err?.message || "Erro inesperado.",
+        log: err?.stack || String(err),
+    });
     } finally {
-        setLoading(false);
+    cancelRequested = false;
+    setLoading(false);
     }
     });
-
-
 
 }
 

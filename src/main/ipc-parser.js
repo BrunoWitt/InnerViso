@@ -57,7 +57,7 @@ async function executarParser(pathInServer, pathOutServer, tipoParser, token) {
    */
   
   const endpoints = {
-      NFE:  'http://127.0.0.1:8000/nfe_router/nfe',
+      NFE:  'http://10.0.0.106:8100/nfe_router/nfe',
       IMPO1:'http://10.0.0.106:8100/di_router/IMPO1',
       IMPO8:'http://10.0.0.106:8100/di_router/IMPO8',
       SPED: 'http://10.0.0.106:8100/sped_router/sped', 
@@ -177,6 +177,20 @@ function registerParserIpc() {
     }
   });
 
+  async function resgate_arquivos_do_servidor(pathOutServer, pathOutLocal) {
+    const arquivos = await fs.readdir(pathOutServer)
+  
+    for(const arquivo of arquivos) {
+      if(path.extname(arquivo).toLowerCase() === '.xlsx') {
+        await fs.copyFile(
+          path.join(pathOutServer, arquivo),
+          path.join(pathOutLocal, arquivo)
+        )
+        console.log('Arquivo .xlsx copiado.')
+      }
+    }
+  }
+
   // ---------- iniciar parser ----------
   ipcMain.handle('iniciar-parser', async (_event, entradaLocal, saidaLocal, tipoParser, token) => {
     
@@ -193,15 +207,7 @@ function registerParserIpc() {
 
         await fs.ensureDir(saidaLocal);
 
-        await fs.copy(saidaServidor, saidaLocal, {
-          overwrite: true,
-          filter: (src) => {
-            const base = path.basename(src);
-            if (base.startsWith('.')) return false;
-            if (base.toLowerCase() === '._log' || base.toLowerCase() === '.log') return false;
-            return true;
-          },
-        });
+        resgate_arquivos_do_servidor(saidaServidor, saidaLocal)
 
         await fs.writeFile(path.join(saidaServidor, `.done_${token}`), 'OK');
       } catch (err) {
@@ -216,7 +222,7 @@ function registerParserIpc() {
       }
     })();
 
-    return { started: true }; // ✅ não expõe saidaServidor
+    return { started: true };
   });
 
   // ---------- status só por token ----------

@@ -23,6 +23,7 @@ try {
     parserExpo8: (listCodes, caminho_saida) => ipcRenderer.invoke("parserExpo8", listCodes, caminho_saida),
     readExpo8Log: () => ipcRenderer.invoke("readExpo8Log"),
     runExpo8: (dues, saida) => ipcRenderer.invoke("run-expo8", dues, saida),
+    cancelExpo8: () => ipcRenderer.invoke("cancelExpo8"),
 
     // Parser WSViso
 
