@@ -60,10 +60,6 @@ async function resgate_arquivos_do_servidor(pathOutServer, pathOutLocal) {
   }
 }
 
-// tenta converter:
-// - objeto já pronto
-// - JSON string
-// - dict python com aspas simples: "{'status': 'sucesso'}"
 function parseMaybeJSON(v) {
   if (v && typeof v === "object") return v;
   if (typeof v !== "string") return v;
@@ -71,12 +67,10 @@ function parseMaybeJSON(v) {
   const s = v.trim();
   if (!s) return v;
 
-  // tenta JSON normal
   try {
     return JSON.parse(s);
   } catch (_) {}
 
-  // tenta "python dict" simples -> JSON (não é perfeito, mas ajuda muito)
   try {
     const maybe = s
       .replace(/\bTrue\b/g, "true")
@@ -98,7 +92,6 @@ function normalizeBackendPayload(payload) {
 
   data = parseMaybeJSON(data);
 
-  // se ainda não for objeto, devolve fallback
   if (!data || typeof data !== "object") {
     return {
       status: "erro",
@@ -127,34 +120,76 @@ function normalizeBackendPayload(payload) {
 }
 
 function registerExpo8Ipc() {
-
   const runningExpo8 = new Map();
 
   ipcMain.handle("cancelExpo8", async (event) => {
     const wcId = event.sender.id;
-    const controller = runningExpo8.get(wcId);
+    const run = runningExpo8.get(wcId);
 
-    if (controller) {
-      controller.abort();           // <- cancela axios
-      runningExpo8.delete(wcId);
-      return { ok: true };
+    if (!run) return { ok: false, message: "Nenhum EXPO8 em andamento." };
+
+    try {
+      if (run.cancelPath) {
+        await fs.outputFile(run.cancelPath, "cancel"); // simples e rápido
+      }
+    } catch (e) {
+      console.warn("[expo8] falha ao criar cancel.flag:", e);
     }
-    return { ok: false, message: "Nenhum EXPO8 em andamento." };
+
+    if (run.controller) run.controller.abort(); // para o await do front
+    return { ok: true };
   });
 
-  ipcMain.handle("parserExpo8", async (_event, listCodes, pathOut) => {
-    const url = "http://127.0.0.1:8000/due_router/EXPO8/"; // pode manter
+  ipcMain.handle("getExpo8Progress", async (event) => {
+    const wcId = event.sender.id;
+    const run = runningExpo8.get(wcId);
+
+    if (!run?.progressPath) {
+      return { ok: false, message: null, current: 0, total: 0 };
+    }
+
+    try {
+      if (!(await fs.pathExists(run.progressPath))) {
+        return { ok: true, message: null, current: 0, total: 0 };
+      }
+
+      const raw = await fs.readFile(run.progressPath, "utf8");
+      const data = JSON.parse(raw);
+
+      return {
+        ok: true,
+        message: data?.message ?? null,
+        current: Number(data?.current ?? 0),
+        total: Number(data?.total ?? 0),
+      };
+    } catch (e) {
+      return { ok: true, message: "Processando...", current: 0, total: 0 };
+    }
+  });
+
+  ipcMain.handle("parserExpo8", async (event, listCodes, pathOut) => {
+    const url = "http://127.0.0.1:8000/due_router/EXPO8";
 
     const tipo = "EXPO8";
     const { entradaServidor, saidaServidor } = await criar_pastas(tipo);
 
-    const wcId = _event.sender.id;
+    const wcId = event.sender.id;
     const controller = new AbortController();
-    runningExpo8.set(wcId, controller);
+
+    const progressPath = path.join(saidaServidor, "progress.json");
+    const cancelPath = path.join(saidaServidor, 'cancel.flag')
+
+    await fs.remove(cancelPath);
+
+    runningExpo8.set(wcId, { controller, progressPath, cancelPath });
 
     try {
       const resp = await axios.get(url, {
-        params: { RAW_DUE_NUMBER: listCodes, PATHIN: entradaServidor, PATHOUT: saidaServidor },
+        params: {
+          RAW_DUE_NUMBER: listCodes,
+          PATHIN: entradaServidor,
+          PATHOUT: saidaServidor,
+        },
         paramsSerializer: (params) =>
           Object.entries(params)
             .map(([key, value]) =>
@@ -164,7 +199,7 @@ function registerExpo8Ipc() {
             )
             .join("&"),
         timeout: 0,
-        signal: controller.signal,  
+        signal: controller.signal,
       });
 
       await resgate_arquivos_do_servidor(saidaServidor, pathOut);
@@ -179,17 +214,25 @@ function registerExpo8Ipc() {
 
       return { status, mensagem, log };
     } catch (err) {
+      if (err?.code === "ERR_CANCELED" || err?.name === "CanceledError" || err?.name === "AbortError") {
+        return { status: "erro", mensagem: "Processo cancelado pelo usuário.", log: "" };
+      }
+
       const httpStatus = err?.response?.status;
       const respData = err?.response?.data;
 
       return {
         status: "erro",
-        mensagem: `Erro ao chamar backend EXPO8: ${err?.message || String(err)}` + (httpStatus ? ` (HTTP ${httpStatus})` : ""),
+        mensagem:
+          `Erro ao chamar backend EXPO8: ${err?.message || String(err)}` +
+          (httpStatus ? ` (HTTP ${httpStatus})` : ""),
         log:
           JSON.stringify({ httpStatus, respData }, null, 2) +
           "\n\n" +
           (err?.stack || String(err)),
       };
+    } finally {
+      runningExpo8.delete(wcId);
     }
   });
 }

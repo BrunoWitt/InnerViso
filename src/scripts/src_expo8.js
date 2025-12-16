@@ -52,6 +52,60 @@ function initExpo8() {
         });
     }
 
+    // ===== PROGRESS (polling) =====
+let progressTimer = null;
+
+// cria (se não existir) os elementos de UI do progresso dentro do overlay
+    function ensureProgressUI() {
+        const box = loadingOverlay?.querySelector(".loading-box");
+        if (!box) return {};
+
+        return {
+            msgEl: box.querySelector("#expo8-progress-message"),
+            countEl: box.querySelector("#expo8-progress-count"),
+            barFill: box.querySelector("#expo8-progress-fill"),
+            barWrap: box.querySelector("#expo8-progress-wrap"),
+        };
+    }
+
+    function renderProgress(p) {
+        const { msgEl, countEl, barFill, barWrap } = ensureProgressUI();
+
+        const message = p?.message || "Processando...";
+        const current = Number(p?.current ?? 0);
+        const total = Number(p?.total ?? 0);
+
+        if (msgEl) msgEl.textContent = message;
+        if (countEl) countEl.textContent = total > 0 ? `${current} / ${total}` : "0 / 0";
+
+        if (barFill && barWrap) {
+            const pct = total > 0 ? Math.min(100, Math.round((current / total) * 100)) : 0;
+            barFill.style.width = `${pct}%`;
+            barWrap.style.display = total > 0 ? "block" : "none";
+        }
+    }
+
+    async function tickProgress() {
+    try {
+        const p = await window.api.getExpo8Progress();
+        // p = { ok, message, current, total }
+        renderProgress(p);
+    } catch (e) {
+        renderProgress({ message: "Processando...", current: 0, total: 0 });
+    }
+    }
+
+    function startProgressPolling() {
+    if (progressTimer) return;
+    tickProgress(); // já atualiza uma vez na largada
+    progressTimer = setInterval(tickProgress, 500);
+    }
+
+    function stopProgressPolling() {
+    if (progressTimer) clearInterval(progressTimer);
+    progressTimer = null;
+    }
+
     function setLoading(isLoading) {
         if (isLoading) loadingOverlay.classList.remove("hidden");
         else loadingOverlay.classList.add("hidden");
@@ -73,22 +127,36 @@ function initExpo8() {
         modal.className = "resultado-modal";
 
         const ok = String(status).toLowerCase() === "sucesso";
+        const titulo = ok ? "Sucesso" : "Erro";
+        const icon = ok ? "✓" : "!";
+
+        const msgFinal =
+            (mensagem && String(mensagem).trim()) ||
+            (ok ? "Todos os arquivos EXPO8 foram gerados com sucesso!" : "Ocorreu um erro no processamento.");
 
         modal.innerHTML = `
             <div class="resultado-box">
-            <h2>${ok ? "Sucesso" : "Erro"}</h2>
-            <p style="margin: 6px 0 14px;"><b>${mensagem}</b></p>
+            <div class="resultado-header ${ok ? "resultado-header--sucesso" : "resultado-header--erro"}">
+                <div class="resultado-icon">${icon}</div>
+                <h2>${titulo}</h2>
+                <p class="resultado-msg">${msgFinal}</p>
+            </div>
 
-            <h3>Log do processo:</h3>
-            <pre class="log-box">${log || "(sem log disponível)"}</pre>
+            <div class="resultado-body">
+                <h3>Log do processo</h3>
+                <pre class="log-box">${log || "(sem log disponível)"}</pre>
 
-            <button id="fechar-modal">Fechar</button>
+                <div class="resultado-actions">
+                <button id="fechar-modal">Fechar</button>
+                </div>
+            </div>
             </div>
         `;
 
         document.body.appendChild(modal);
         document.getElementById("fechar-modal").onclick = () => modal.remove();
     }
+
 
     if (btnCancelar) {
         btnCancelar.addEventListener("click", async () => {
@@ -99,6 +167,7 @@ function initExpo8() {
 
         try {
             await window.api.cancelExpo8(); // <- novo
+            stopProgressPolling()
         } catch (e) {
             console.warn("Falha ao solicitar cancelamento:", e);
         }
@@ -124,7 +193,7 @@ function initExpo8() {
 
         lblCode.value = ""; // limpa input
         renderList();       // atualiza lista
-        console.log(listCodes)
+        console.log(window.listCodes)
     });
 
     //Adicionar saída
@@ -156,7 +225,7 @@ function initExpo8() {
             alert("Não foi possivel abrir a pasta. API indisponível");
             return;
         }
-''
+        
         openingFolder = true;
 
         try{
@@ -186,14 +255,12 @@ function initExpo8() {
 
     cancelRequested = false;
     setLoading(true);
+    renderProgress({ message: "Iniciando...", current: 0, total: window.listCodes.length });
+    startProgressPolling();
 
     try {
-
-        const result = await window.api.parserExpo8(window.listCodes, pathOut);
-        // result = { status, message, log }
-
-        mostrarResultado(result)
-
+    const result = await window.api.parserExpo8(window.listCodes, pathOut);
+    mostrarResultado(result);
     } catch (err) {
     mostrarResultado({
         status: "erro",
@@ -201,6 +268,7 @@ function initExpo8() {
         log: err?.stack || String(err),
     });
     } finally {
+    stopProgressPolling();
     cancelRequested = false;
     setLoading(false);
     }

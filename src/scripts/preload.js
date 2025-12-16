@@ -24,6 +24,7 @@ try {
     readExpo8Log: () => ipcRenderer.invoke("readExpo8Log"),
     runExpo8: (dues, saida) => ipcRenderer.invoke("run-expo8", dues, saida),
     cancelExpo8: () => ipcRenderer.invoke("cancelExpo8"),
+    getExpo8Progress: () => ipcRenderer.invoke("getExpo8Progress"),
 
     // Parser WSViso
 
@@ -31,6 +32,7 @@ try {
     parserStatus: (token) => ipcRenderer.invoke('parser:status', token),
     parserProgress: (token) => ipcRenderer.invoke('parser:progress', token),
     parserCancel:   (token) => ipcRenderer.invoke('parser:cancel', token),
+
 
     copiarSaida: (remoto, local) => ipcRenderer.invoke('copiar-saida', remoto, local),
 

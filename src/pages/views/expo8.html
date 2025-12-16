@@ -78,12 +78,23 @@
 
     <!-- MODAL DE CARREGAMENTO -->
     <div id="loading-overlay" class="loading-overlay hidden">
-      <div class="loading-box">
+      <div class="loading-box expo8-loading">
         <div class="spinner"></div>
-        <p>Processando DUEs, isso pode levar alguns minutos...</p>
-        <button id="cancel-parser-btn" class="secondary">Cancelar</button>
+
+        <p id="expo8-progress-message" class="expo8-progress-message">
+          Gerando relatórios...
+        </p>
+
+        <p id="expo8-progress-count" class="expo8-progress-count">0 / 0</p>
+
+        <div id="expo8-progress-wrap" class="expo8-progress-wrap">
+          <div id="expo8-progress-fill" class="expo8-progress-fill"></div>
+        </div>
+
+        <button id="cancel-parser-btn" class="expo8-cancel-btn">Cancelar</button>
       </div>
     </div>
+
 
 
     <script src="../scripts/src_expo8.js"></script>
