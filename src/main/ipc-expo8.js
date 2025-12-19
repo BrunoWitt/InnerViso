@@ -4,7 +4,8 @@ const fs = require("fs-extra");
 const path = require("path");
 const os = require("os");
 
-const BASE_UNC = "\\\\10.0.0.237\\visonet\\Sistemas\\FileSystem\\WSVISOparser";
+const BASE_UNC = "G:\\Sistemas\\FileSystem\\WSVISOparser";
+
 
 function dataHoraBRParaNome() {
   const d = new Date();
@@ -16,6 +17,7 @@ function dataHoraBRParaNome() {
   return `${dd}-${mm}-${yyyy}-${hh}-${min}`;
 }
 
+
 async function gerarStampUnico(baseDir, stampBase) {
   let stamp = stampBase;
   let i = 1;
@@ -26,6 +28,7 @@ async function gerarStampUnico(baseDir, stampBase) {
   }
   return stamp;
 }
+
 
 async function criar_pastas(tipoParser) {
   const nomeMaquina = os.hostname();
@@ -44,8 +47,12 @@ async function criar_pastas(tipoParser) {
   await fs.ensureDir(pastaEntradas);
   await fs.ensureDir(pastaSaida);
 
+  console.log(pastaEntradas)
+  console.log(pastaSaida)
+
   return { entradaServidor: pastaEntradas, saidaServidor: pastaSaida };
 }
+
 
 async function resgate_arquivos_do_servidor(pathOutServer, pathOutLocal) {
   const arquivos = await fs.readdir(pathOutServer);
@@ -59,6 +66,7 @@ async function resgate_arquivos_do_servidor(pathOutServer, pathOutLocal) {
     }
   }
 }
+
 
 function parseMaybeJSON(v) {
   if (v && typeof v === "object") return v;
@@ -82,6 +90,7 @@ function parseMaybeJSON(v) {
 
   return v;
 }
+
 
 function normalizeBackendPayload(payload) {
   let data =
@@ -119,6 +128,55 @@ function normalizeBackendPayload(payload) {
   return { status, mensagem };
 }
 
+/*Sessão de converter as pastas de windows para linux */
+const LINUX_MOUNT = "/mnt/sistemas_visonet";
+
+// Converte UM caminho Windows (UNC ou G:\...) -> Linux (/mnt/...)
+function winPathToLinux(p) {
+  if (!p) return p;
+
+  const raw = String(p).trim();
+
+  // já é linux
+  if (raw.startsWith("/")) return path.posix.normalize(raw);
+
+  // normaliza para backslash
+  const s = raw.replace(/\//g, "\\");
+
+  // procura o marcador de forma case-insensitive
+  const lower = s.toLowerCase();
+  const marker1 = "\\filesystem\\wsvisoparser\\";
+  const marker2 = "\\filesystem\\wsvisoparser"; // fallback sem barra no fim
+
+  let idx = lower.indexOf(marker1);
+  if (idx === -1) idx = lower.indexOf(marker2);
+
+  if (idx === -1) {
+    // debug útil pra ver caractere invisível
+    console.log("[converter] path recebido:", JSON.stringify(raw));
+    console.log("[converter] path normalizado:", JSON.stringify(s));
+    throw new Error(
+      `Não foi possível converter. Não encontrei "FileSystem\\WSVISOparser" em: ${raw}`
+    );
+  }
+
+  // idx aponta para a "\" antes de FileSystem, então começa no próximo char
+  let tail = s.substring(idx + 1); // "FileSystem\WSVISOparser\..."
+  tail = tail.replace(/[\\]+/g, "/");
+
+  return path.posix.normalize(`${LINUX_MOUNT}/${tail}`);
+}
+
+function converter_pastas(pathInServer, pathOutServer) {
+  const pathInLinux = winPathToLinux(pathInServer);
+  const pathOutLinux = winPathToLinux(pathOutServer);
+
+  console.log("[converter] pathInLinux:", pathInLinux);
+  console.log("[converter] pathOutLinux:", pathOutLinux);
+
+  return { pathInLinux, pathOutLinux };
+}
+
 function registerExpo8Ipc() {
   const runningExpo8 = new Map();
 
@@ -139,6 +197,7 @@ function registerExpo8Ipc() {
     if (run.controller) run.controller.abort(); // para o await do front
     return { ok: true };
   });
+
 
   ipcMain.handle("getExpo8Progress", async (event) => {
     const wcId = event.sender.id;
@@ -167,11 +226,17 @@ function registerExpo8Ipc() {
     }
   });
 
+  
   ipcMain.handle("parserExpo8", async (event, listCodes, pathOut) => {
-    const url = "http://127.0.0.1:8000/due_router/EXPO8";
+    const url = "http://10.0.0.232:1051/due_router/EXPO8";
 
     const tipo = "EXPO8";
+
     const { entradaServidor, saidaServidor } = await criar_pastas(tipo);
+    const {pathInLinux, pathOutLinux} = await converter_pastas(entradaServidor, saidaServidor)
+
+    console.log(pathInLinux)
+    console.log(pathOutLinux)
 
     const wcId = event.sender.id;
     const controller = new AbortController();
@@ -187,8 +252,8 @@ function registerExpo8Ipc() {
       const resp = await axios.get(url, {
         params: {
           RAW_DUE_NUMBER: listCodes,
-          PATHIN: entradaServidor,
-          PATHOUT: saidaServidor,
+          PATHIN: pathInLinux,
+          PATHOUT: pathOutLinux,
         },
         paramsSerializer: (params) =>
           Object.entries(params)

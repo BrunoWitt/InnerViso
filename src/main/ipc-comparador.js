@@ -4,7 +4,7 @@ const axios = require('axios');
 
 function registerComparatorIpc() {
   ipcMain.handle('comparar-listas', async (_event, list1, list2) => {
-    const url = 'http://10.0.0.106:8100/comparar_ws';
+    const url = 'http://10.0.0.232:1051/comparar_ws';
 
     try {
       const response = await axios.post(

@@ -16,7 +16,7 @@ function initExpo8() {
     let cancelRequested = false;
 
     // lista global (caso queira usar fora)
-    window.listCodes = ['25BR0006635014',];
+    window.listCodes = [];
     console.log(listCodes)
 
     // Função que re-renderiza a lista no HTML
@@ -122,40 +122,81 @@ let progressTimer = null;
         }
     }
 
-    function mostrarResultado({ status, mensagem, log }) {
-        const modal = document.createElement("div");
-        modal.className = "resultado-modal";
+    function mostrarResultado({ status, mensagem, log }, pastaSaida) {
+    const modal = document.createElement("div");
+    modal.className = "resultado-modal";
 
-        const ok = String(status).toLowerCase() === "sucesso";
-        const titulo = ok ? "Sucesso" : "Erro";
-        const icon = ok ? "✓" : "!";
+    const ok = String(status).toLowerCase() === "sucesso";
+    const titulo = ok ? "Sucesso" : "Erro";
+    const icon = ok ? "✓" : "!";
 
-        const msgFinal =
-            (mensagem && String(mensagem).trim()) ||
-            (ok ? "Todos os arquivos EXPO8 foram gerados com sucesso!" : "Ocorreu um erro no processamento.");
+    const msgFinal =
+        (mensagem && String(mensagem).trim()) ||
+        (ok
+        ? "Todos os arquivos EXPO8 foram gerados com sucesso!"
+        : "Ocorreu um erro no processamento.");
 
-        modal.innerHTML = `
-            <div class="resultado-box">
-            <div class="resultado-header ${ok ? "resultado-header--sucesso" : "resultado-header--erro"}">
-                <div class="resultado-icon">${icon}</div>
-                <h2>${titulo}</h2>
-                <p class="resultado-msg">${msgFinal}</p>
+    const safeLog = (log && String(log)) || "(sem log disponível)";
+
+    modal.innerHTML = `
+        <div class="resultado-box">
+        <div class="resultado-header ${ok ? "resultado-header--sucesso" : "resultado-header--erro"}">
+            <div class="resultado-icon">${icon}</div>
+            <h2>${titulo}</h2>
+            <p class="resultado-msg">${msgFinal}</p>
+        </div>
+
+        <div class="resultado-body">
+            <div class="resultado-actions">
+                <button id="abrir-pasta-modal" class="primary">Abrir pasta</button>
+                <button id="toggle-log-modal" class="primary" aria-expanded="false">Exibir log</button>
+                <button id="fechar-modal" class="primary">Fechar</button>
             </div>
 
-            <div class="resultado-body">
-                <h3>Log do processo</h3>
-                <pre class="log-box">${log || "(sem log disponível)"}</pre>
 
-                <div class="resultado-actions">
-                <button id="fechar-modal">Fechar</button>
-                </div>
+            <div id="log-area" class="log-collapsible hidden">
+            <h3>Log do processo</h3>
+            <pre class="log-box">${safeLog}</pre>
             </div>
-            </div>
-        `;
+        </div>
+        </div>
+    `;
 
-        document.body.appendChild(modal);
-        document.getElementById("fechar-modal").onclick = () => modal.remove();
+    document.body.appendChild(modal);
+
+    const btnFechar = modal.querySelector("#fechar-modal");
+    const btnAbrirPasta = modal.querySelector("#abrir-pasta-modal");
+    const btnToggleLog = modal.querySelector("#toggle-log-modal");
+    const logArea = modal.querySelector("#log-area");
+
+    btnFechar.onclick = () => modal.remove();
+
+    btnToggleLog.onclick = () => {
+        const isHidden = logArea.classList.contains("hidden");
+        logArea.classList.toggle("hidden");
+        btnToggleLog.textContent = isHidden ? "Ocultar log" : "Exibir log";
+        btnToggleLog.setAttribute("aria-expanded", isHidden ? "true" : "false");
+    };
+
+    btnAbrirPasta.onclick = async () => {
+        const pasta = (pastaSaida || "").trim();
+        if (!pasta) return alert("Nenhuma pasta de saída disponível para abrir.");
+
+        try {
+            const r = await window.api.openFolder(pasta);
+
+            // Só trate como erro se vier "status === false" OU vier um "error" preenchido
+            const isErro = (r && r.status === false) || (r && r.error);
+
+            if (isErro) {
+            alert(`Não consegui abrir a pasta:\n${pasta}\n\nDetalhe: ${r?.error || "erro desconhecido"}`);
+            }
+        } catch (e) {
+            alert(`Falha ao abrir pasta:\n${pasta}`);
+        }
+    };
     }
+
 
 
     if (btnCancelar) {
@@ -260,13 +301,15 @@ let progressTimer = null;
 
     try {
     const result = await window.api.parserExpo8(window.listCodes, pathOut);
-    mostrarResultado(result);
+    mostrarResultado(result, pathOut);
     } catch (err) {
     mostrarResultado({
         status: "erro",
         mensagem: err?.message || "Erro inesperado.",
         log: err?.stack || String(err),
-    });
+    },
+    pathOut
+    );
     } finally {
     stopProgressPolling();
     cancelRequested = false;

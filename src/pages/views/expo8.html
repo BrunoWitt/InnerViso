@@ -11,92 +11,90 @@
   </head>
 
   <body>
-    <div class="main-card expo8-container">
-      <h1>Parser de Códigos</h1>
-      <p class="subtitle">
-        Adicione os códigos, escolha uma pasta de saída e execute o parser.
+  <div class="parser-container main-card expo8-container">
+    <h2 class="parser-title">WS ExpoParser</h2>
+
+    <div class="section">
+      <div class="section-title">Entrada de códigos</div>
+
+      <div class="field-row">
+        <input
+          type="text"
+          id="code-input"
+          placeholder="Ex.: 25BR0006635014 | 25BR0006635014,25BR0006635015 | 25BR0006635014 25BR0006635015"
+        />
+        <button id="add-code-btn" class="primary">+ Adicionar código</button>
+      </div>
+
+      <div class="hint">
+        Você pode adicionar vários códigos; eles serão listados abaixo.
+      </div>
+
+      <div id="codes-list" class="codes-list"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Pasta de saída</div>
+
+      <div class="path-row">
+      <input
+        type="text"
+        id="output-path-input"
+        class="path-input"
+        placeholder="Nenhum selecionado"
+        readonly
+      />
+      <button
+        id="choose-folder-btn"
+        class="btn-icon"
+        title="Selecionar saída"
+      >📁</button>
+    </div>
+
+
+
+      <div class="hint">
+        A pasta será usada para salvar os arquivos gerados pelo parser.
+      </div>
+
+      <div class="actions">
+        <button id="open-folder-btn" class="btn-primary">Abrir pasta</button>
+      </div>
+
+    </div>
+
+    <!-- NOVO BLOCO: Tipo de Parser -->
+    <fieldset class="fieldset-parser">
+      <legend>Tipo de Parser</legend>
+      <label>
+        <input type="radio" name="tipoParser" id="tipo-expo8" checked />
+        EXPO8
+      </label>
+    </fieldset>
+
+    <div class="footer-actions">
+      <button id="run-parser-btn" class="primary">▶ Executar Parser</button>
+    </div>
+  </div>
+
+  <!-- MODAL DE CARREGAMENTO -->
+  <div id="loading-overlay" class="loading-overlay hidden">
+    <div class="loading-box expo8-loading">
+      <div class="spinner"></div>
+
+      <p id="expo8-progress-message" class="expo8-progress-message">
+        Gerando relatórios...
       </p>
 
-      <!-- ENTRADA DE STRINGS -->
-      <div class="section">
-        <div class="section-title">Entrada de códigos</div>
+      <p id="expo8-progress-count" class="expo8-progress-count">0 / 0</p>
 
-        <div class="field-row">
-          <input
-            type="text"
-            id="code-input"
-            placeholder="Digite o código e clique em 'Adicionar'"
-          />
-          <button id="add-code-btn" class="primary">
-            + Adicionar código
-          </button>
-        </div>
-
-        <div class="hint">
-          Você pode adicionar vários códigos; eles serão listados abaixo.
-        </div>
-
-        <!-- Lista de códigos adicionados -->
-        <div id="codes-list" class="codes-list"></div>
+      <div id="expo8-progress-wrap" class="expo8-progress-wrap">
+        <div id="expo8-progress-fill" class="expo8-progress-fill"></div>
       </div>
 
-      <!-- ESCOLHER PASTA DE SAÍDA -->
-      <div class="section">
-        <div class="section-title">Pasta de saída</div>
-
-        <div class="field-row">
-          <input
-            type="text"
-            id="output-path-input"
-            placeholder="Nenhuma pasta selecionada"
-            readonly
-          />
-          <button id="choose-folder-btn" class="secondary">
-            Escolher pasta
-          </button>
-        </div>
-
-        <div class="hint">
-          A pasta será usada para salvar os arquivos gerados pelo parser.
-        </div>
-
-        <!-- Botões: copiar e abrir pasta -->
-        <div style="margin-top: 12px; display: flex; gap: 8px;">
-          <button id="open-folder-btn" class="secondary">
-            Abrir pasta
-          </button>
-        </div>
-      </div>
-
-      <!-- BOTÃO PARA FAZER O PARSER -->
-      <div class="footer-actions">
-        <button id="run-parser-btn" class="primary">
-          ▶ Fazer parser
-        </button>
-      </div>
+      <button id="cancel-parser-btn" class="expo8-cancel-btn">Cancelar</button>
     </div>
+  </div>
 
-    <!-- MODAL DE CARREGAMENTO -->
-    <div id="loading-overlay" class="loading-overlay hidden">
-      <div class="loading-box expo8-loading">
-        <div class="spinner"></div>
-
-        <p id="expo8-progress-message" class="expo8-progress-message">
-          Gerando relatórios...
-        </p>
-
-        <p id="expo8-progress-count" class="expo8-progress-count">0 / 0</p>
-
-        <div id="expo8-progress-wrap" class="expo8-progress-wrap">
-          <div id="expo8-progress-fill" class="expo8-progress-fill"></div>
-        </div>
-
-        <button id="cancel-parser-btn" class="expo8-cancel-btn">Cancelar</button>
-      </div>
-    </div>
-
-
-
-    <script src="../scripts/src_expo8.js"></script>
-  </body>
-</html>
+  <script src="../scripts/src_expo8.js"></script>
+</body>

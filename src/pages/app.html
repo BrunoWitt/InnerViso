@@ -1,30 +1,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../styles/main.css">
+  <link rel="stylesheet" href="../styles/common.css" />
+  <link rel="stylesheet" href="../styles/main.css" />
   <title>InnerViso</title>
 </head>
 <body>
-  <div class="layout">
+  <div class="app-shell">
     <aside class="sidebar">
-      <div class="brand">
-        <a href="#" class="brand-link" data-view="hub">
-          <img src="../assets/visologo.png" alt="Visonet Logo" class="brand-logo">
-        </a>
+      <div class="sidebar-logo">
+        <img src="../assets/visologo.png" alt="Visonet" />
       </div>
+
       <nav class="menu">
-        <button class="menu-item" data-view="hub">Hub</button>
-        <button class="menu-item" data-view="wsvisoparser">Importação</button>
-        <button class="menu-item" data-view="expo8">Exportação</button>
-        <button class="menu-item" data-view="comparador">Comparador</button>
+        <button class="menu-item" data-view="hub" type="button">Hub</button>
+
+        <button id="menu-parser" class="menu-item" data-view="parser" type="button">
+          <span>Parser</span>
+          <span id="parser-caret" class="menu-caret">▸</span>
+        </button>
+
+        <div id="parser-submenu" class="submenu">
+          <button class="submenu-item" data-mode="import" type="button">Importação</button>
+          <button class="submenu-item" data-mode="export" type="button">Exportação</button>
+        </div>
+
+        <button class="menu-item" data-view="comparador" type="button">Comparador</button>
       </nav>
     </aside>
 
     <main class="content">
-      <div id="content"><p>Carregando…</p></div>
+      <div id="content"></div>
     </main>
 
-    <div class="app-version">v1.0.1</div>
+    <div class="app-version">v1.1.1</div>
+
   </div>
 
   <script src="../scripts/main.js"></script>
@@ -32,4 +42,7 @@
   <script src="../scripts/src_parser.js"></script>
   <script src="../scripts/src_comparador.js"></script>
   <script src="../scripts/src_expo8.js"></script>
+  <script defer src="../scripts/router.js"></script>
+  <script defer src="../scripts/parser_menu.js"></script>
+  <script defer src="../scripts/parser.js"></script>
 </body>

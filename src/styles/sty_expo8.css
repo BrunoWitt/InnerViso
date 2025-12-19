@@ -1,3 +1,5 @@
+/*sty_expo8
+
 /* Container específico do Expo8 (usa junto com .main-card) */
 .expo8-container {
   max-width: 800px;
@@ -125,10 +127,14 @@
 }
 
 /* Rodapé de ações (botão Fazer parser) */
-.expo8-container .footer-actions {
+.expo8-container .footer-actions{
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   margin-top: 24px;
+}
+
+.expo8-container .footer-actions button{
+  min-width: 250px;
 }
 
 /* Hint específico do Expo8 (se quiser algo diferente do global) */
@@ -384,4 +390,280 @@
 
 #fechar-modal:hover{
   background: #1d4ed8;
+}
+
+/* =========================
+   PADRONIZAÇÃO VISUAL - WS PARSER
+========================= */
+
+body {
+  background: #f7f7f7;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: #222;
+  margin: 0;
+  padding: 0;
+}
+
+.parser-container {
+  max-width: 700px;
+  margin: 40px auto;
+  background: #ffffff;
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.parser-title {
+  text-align: center;
+  color: #2563eb;
+  font-weight: 600;
+  font-size: 22px;
+  margin-bottom: 25px;
+}
+
+/* fieldset de tipo de parser */
+.fieldset-parser {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #e8e7e4;
+  padding: 10px 15px;
+  margin-bottom: 20px;
+}
+
+.fieldset-parser legend {
+  font-weight: 600;
+  color: #111827;
+}
+
+.fieldset-parser label {
+  font-size: 14px;
+  color: #111827;
+  margin-right: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fieldset-parser input[type="radio"] {
+  accent-color: #2563eb;
+  transform: scale(1.2);
+}
+
+/* Ajustes finais para inputs e botões */
+.expo8-container input[type="text"] {
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+}
+
+.expo8-container button.primary {
+  background-color: #0078d7;
+  font-weight: 600;
+}
+
+.expo8-container button.primary:hover {
+  background-color: #005fa3;
+}
+
+.expo8-container button.secondary {
+  background-color: #e6e6e6;
+  border: 1px solid #ccc;
+}
+
+.expo8-container button.secondary:hover {
+  background-color: #dcdcdc;
+}
+
+/* Log do modal começa fechado */
+.log-collapsible.hidden {
+  display: none;
+}
+
+/* Botões do modal alinhados e com espaçamento */
+.resultado-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+/* Se quiser diferenciar primário dentro do modal */
+.resultado-actions .primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.resultado-actions .primary:hover {
+  background: #1d4ed8;
+}
+
+/* Botões dentro do modal de resultado (fora do .expo8-container) */
+.resultado-modal button{
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.resultado-modal button.primary{
+  background: #0078d7;
+  color: #fff;
+}
+
+.resultado-modal button.primary:hover{
+  background: #005fa3;
+}
+
+.resultado-modal button.secondary{
+  background: #e6e6e6;
+  border: 1px solid #ccc;
+  color: #111827;
+}
+
+.resultado-modal button.secondary:hover{
+  background: #dcdcdc;
+}
+
+.resultado-actions{
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.resultado-actions button{
+  min-width: 160px;     /* todos iguais */
+  height: 42px;         /* mesma altura */
+  padding: 0 18px;      /* padding horizontal */
+}
+
+/* ===== FIX: padronizar botões do MODAL resultado ===== */
+.resultado-actions{
+  display: flex;
+  justify-content: center;
+  align-items: center;   /* <-- alinha na mesma linha */
+  gap: 12px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.resultado-actions button{
+  min-width: 160px;
+  height: 42px;
+  padding: 0 18px;
+  margin: 0;            /* <-- remove “empurrões” */
+}
+
+/* força TODOS os primary do modal com a mesma cor */
+.resultado-modal button.primary{
+  background: #0078d7;
+  color: #fff;
+  border: none;
+  font-weight: 700;
+}
+
+.resultado-modal button.primary:hover{
+  background: #005fa3;
+}
+
+/* mata qualquer estilo antigo específico do #fechar-modal */
+#fechar-modal{
+  margin-top: 0 !important;
+  background: #0078d7 !important;
+}
+#fechar-modal:hover{
+  background: #005fa3 !important;
+}
+
+/* ===== MODAL RESULTADO: padroniza TODOS os botões ===== */
+.resultado-modal .resultado-actions{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.resultado-modal .resultado-actions button{
+  min-width: 160px;
+  height: 42px;
+  padding: 0 18px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+
+  background: #0078d7;
+  color: #fff;
+}
+
+.resultado-modal .resultado-actions button:hover{
+  background: #005fa3;
+}
+
+/* remove qualquer “empurrão” antigo do botão fechar */
+#fechar-modal{
+  margin-top: 0 !important;
+}
+
+/* ===== PADRÃO VISOPARSER aplicado no EXPO ===== */
+.expo8-container .path-row{
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.expo8-container .path-input{
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #eee;
+  font-size: 14px;
+}
+
+.expo8-container .btn-icon{
+  margin-left: 8px;
+  background: #0078d7;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  width: 42px;
+  height: 34px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.expo8-container .btn-icon:hover{
+  background: #005fa3;
+}
+
+.expo8-container .actions{
+  display: flex;
+  gap: 10px;
+  margin: 10px 0 20px 0;
+}
+
+.expo8-container .btn-primary{
+  background: #0078d7;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  border: none;
+}
+
+.expo8-container .btn-primary:hover{
+  background: #005fa3;
 }

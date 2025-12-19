@@ -1,9 +1,9 @@
 {
-  "name": "CIV2",
-  "version": "1.0.1",
+  "name": "innerviso",
+  "version": "1.1.1",
   "description": "Software interno da Visonet",
   "main": "src/main/main.js",
-  "author": "Bruno Witt",
+  "author": "Bruno-Witt",
   "license": "ISC",
   "scripts": {
     "start": "npx electron .",
@@ -12,7 +12,7 @@
   },
   "build": {
     "appId": "com.visonet.innerviso",
-    "productName": "CIV2",
+    "productName": "InnerViso",
     "directories": {
       "output": "dist"
     },
@@ -39,6 +39,13 @@
       "target": "nsis",
       "icon": "src/assets/Vicon.ico",
       "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "InnerViso"
     }
   },
   "dependencies": {

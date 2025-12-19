@@ -6,7 +6,7 @@ const axios = require('axios');
 
 const noticesPath = path.join(app.getPath('userData'), 'notices.json');
 const INTERVALO_MS = 45 * 60 * 1000;
-const NOTICES_URL = 'http://10.0.0.106:8100/notices';
+const NOTICES_URL = 'http://10.0.0.232:1051/notices';
 
 function setupNotices() {
   ipcMain.handle('salvar-notices', async (_event, noticias) => {

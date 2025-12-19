@@ -46,6 +46,55 @@ async function gerarStampUnico(baseDir, stampBase) {
   return stamp;
 }
 
+/*Sessão de converter as pastas de windows para linux */
+const LINUX_MOUNT = "/mnt/sistemas_visonet";
+
+// Converte UM caminho Windows (UNC ou G:\...) -> Linux (/mnt/...)
+function winPathToLinux(p) {
+  if (!p) return p;
+
+  const raw = String(p).trim();
+
+  // já é linux
+  if (raw.startsWith("/")) return path.posix.normalize(raw);
+
+  // normaliza para backslash
+  const s = raw.replace(/\//g, "\\");
+
+  // procura o marcador de forma case-insensitive
+  const lower = s.toLowerCase();
+  const marker1 = "\\filesystem\\wsvisoparser\\";
+  const marker2 = "\\filesystem\\wsvisoparser"; // fallback sem barra no fim
+
+  let idx = lower.indexOf(marker1);
+  if (idx === -1) idx = lower.indexOf(marker2);
+
+  if (idx === -1) {
+    // debug útil pra ver caractere invisível
+    console.log("[converter] path recebido:", JSON.stringify(raw));
+    console.log("[converter] path normalizado:", JSON.stringify(s));
+    throw new Error(
+      `Não foi possível converter. Não encontrei "FileSystem\\WSVISOparser" em: ${raw}`
+    );
+  }
+
+  // idx aponta para a "\" antes de FileSystem, então começa no próximo char
+  let tail = s.substring(idx + 1); // "FileSystem\WSVISOparser\..."
+  tail = tail.replace(/[\\]+/g, "/");
+
+  return path.posix.normalize(`${LINUX_MOUNT}/${tail}`);
+}
+
+function converter_pastas(pathInServer, pathOutServer) {
+  const pathInLinux = winPathToLinux(pathInServer);
+  const pathOutLinux = winPathToLinux(pathOutServer);
+
+  console.log("[converter] pathInLinux:", pathInLinux);
+  console.log("[converter] pathOutLinux:", pathOutLinux);
+
+  return { pathInLinux, pathOutLinux };
+}
+
 async function executarParser(pathInServer, pathOutServer, tipoParser, token) {
   /**
    * Faz contato com o webservice para executar o parser.
@@ -57,20 +106,22 @@ async function executarParser(pathInServer, pathOutServer, tipoParser, token) {
    */
   
   const endpoints = {
-      NFE:  'http://10.0.0.106:8100/nfe_router/nfe',
-      IMPO1:'http://10.0.0.106:8100/di_router/IMPO1',
-      IMPO8:'http://10.0.0.106:8100/di_router/IMPO8',
-      SPED: 'http://10.0.0.106:8100/sped_router/sped', 
-      BASE: 'http://10.0.0.106:8100/nfe_router/base_reintegra',
+      NFE:  'http://10.0.0.232:1051/nfe_router/nfe',
+      IMPO1:'http://10.0.0.232:1051/di_router/IMPO1',
+      IMPO8:'http://10.0.0.232:1051/di_router/IMPO8',
+      SPED: 'http://10.0.0.232:1051/sped_router/sped', 
+      BASE: 'http://10.0.0.232:1051/nfe_router/base_reintegra',
     };
 
   const url = endpoints[tipoParser];
   if (!url) throw new Error(`Tipo de parser inválido: ${tipoParser}`);
 
+  const {pathInLinux, pathOutLinux} = converter_pastas(pathInServer, pathOutServer)
+
   const response = await axios.get(url, {
     params: {
-      pathIn: pathInServer,
-      pathOut: pathOutServer,
+      pathIn: pathInLinux,
+      pathOut: pathOutLinux,
       token: String(token || 'electron-ui'),
     },
     timeout: 0,

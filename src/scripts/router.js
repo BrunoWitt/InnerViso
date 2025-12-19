@@ -1,14 +1,22 @@
-// src/scripts/router.js
 window.hubLoaded = false;
 
 const initializers = {
-  hub:         () => window.carregarNoticias?.(window.hubLoaded),
-  wsvisoparser:() => window.initParser?.(),
-  comparador:  () => window.initComparador?.(),
-  expo8: () => window.initExpo8?.(),
+  hub:          () => window.carregarNoticias?.(window.hubLoaded),
+
+  // view "importação" (tua wsvisoparser.html)
+  wsvisoparser: () => window.initParser?.(),      // mantém como você já está usando hoje
+
+  comparador:   () => window.initComparador?.(),
+  expo8:        () => window.initExpo8?.(),
+
+  // view "shell" que carrega import/export dentro dela
+  parser:       () => window.initParserShell?.(),
 };
 
-// util: aguarda o preload expor window.api.loadView
+// expõe para o parser shell conseguir chamar init da view filha
+window.initializers = initializers;
+
+// util
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 async function waitForApi(timeoutMs = 3000) {
   const t0 = Date.now();
@@ -16,42 +24,58 @@ async function waitForApi(timeoutMs = 3000) {
     if (window.api && typeof window.api.loadView === 'function') return;
     await sleep(50);
   }
-  throw new Error('API do preload indisponível (window.api.loadView). Verifique o caminho do preload no BrowserWindow e erros no console.');
+  throw new Error('API do preload indisponível (window.api.loadView).');
+}
+
+function cleanupFloatingUI() {
+  // mata dropdown órfão do botão de pasta (e qualquer outro menu flutuante seu)
+  document.querySelectorAll(".dropdown").forEach((el) => el.remove());
 }
 
 async function loadView(viewName) {
-  const container = document.getElementById('content');
+  const container = document.getElementById("content");
   if (!container) return;
 
-  container.innerHTML = '<p>Carregando…</p>';
+  cleanupFloatingUI(); // <<< ADD AQUI
+
+  container.innerHTML = "<p>Carregando…</p>";
 
   try {
-    // garante que o preload já expôs a API
     await waitForApi();
 
-    // carrega o HTML da view pelo IPC
     const html = await window.api.loadView(viewName);
+
+    cleanupFloatingUI(); // <<< ADD AQUI TAMBÉM (pra garantir)
+
     container.innerHTML = html;
 
-    // marca menu ativo
-    document.querySelectorAll('.menu-item')
-      .forEach(btn => btn.classList.toggle('active', btn.dataset.view === viewName));
+    document.querySelectorAll(".menu-item")
+      .forEach(btn => btn.classList.toggle("active", btn.dataset.view === viewName));
 
-    // só inicializa DEPOIS do HTML estar no DOM
     initializers[viewName]?.();
 
   } catch (e) {
     container.innerHTML = `<p>Falha ao carregar view "${viewName}": ${e?.message || e}</p>`;
-    console.error('loadView error:', e);
+    console.error("loadView error:", e);
   }
 }
 
+
+// expõe para o menu do parser usar
+window.loadView = loadView;
+
 function setupMenuRouting() {
   document.querySelectorAll('.menu-item').forEach(btn => {
+    // IMPORTANTE: não deixa o router prender click no menu-parser
+    if (btn.id === "menu-parser") return;
+
     btn.addEventListener('click', () => loadView(btn.dataset.view));
   });
 
-  // carrega a view padrão
+  // inicializa menu do parser (sidebar)
+  window.initParserMenu?.();
+
+  // view padrão
   loadView('hub');
 }
 

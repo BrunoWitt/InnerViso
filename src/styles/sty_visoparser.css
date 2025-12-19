@@ -1,3 +1,5 @@
+/*sty_visoparser */
+
 body {
   background: #f7f7f7;
   font-family: "Segoe UI", Arial, sans-serif;
@@ -81,11 +83,12 @@ h2 {
   margin-right: 20px;
 }
 
-.buttons-bottom {
+.buttons-bottom{
   display: flex;
   flex-direction: column;
   gap: 10px;
   max-width: 250px;
+  margin: 0 auto;           /* <-- centraliza o bloco */
 }
 
 .btn-primary,
@@ -297,6 +300,10 @@ h2 {
     width: 100%;
     max-width: none;
   }
+
+.buttons-bottom button{
+  width: 250px;             /* <-- deixa todos iguais */
+}
 
   .btn-primary,
   .btn-secondary,

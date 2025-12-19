@@ -175,7 +175,7 @@ function initParser() {
     const saida = lblSai.value;
     const tipoParser = document.querySelector('input[name="parser"]:checked')?.value;
 
-    const status = document.getElementById("statusLabel");
+    const status = document.getElementById("statusLabel"); // pode não existir
     const overlay = document.getElementById("loadingOverlay");
     const progressBar = document.getElementById("progressBar");
     const loadingText = document.getElementById("loadingText");
@@ -184,7 +184,7 @@ function initParser() {
 
     const token = Date.now().toString();
 
-    status.textContent = "⏳ Iniciando parser...";
+    if (status) status.textContent = "⏳ Iniciando parser...";
     btnRun.disabled = true;
     overlay.style.display = "flex";
 
@@ -194,7 +194,7 @@ function initParser() {
     btnCancelar.onclick = async () => {
       cancelado = true;
       loadingText.textContent = "Cancelado.";
-      status.textContent = "🛑 Execução cancelada pelo usuário.";
+      if (status) status.textContent = "🛑 Execução cancelada pelo usuário.";
       clearInterval(progTimer);
       clearInterval(doneTimer);
       overlay.style.display = "none";
@@ -205,7 +205,7 @@ function initParser() {
 
     progTimer = setInterval(async () => {
       if (cancelado) return;
-        const pr = await window.api.parserProgress(token);
+      const pr = await window.api.parserProgress(token);
       if (pr?.ok && pr.exists) {
         const atual = pr.current || 0;
         const total = pr.total || 0;
@@ -227,7 +227,6 @@ function initParser() {
       return;
     }
 
-    // polling de finalização via token (Node sabe a saidaServidor)
     doneTimer = setInterval(async () => {
       if (cancelado) return;
 
@@ -245,7 +244,7 @@ function initParser() {
       if (st.state === "error") {
         clearInterval(progTimer);
         clearInterval(doneTimer);
-        status.textContent = "❌ Falha na execução.";
+        if (status) status.textContent = "❌ Falha na execução.";
         overlay.style.display = "none";
         btnRun.disabled = false;
         alert(`Erro no parser:\n${st.message || "desconhecido"}`);
@@ -255,7 +254,7 @@ function initParser() {
       if (st.state === "done") {
         clearInterval(progTimer);
         clearInterval(doneTimer);
-        status.textContent = "✅ Execução concluída!";
+        if (status) status.textContent = "✅ Execução concluída!";
         overlay.style.display = "none";
         btnRun.disabled = false;
 

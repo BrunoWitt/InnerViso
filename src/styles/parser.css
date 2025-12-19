@@ -1,0 +1,22 @@
+.submenu{
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  margin: 6px 0 8px 12px;
+}
+
+.submenu.open{ display: flex; }
+
+.menu-caret{
+  margin-left: auto;
+  opacity: 0.85;
+  font-size: 12px;
+}
+
+.submenu-item{
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}

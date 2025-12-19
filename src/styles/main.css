@@ -324,3 +324,139 @@ html, body {
     font-size: 10px;
   }
 }
+
+.submenu{
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  margin: 6px 0 10px 14px;
+}
+
+.submenu.open{ display: flex; }
+
+.menu-caret{
+  margin-left: auto;
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.submenu-item{
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: inherit;
+}
+
+.submenu-item:hover{
+  background: rgba(0,0,0,0.06);
+}
+
+.submenu-item.active{
+  background: rgba(0,120,215,0.14);
+  font-weight: 600;
+}
+
+.app-shell{
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar{
+  width: 240px;
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; /* <-- não centraliza */
+}
+
+.sidebar-logo{
+  display: flex;
+  justify-content: center;
+  margin: 6px 0 14px;
+}
+
+.sidebar-logo img{
+  max-width: 180px;
+  height: auto;
+}
+
+.menu{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.menu-item{
+  width: 100%;
+  text-align: left;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.menu-item:hover{
+  background: #e5e7eb;
+}
+
+.menu-item.active{
+  background: #e5e7eb;
+  border-color: #d1d5db;
+}
+
+.menu-caret{
+  opacity: 0.75;
+  font-weight: 700;
+}
+
+.submenu{
+  display: none;
+  margin: 2px 0 6px 14px;
+  padding-left: 10px;
+  border-left: 2px solid #e5e7eb;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.submenu.open{
+  display: flex;
+}
+
+.submenu-item{
+  width: 100%;
+  text-align: left;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 9px 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.submenu-item:hover{
+  background: #eef2f7;
+}
+
+.submenu-item.active{
+  background: #e5e7eb;
+  border-color: #d1d5db;
+}
+
+.content{
+  flex: 1;
+  background: #ffffff;
+}
+
+#content{
+  padding: 0; /* suas views já tem card centralizado, então deixa elas controlar */
+}

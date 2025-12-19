@@ -9,9 +9,11 @@ function resolvePreloadPath() {
   return app.isPackaged ? prod : dev;
 }
 
+
 function resolveAppHtml() {
   return path.resolve(app.getAppPath(), 'src', 'pages', 'app.html');
 }
+
 
 function createMainWindow() {
   const preloadPath = resolvePreloadPath();
