@@ -1,168 +1,434 @@
-/*sty_expo8
+/* ../styles/sty_expo8.css */
 
-/* Container específico do Expo8 (usa junto com .main-card) */
-.expo8-container {
-  max-width: 800px;
-  width: 800px;
+/* Card principal (igual Importação) */
+.main-card.expo8-container{
+  width: min(920px, calc(100% - 56px));
+  margin: 40px auto;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px 28px 22px 28px;
 }
 
-/* Título só do Expo8 */
-.expo8-container h1 {
+/* Cabeçalho (igual Importação) */
+.parser-title{
+  margin: 0 0 18px 0;
+  text-align: center;
+  color: var(--brand);
+  font-size: 22px;
+  letter-spacing: 0.2px;
+}
+
+/* Títulos das seções (equivalente aos h4 do Importação) */
+/* FIX: section-title do Expo8 não pode usar margin negativo */
+.section-title{
+  margin: 22px 3px 10px;   /* sem negativo */
+  font-size: 13px;
+  color: var(--brand);
+  font-weight: 700;
+}
+
+/* e garante que cada section tenha um respiro certinho */
+.section{
   margin-top: 0;
-  margin-bottom: 8px;
-  font-size: 24px;
-  color: #111827;
-  text-align: left; /* se quiser diferente dos h2/h3 globais */
+  padding-top: 6px;
 }
 
-.expo8-container p.subtitle {
-  margin-top: 0;
-  margin-bottom: 24px;
-  color: #6b7280;
-  font-size: 14px;
-}
 
-.expo8-container .section {
-  margin-bottom: 24px;
-}
-
-.expo8-container .section-title {
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #111827;
-}
-
-.expo8-container .field-row {
+/* Linha input + botão adicionar */
+.field-row{
   display: flex;
-  gap: 8px;
   align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;        /* igual “path-row” do Importação */
+  flex-wrap: wrap;
 }
 
-/* Inputs do Expo8 */
-.expo8-container input[type="text"] {
+/* Input de códigos (mesmo estilo do path-input) */
+#code-input{
   flex: 1;
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  font-size: 14px;
-  outline: none;
+  min-width: 320px;
+  height: 42px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #f8fafc;
+  color: var(--text);
+  box-shadow: inset 0 1px 0 rgba(2,6,23,0.03);
+}
+
+#code-input::placeholder{
+  color: #94a3b8;
+}
+
+/* Linha do caminho (igual Importação) */
+.path-row{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;        /* igual Importação */
+}
+
+/* Input do caminho */
+.path-input{
+  flex: 1;
+  height: 42px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #f8fafc;
+  color: var(--text);
+  box-shadow: inset 0 1px 0 rgba(2,6,23,0.03);
+}
+
+.path-input::placeholder{
+  color: #94a3b8;
+}
+
+/* Botão ícone (igual Importação) */
+.btn-icon{
+  width: 44px;
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid rgba(11,99,209,0.25);
+  background: var(--brand);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  transition: background-color .2s ease, transform .05s ease, box-shadow .2s ease;
+  box-shadow: 0 10px 18px rgba(11,99,209,0.16);
+}
+
+.btn-icon:hover{
+  background: var(--brand-2);
+  box-shadow: 0 14px 22px rgba(11,99,209,0.22);
+}
+.btn-icon:active{ transform: translateY(1px); }
+
+/* Dicas abaixo dos campos (igual Importação) */
+.hint{
+  margin: -10px 6px 0;        /* <-- igual Importação */
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+/* Botões auxiliares (abrir pasta) */
+.actions{
+  margin-top: 12px;           /* igual Importação */
+}
+
+/* ===== Lista de códigos (mesmo “peso” de card leve) ===== */
+.codes-list{
+  margin-top: 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
   background: #ffffff;
+  padding: 10px;
+  min-height: 42px;
+  box-shadow: inset 0 1px 0 rgba(2,6,23,0.03);
 }
 
-.expo8-container input[type="text"]:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2);
+/* Caso seu JS crie itens */
+.codes-list .code-item{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 10px;
+  border-radius: 10px;
 }
 
-/* Botões do Expo8 */
-.expo8-container button {
-  border: none;
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 14px;
-  cursor: pointer;
+.codes-list .code-item + .code-item{
+  border-top: 1px solid rgba(148,163,184,0.35);
+}
+
+.codes-list .code-text{
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* botão remover (se existir) */
+.codes-list .code-remove{
+  background: #fff;
+  border: 1px solid #787f86;  /* igual btn-secondary border */
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(2, 6, 23, 0.06);
+}
+.codes-list .code-remove:hover{
+  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.10);
+  transform: translateY(-1px);
+}
+
+/* =========================
+   BOTÕES (igual Importação)
+========================= */
+
+/* “+ Adicionar código” e “Executar Parser” são primários */
+.primary{
+  border: 1px solid rgba(11,99,209,0.35);
+  background: var(--brand);
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 14px;
+  height: 42px;
+  font-weight: 800;
+  cursor: pointer;
+
+  /* sombra do primário (igual sensação do Importação) */
+  box-shadow: 0 14px 26px rgba(11, 99, 209, 0.22);
+  transition: background-color .2s ease, transform .05s ease, box-shadow .2s ease;
+}
+
+.primary:hover{
+  background: var(--brand-2);
+  box-shadow: 0 18px 34px rgba(11, 99, 209, 0.28);
+}
+
+.primary:active{ transform: translateY(1px); }
+
+/* Botão “Abrir pasta” (mesmo look do btn-primary da Importação) */
+.btn-primary{
+  border: 1px solid rgba(11,99,209,0.35);
+  background: var(--brand);
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 14px;
+  height: 40px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background-color .2s ease, transform .05s ease, box-shadow .2s ease;
+  box-shadow: 0 10px 18px rgba(11,99,209,0.16);
+}
+
+.btn-primary:hover{
+  background: var(--brand-2);
+  box-shadow: 0 14px 22px rgba(11,99,209,0.22);
+}
+.btn-primary:active{ transform: translateY(1px); }
+
+/* =========================
+   FIELDSET (igual Importação)
+========================= */
+.fieldset-parser{
+  margin-top: 18px;
+  border: 1px solid #dbe3ef;
+  border-radius: 12px;
+  padding: 14px 16px 14px;
+  background: #f3f6fb;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+.fieldset-parser legend{
+  padding: 0 10px;
+  font-weight: 800;
+  font-size: 14px;
+  color: #1f2937;
+}
+
+.fieldset-parser label{
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
-}
-
-/* Botão azul principal (Expo8) */
-.expo8-container button.primary {
-  background-color: #2563eb;
-  color: #ffffff;
-}
-
-.expo8-container button.primary:hover {
-  background-color: #1d4ed8;
-}
-
-/* Botão cinza (Expo8) */
-.expo8-container button.secondary {
-  background-color: #e5e7eb;
+  gap: 8px;
+  margin: 6px 14px 0 0;
+  padding: 6px 10px;
+  border-radius: 10px;
+  transition: background-color .2s ease, transform .05s ease;
+  user-select: none;
+  font-size: 13px;
   color: #111827;
 }
 
-.expo8-container button.secondary:hover {
-  background-color: #d1d5db;
+.fieldset-parser label:hover{
+  background: rgba(11,99,209,0.08);
 }
 
-.expo8-container button:disabled {
-  opacity: 0.6;
-  cursor: default;
+.fieldset-parser input[type="radio"]{
+  accent-color: var(--brand);
 }
 
-/* Lista de códigos */
-.expo8-container .codes-list {
-  margin-top: 12px;
-  max-height: 200px;
-  overflow-y: auto;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-  padding: 8px;
-  background: #f9fafb;
-  font-size: 13px;
-}
-
-.expo8-container .codes-list-item {
+/* =========================
+   RODAPÉ DE AÇÕES (igual buttons-bottom)
+========================= */
+.footer-actions{
+  margin-top: 18px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  padding: 14px 14px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 10px 22px rgba(2, 6, 23, 0.06);
+}
+
+/* mantém “Executar” com mais presença */
+.footer-actions .primary{
+  box-shadow: 0 14px 26px rgba(11, 99, 209, 0.22);
+}
+.footer-actions .primary:hover{
+  box-shadow: 0 18px 34px rgba(11, 99, 209, 0.28);
+}
+
+/* =========================
+   LOADING OVERLAY (igual Importação)
+========================= */
+.loading-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  z-index: 9998;
+}
+
+.hidden{ display: none; }
+
+.loading-box.expo8-loading{
+  width: min(520px, 100%);
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  box-shadow: 0 22px 55px rgba(2, 6, 23, 0.35);
+  padding: 18px;
+  text-align: center;
+}
+
+.spinner{
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 4px solid rgba(11,99,209,0.18);
+  border-top-color: var(--brand);
+  margin: 0 auto;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin{
+  to { transform: rotate(360deg); }
+}
+
+.expo8-progress-message{
+  margin: 10px 0 14px;
+  color: #334155;
+  font-weight: 600;
+}
+
+.expo8-progress-count{
+  font-weight: 800;
+  color: var(--brand);
+  margin: 0 0 10px 0;
+  font-size: 14px;
+}
+
+.expo8-progress-wrap{
+  height: 10px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid #dbe3ef;
+  margin: 10px 0 14px;
+}
+
+.expo8-progress-fill{
+  height: 100%;
+  width: 0%;
+  background: var(--brand);
+  border-radius: 999px;
+  transition: width .25s ease;
+}
+
+/* Cancelar (mesma vibe do secondary) */
+.expo8-cancel-btn{
+  background: #fff;
+  border: 1px solid #787f86;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(2, 6, 23, 0.06);
+}
+
+.expo8-cancel-btn:hover{
+  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.10);
+  transform: translateY(-1px);
+}
+
+/* ===== Lista de códigos: mais fina + Remover na direita ===== */
+#codes-list{
+  padding: 6px;                 /* menos espaço interno */
+  border-radius: 12px;
+  max-height: 220px;
+  overflow: auto;
+}
+
+/* cada linha do código */
+.codes-list-item{
+  display: flex;                /* <-- ESSENCIAL */
   align-items: center;
-  padding: 4px 6px;
-  border-radius: 6px;
+  justify-content: space-between; /* <-- manda o botão pra direita */
+  gap: 10px;
+
+  padding: 6px 8px;             /* MAIS FINO */
+  border-radius: 10px;
 }
 
-.expo8-container .codes-list-item:nth-child(odd) {
-  background-color: #f3f4f6;
+/* separador leve entre linhas */
+.codes-list-item + .codes-list-item{
+  border-top: 1px solid rgba(148,163,184,0.35);
 }
 
-.expo8-container .codes-list-item span {
-  word-break: break-all;
-}
-
-.expo8-container .codes-list-item button {
-  padding: 4px 8px;
+/* texto do código: ocupa a linha e não empurra o botão */
+.codes-list-item span{
+  flex: 1;                      /* <-- ocupa espaço */
+  min-width: 0;                 /* <-- permite ellipsis */
   font-size: 12px;
+  font-weight: 600;
+  color: #0f172a;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* Rodapé de ações (botão Fazer parser) */
-.expo8-container .footer-actions{
-  display: flex;
-  justify-content: center;
-  margin-top: 24px;
-}
+/* botão Remover: menor e azul */
+.codes-list-item .secondary{
+  flex: 0 0 auto;
+  height: 28px;                 /* MAIS FINO */
+  padding: 0 10px;
+  border-radius: 10px;
 
-.expo8-container .footer-actions button{
-  min-width: 250px;
-}
+  background: var(--brand);
+  color: #fff;
+  border: 1px solid rgba(11,99,209,0.35);
 
-/* Hint específico do Expo8 (se quiser algo diferente do global) */
-.expo8-container .hint {
+  font-weight: 800;
   font-size: 12px;
-  color: #6b7280;
-  margin-top: 2px;
-  margin-bottom: 6px;
+
+  box-shadow: 0 6px 14px rgba(11,99,209,0.14); /* sombra menor */
+  transition: background-color .2s ease, transform .05s ease, box-shadow .2s ease;
 }
 
-/* Overlay de loading do Expo8 reutiliza .loading-overlay/.hidden do common.css.
-   Aqui só definimos o loader se quiser manter esse estilo. */
-
-/* Spinner simples exclusivo do Expo8 */
-.loader {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  border: 6px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #00d1b2;
-  animation: loader-spin 0.9s linear infinite;
-  margin-bottom: 12px;
+.codes-list-item .secondary:hover{
+  background: var(--brand-2);
+  box-shadow: 0 10px 18px rgba(11,99,209,0.18);
+  transform: translateY(-1px);
 }
 
-@keyframes loader-spin {
-  to {
-    transform: rotate(360deg);
-  }
+.codes-list-item .secondary:active{
+  transform: translateY(0);
 }
 
 /* Fundo transparente escuro */
@@ -228,442 +494,99 @@
 }
 
 /* =========================
-   LOADING (EXPO8)
+   ÍCONES NOS BOTÕES (SVG)
 ========================= */
-#loading-overlay .loading-box.expo8-loading{
-  width: 320px;
-  padding: 26px 22px;
-  border-radius: 14px;
-  text-align: center;
 
-  display: flex;
-  flex-direction: column;
+.btn-icon{
+  display: grid;
+  place-items: center;
+}
+
+.btn-icon .btn-ico{
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+/* Botão executar com ícone play */
+#run-parser-btn.primary{
+  display: inline-flex;
   align-items: center;
   gap: 8px;
 }
 
-.expo8-progress-message{
-  margin: 6px 0 0;
-  font-size: 15px;
-  font-weight: 600;
-  color: #111827;
-}
-
-.expo8-progress-count{
-  margin: 0;
-  width: 100%;
-  text-align: center;     /* <-- centraliza o 0/3 */
-  font-size: 14px;
-  font-weight: 700;
-  color: #111827;
-  opacity: 0.9;
-}
-
-.expo8-progress-wrap{
-  width: 100%;
-  max-width: 260px;
-  height: 10px;
-  border-radius: 999px;
-  overflow: hidden;
-  background: rgba(17,24,39,0.12);
-  margin: 6px 0 10px;
-}
-
-.expo8-progress-fill{
-  height: 100%;
-  width: 0%;
-  background: rgba(37,99,235,0.95);
-  transition: width 0.2s ease;
-}
-
-.expo8-cancel-btn{
-  margin-top: 6px;
-  min-width: 140px;
-  padding: 10px 14px;
-  border-radius: 10px;
-
-  background: #ffffff;
-  color: #ef4444;
-  border: 1px solid rgba(239,68,68,0.45);
-
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.expo8-cancel-btn:hover{
-  background: rgba(239,68,68,0.08);
-  border-color: rgba(239,68,68,0.65);
-}
-
-.expo8-cancel-btn:disabled{
-  opacity: 0.7;
-  cursor: default;
+#run-parser-btn .btn-ico-play{
+  width: 18px;
+  height: 18px;
+  display: block;
 }
 
 /* =========================
-   MODAL RESULTADO (EXPO8)
+   BOTÃO REMOVER (lixeira)
+   (compatível com seu JS que usa class="secondary")
 ========================= */
-.resultado-box{
-  width: min(860px, 92vw);
-  max-height: 82vh;
-  padding: 26px 26px 20px;
-  border-radius: 14px;
-}
 
-.resultado-header{
-  text-align: center;
-  margin-bottom: 14px;
-}
-
-.resultado-icon{
-  width: 46px;
-  height: 46px;
-  border-radius: 999px;
-  display: flex;
+.secondary{
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 10px;
-  font-size: 20px;
+  gap: 8px;
+
+  background: var(--brand);
+  color: #fff;
+  border: 1px solid rgba(11,99,209,0.35);
+  border-radius: 10px;
+
+  height: 32px;
+  padding: 0 12px;
   font-weight: 800;
-}
-
-.resultado-header--sucesso .resultado-icon{
-  background: #dcfce7;
-  color: #166534;
-}
-
-.resultado-header--erro .resultado-icon{
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.resultado-box h2{
-  margin: 0;
-  font-size: 24px;
-  color: #111827;
-}
-
-.resultado-msg{
-  margin: 8px 0 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: #374151;
-}
-
-.resultado-body h3{
-  margin: 16px 0 8px;
-  text-align: left;
-  font-size: 14px;
-  color: #111827;
-}
-
-.log-box{
-  max-height: 320px;
-  overflow-y: auto;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  background: #f9fafb;
-  color: #111827;
-  padding: 12px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 12px;
-  white-space: pre-wrap;
-  text-align: left;
+
+  box-shadow: 0 10px 18px rgba(11,99,209,0.16);
+  transition: background-color .2s ease, transform .05s ease, box-shadow .2s ease;
 }
 
-.resultado-actions{
-  display: flex;
-  justify-content: center;   /* <-- botão centralizado */
-  margin-top: 16px;
+.secondary:hover{
+  background: var(--brand-2);
+  box-shadow: 0 14px 22px rgba(11,99,209,0.22);
+  transform: translateY(-1px);
 }
 
-#fechar-modal{
-  min-width: 160px;
-  padding: 10px 18px;
+.secondary:active{
+  transform: translateY(0px);
+}
+
+/* Ícone de lixeira dentro do Remover */
+.secondary .btn-ico-trash{
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+/* Botão "Abrir pasta de saída" (igual ao padrão do Importação: menos brilho) */
+.btn-primary{
+  border: 1px solid rgba(11,99,209,0.30);
+  background: var(--brand);
+  color: #fff;
+
   border-radius: 10px;
-  background: #2563eb;
-  color: #ffffff;
-  border: none;
-  font-weight: 700;
+  height: 40px;
+  padding: 0 16px;
+
+  font-weight: 800;
   cursor: pointer;
+
+  /* menos glow */
+  box-shadow: 0 6px 14px rgba(11,99,209,0.14);
+  transition: background-color .2s ease, transform .05s ease, box-shadow .2s ease;
 }
 
-#fechar-modal:hover{
-  background: #1d4ed8;
+.btn-primary:hover{
+  background: var(--brand-2);
+  box-shadow: 0 8px 18px rgba(11,99,209,0.18);
 }
 
-/* =========================
-   PADRONIZAÇÃO VISUAL - WS PARSER
-========================= */
-
-body {
-  background: #f7f7f7;
-  font-family: "Segoe UI", Arial, sans-serif;
-  color: #222;
-  margin: 0;
-  padding: 0;
-}
-
-.parser-container {
-  max-width: 700px;
-  margin: 40px auto;
-  background: #ffffff;
-  padding: 30px 40px;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-}
-
-.parser-title {
-  text-align: center;
-  color: #2563eb;
-  font-weight: 600;
-  font-size: 22px;
-  margin-bottom: 25px;
-}
-
-/* fieldset de tipo de parser */
-.fieldset-parser {
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background: #e8e7e4;
-  padding: 10px 15px;
-  margin-bottom: 20px;
-}
-
-.fieldset-parser legend {
-  font-weight: 600;
-  color: #111827;
-}
-
-.fieldset-parser label {
-  font-size: 14px;
-  color: #111827;
-  margin-right: 20px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.fieldset-parser input[type="radio"] {
-  accent-color: #2563eb;
-  transform: scale(1.2);
-}
-
-/* Ajustes finais para inputs e botões */
-.expo8-container input[type="text"] {
-  background: #f9fafb;
-  border: 1px solid #d1d5db;
-}
-
-.expo8-container button.primary {
-  background-color: #0078d7;
-  font-weight: 600;
-}
-
-.expo8-container button.primary:hover {
-  background-color: #005fa3;
-}
-
-.expo8-container button.secondary {
-  background-color: #e6e6e6;
-  border: 1px solid #ccc;
-}
-
-.expo8-container button.secondary:hover {
-  background-color: #dcdcdc;
-}
-
-/* Log do modal começa fechado */
-.log-collapsible.hidden {
-  display: none;
-}
-
-/* Botões do modal alinhados e com espaçamento */
-.resultado-actions {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 10px;
-  flex-wrap: wrap;
-}
-
-/* Se quiser diferenciar primário dentro do modal */
-.resultado-actions .primary {
-  background: #2563eb;
-  color: #fff;
-}
-
-.resultado-actions .primary:hover {
-  background: #1d4ed8;
-}
-
-/* Botões dentro do modal de resultado (fora do .expo8-container) */
-.resultado-modal button{
-  border: none;
-  border-radius: 10px;
-  padding: 10px 16px;
-  font-size: 14px;
-  cursor: pointer;
-  white-space: nowrap;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  font-weight: 600;
-}
-
-.resultado-modal button.primary{
-  background: #0078d7;
-  color: #fff;
-}
-
-.resultado-modal button.primary:hover{
-  background: #005fa3;
-}
-
-.resultado-modal button.secondary{
-  background: #e6e6e6;
-  border: 1px solid #ccc;
-  color: #111827;
-}
-
-.resultado-modal button.secondary:hover{
-  background: #dcdcdc;
-}
-
-.resultado-actions{
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 14px;
-  flex-wrap: wrap;
-}
-
-.resultado-actions button{
-  min-width: 160px;     /* todos iguais */
-  height: 42px;         /* mesma altura */
-  padding: 0 18px;      /* padding horizontal */
-}
-
-/* ===== FIX: padronizar botões do MODAL resultado ===== */
-.resultado-actions{
-  display: flex;
-  justify-content: center;
-  align-items: center;   /* <-- alinha na mesma linha */
-  gap: 12px;
-  margin-top: 14px;
-  flex-wrap: wrap;
-}
-
-.resultado-actions button{
-  min-width: 160px;
-  height: 42px;
-  padding: 0 18px;
-  margin: 0;            /* <-- remove “empurrões” */
-}
-
-/* força TODOS os primary do modal com a mesma cor */
-.resultado-modal button.primary{
-  background: #0078d7;
-  color: #fff;
-  border: none;
-  font-weight: 700;
-}
-
-.resultado-modal button.primary:hover{
-  background: #005fa3;
-}
-
-/* mata qualquer estilo antigo específico do #fechar-modal */
-#fechar-modal{
-  margin-top: 0 !important;
-  background: #0078d7 !important;
-}
-#fechar-modal:hover{
-  background: #005fa3 !important;
-}
-
-/* ===== MODAL RESULTADO: padroniza TODOS os botões ===== */
-.resultado-modal .resultado-actions{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  margin-top: 14px;
-  flex-wrap: wrap;
-}
-
-.resultado-modal .resultado-actions button{
-  min-width: 160px;
-  height: 42px;
-  padding: 0 18px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  font-weight: 700;
-
-  background: #0078d7;
-  color: #fff;
-}
-
-.resultado-modal .resultado-actions button:hover{
-  background: #005fa3;
-}
-
-/* remove qualquer “empurrão” antigo do botão fechar */
-#fechar-modal{
-  margin-top: 0 !important;
-}
-
-/* ===== PADRÃO VISOPARSER aplicado no EXPO ===== */
-.expo8-container .path-row{
-  display: flex;
-  align-items: center;
-  margin-bottom: 0;
-}
-
-.expo8-container .path-input{
-  flex: 1;
-  padding: 8px 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #eee;
-  font-size: 14px;
-}
-
-.expo8-container .btn-icon{
-  margin-left: 8px;
-  background: #0078d7;
-  border: none;
-  color: #fff;
-  font-size: 18px;
-  width: 42px;
-  height: 34px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.expo8-container .btn-icon:hover{
-  background: #005fa3;
-}
-
-.expo8-container .actions{
-  display: flex;
-  gap: 10px;
-  margin: 10px 0 20px 0;
-}
-
-.expo8-container .btn-primary{
-  background: #0078d7;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 500;
-  border-radius: 6px;
-  padding: 8px 16px;
-  cursor: pointer;
-  border: none;
-}
-
-.expo8-container .btn-primary:hover{
-  background: #005fa3;
+.btn-primary:active{
+  transform: translateY(1px);
+  box-shadow: 0 5px 12px rgba(11,99,209,0.14);
 }

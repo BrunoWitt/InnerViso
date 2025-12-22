@@ -250,34 +250,43 @@ let progressTimer = null;
     });
 
     //Abrir pasta
+    //Abrir pasta
     let openingFolder = false;
     btnAbrirPasta.addEventListener("click", async () => {
-        if (openingFolder)  return;
+    if (openingFolder) return;
 
-        const pasta_saida = (lblSaida?.value || "").trim();
+    const pasta_saida = (lblSaida?.value || "").trim();
 
-        if (!pasta_saida || /nenhum selecionado/i.test(pasta_saida)) {
-            alert("Selecione uma pasta de saída nates de abrir");
-            return;
+    if (!pasta_saida || /nenhum selecionado/i.test(pasta_saida)) {
+        alert("Selecione uma pasta de saída antes de abrir");
+        return;
+    }
+
+    if (!window.api?.openFolder) {
+        console.warn("API openFolder indisponível");
+        alert("Não foi possível abrir a pasta. API indisponível");
+        return;
+    }
+
+    openingFolder = true;
+
+    try {
+        const r = await window.api.openFolder(pasta_saida);
+
+        // aceita retorno em formatos diferentes (string ou objeto)
+        const isErro =
+        (typeof r === "string" && r.trim().length > 0) || // se vier string, string != "" é erro
+        (r && r.status === false) ||
+        (r && typeof r.error === "string" && r.error.trim().length > 0);
+
+        if (isErro) {
+        const detalhe = typeof r === "string" ? r : (r?.error || "erro desconhecido");
+        console.error("Falha ao abrir pasta:", detalhe);
+        alert(`Não consegui abrir a pasta:\n${pasta_saida}\n\nDetalhe: ${detalhe}`);
         }
-
-        if (!window.api?.openFolder) {
-            console.warn("API openFolder indisponivel");
-            alert("Não foi possivel abrir a pasta. API indisponível");
-            return;
-        }
-        
-        openingFolder = true;
-
-        try{
-            const r = await window.api.openFolder(pasta_saida);
-            if (!r?.status) {
-            console.error("Falha ao abrir pasta:", r?.error);
-            alert(`Não consegui abrir a pasta:\n${pasta_saida}\n\nDetalhe: ${r?.error || 'erro desconhecido'}`);
-        }
-        } finally {
+    } finally {
         openingFolder = false;
-        }
+    }
     });
 
     // Rodar parser

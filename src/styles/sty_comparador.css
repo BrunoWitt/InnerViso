@@ -1,235 +1,225 @@
-body {
-  background: #f5f6f8;
-  font-family: "Segoe UI", Arial, sans-serif;
-  color: #1e1e1e;
-  margin: 0;
-  padding: 0;
+/* ../styles/sty_comparador.css */
+
+/* Wrapper (centraliza igual às outras telas) */
+.compare-wrapper{
+  width: 100%;
 }
 
-/* --- Estrutura Principal --- */
-.compare-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-top: 40px;
+/* Card principal (mesmo padrão do Importação/Exportação) */
+.main-card{
+  width: min(920px, calc(100% - 56px));
+  margin: 40px auto;
+  background: var(--card);
+  border: 1px solid rgba(11,99,209,0.18);
+  border-radius: var(--radius);
+  box-shadow:
+    0 22px 55px rgba(2, 6, 23, 0.10),
+    0 2px 0 rgba(255,255,255,0.7) inset;
+  padding: 28px 28px 22px 28px;
 }
 
-.compare-card {
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-  width: 600px;
-  padding: 30px 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  transition: box-shadow 0.3s ease;
-}
-
-.compare-card:hover {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-}
-
-/* --- Título --- */
-.compare-title {
+/* Título */
+.compare-title{
+  margin: 0 0 18px 0;
   text-align: center;
-  color: #0078d7;
-  font-size: 1.6rem;
-  font-weight: 600;
-  margin-bottom: 10px;
+  color: var(--brand);
+  font-size: 22px;
+  letter-spacing: 0.2px;
+  font-weight: 800;
 }
 
-/* --- Inputs --- */
-/* === Inputs em formato vertical === */
-.input-group {
-  display: flex;
-  flex-direction: column;  /* coloca o label acima do input */
-  gap: 6px;
-  width: 100%;
-  margin-bottom: 12px;
+/* Grupos de input */
+.input-group{
+  margin-top: 18px;
 }
 
-.input-group label {
-  display: inline-block;
-  width: 100%;
-  max-width: 480px; /* aumenta horizontalmente */
-  margin: 0 auto;   /* centraliza dentro do card */
-  font-weight: 500;
-  font-size: 0.9rem;
-  color: #444;
-  text-align: left;
-}
-
-.input-text{ 
-  width: 100%;
-  max-width: 660px; /* acompanha o label */
-  margin: 0 auto;
+/* Labels (mesma “cara” dos h4 azul) */
+.input-group label{
   display: block;
-
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-/* Efeito de foco sutil */
-.input-text:focus {
-  border-color: #0078d7;
-  box-shadow: 0 0 3px rgba(0, 120, 215, 0.4);
-  outline: none;
-}
-
-
-/* --- Botões --- */
-.button-row {
-  display: flex;
-  justify-content: flex-start;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.btn-primary {
-  background: #0078d7;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.25s;
-}
-
-.btn-primary:hover {
-  background: #005fa3;
-}
-
-.btn-light {
-  background: #f2f2f2;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 8px 16px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.25s;
-}
-
-.btn-light:hover {
-  background: #e5e5e5;
-}
-
-.btn-secondary {
-  background: #0078d7;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
+  margin: 22px 3px 8px;
   font-size: 13px;
-  cursor: pointer;
-  transition: background 0.25s;
+  color: var(--brand);
+  font-weight: 800;
 }
 
-.btn-secondary:hover {
-  background: #0060b8;
-}
-
-/* --- Resultado --- */
-.result-box {
-  background: #f8f9fa;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 16px 18px;
-}
-
-.result-box h3 {
-  margin: 0 0 8px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #333;
-}
-
-.result-textarea {
+/* Inputs */
+.input-text{
   width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 8px;
-  font-size: 14px;
-  resize: none;
+  height: 42px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #f8fafc;
+  color: var(--text);
+  box-shadow: inset 0 1px 0 rgba(2,6,23,0.03);
+}
+
+.input-text::placeholder{
+  color: #94a3b8;
+}
+
+/* Linha de botões (destacada como o rodapé dos outros) */
+.button-row{
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+
+  padding: 14px 14px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 10px 22px rgba(2, 6, 23, 0.06);
+}
+
+/* Botão primário (mesmo feel do brand) */
+.btn-primary{
+  border: 1px solid rgba(11,99,209,0.35);
+  background: var(--brand);
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 14px;
+  height: 42px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 14px 26px rgba(11, 99, 209, 0.18);
+  transition: background-color .2s ease, transform .05s ease, box-shadow .2s ease;
+}
+
+.btn-primary:hover{
+  background: var(--brand-2);
+  box-shadow: 0 18px 34px rgba(11, 99, 209, 0.24);
+}
+
+.btn-primary:active{ transform: translateY(1px); }
+
+/* Botão "limpar" estilo secundário claro */
+.btn-light{
+  background: #fff;
+  border: 1px solid #787f86;
+  border-radius: 10px;
+  padding: 10px 14px;
+  height: 42px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(2, 6, 23, 0.06);
+  transition: box-shadow .2s ease, transform .05s ease, background-color .2s ease;
+}
+
+.btn-light:hover{
+  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.10);
+  transform: translateY(-1px);
   background: #fff;
 }
 
-.result-footer {
+.btn-light:active{ transform: translateY(0); }
+
+/* Caixa de resultado (mesmo padrão de blocos com fundo leve) */
+.result-box{
+  margin-top: 18px;
+  border: 1px solid #dbe3ef;
+  border-radius: 12px;
+  padding: 14px 16px 14px;
+  background: #f3f6fb;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+/* título Resultado */
+.result-box h3{
+  margin: 4px 0 12px;
+  text-align: center;
+  color: #1f2937;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+/* label do textarea */
+.result-box label{
+  display: block;
+  margin: 12px 3px 8px;
+  font-size: 13px;
+  color: #334155;
+  font-weight: 800;
+}
+
+/* textarea */
+.result-textarea{
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--text);
+  box-shadow: inset 0 1px 0 rgba(2,6,23,0.03);
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+/* Rodapé do resultado: contador + copiar */
+.result-footer{
+  margin-top: 12px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-top: 8px;
-  font-size: 0.85rem;
-  color: #555;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-/* ===== TOAST (mensagem temporária) ===== */
-.toast {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #0078d7;
-  color: white;
-  padding: 10px 18px;
-  border-radius: 6px;
-  font-size: 14px;
-  opacity: 0;
-  transform: translateY(20px);
-  pointer-events: none;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  z-index: 9999;
+#qtdItens{
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 700;
 }
 
-.toast.show {
-  opacity: 1;
+/* botão copiar: “secundário” mas destacado (igual vibe geral) */
+.btn-secondary{
+  border: 1px solid rgba(11,99,209,0.35);
+  background: var(--brand);
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 14px;
+  height: 36px;
+  font-weight: 800;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 10px 18px rgba(11,99,209,0.16);
+  transition: background-color .2s ease, transform .05s ease, box-shadow .2s ease;
+}
+
+.btn-secondary:hover{
+  background: var(--brand-2);
+  box-shadow: 0 14px 22px rgba(11,99,209,0.22);
+  transform: translateY(-1px);
+}
+
+.btn-secondary:active{
   transform: translateY(0);
 }
 
-/* ======== RESPONSIVIDADE ======== */
-@media (max-width: 1024px) {
-  .compare-card {
-    width: 80%;
-  }
+/* Toast de "copiado" */
+.toast{
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.92);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 12px;
+  box-shadow: 0 18px 40px rgba(2, 6, 23, 0.25);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease;
 }
 
-@media (max-width: 768px) {
-  .compare-wrapper {
-    padding: 20px;
-  }
-
-  .compare-card {
-    width: 95%;
-    padding: 20px;
-  }
-
-  .button-row {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .btn-primary,
-  .btn-light {
-    width: 100%;
-  }
-
-  .result-footer {
-    flex-direction: column;
-    gap: 8px;
-    align-items: flex-start;
-  }
-}
-
-@media (max-width: 480px) {
-  .compare-title {
-    font-size: 1.3rem;
-  }
-
-  .input-group label {
-    font-size: 0.85rem;
-  }
-
-  .input-text {
-    font-size: 13px;
-  }
+/* se seu JS usar class "show" */
+.toast.show{
+  opacity: 1;
+  transform: translateX(-50%) translateY(-4px);
 }

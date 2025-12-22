@@ -13,10 +13,19 @@
       </div>
 
       <nav class="menu">
-        <button class="menu-item" data-view="hub" type="button">Hub</button>
+        <button class="menu-item" data-view="hub" type="button">
+          <span class="menu-left">
+            <img class="menu-ico" src="../assets/vrum/ic_home-24-outline-blue.svg" alt="" aria-hidden="true">
+            <span class="menu-text">Hub</span>
+          </span>
+        </button>
+
 
         <button id="menu-parser" class="menu-item" data-view="parser" type="button">
-          <span>Parser</span>
+          <span class="menu-left">
+            <img class="menu-ico" src="../assets/vrum/ic_file-24-outline-blue.svg" alt="" aria-hidden="true">
+            <span class="menu-text">Parser</span>
+          </span>
           <span id="parser-caret" class="menu-caret">▸</span>
         </button>
 
@@ -25,7 +34,10 @@
           <button class="submenu-item" data-mode="export" type="button">Exportação</button>
         </div>
 
-        <button class="menu-item" data-view="comparador" type="button">Comparador</button>
+        <button class="menu-item" data-view="comparador" type="button">
+          <img class="menu-ico" src="../assets/icones/ic_comparador-24-blue.svg" alt="" aria-hidden="true">
+          <span class="menu-text">Comparador</span>
+        </button>
       </nav>
     </aside>
 
@@ -33,7 +45,7 @@
       <div id="content"></div>
     </main>
 
-    <div class="app-version">v1.1.1</div>
+    <div class="app-version">v1.1.2</div>
 
   </div>
 

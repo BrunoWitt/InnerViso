@@ -9,23 +9,42 @@
 <body>
 
   <div class="main-card">
-    <h2>WS VisoParser</h2>
+    <h2>Parser - Importação</h2>
 
     <!-- Caminhos -->
+    <h4>Diretório de Origem (Arquivos para leitura)</h4>
     <div class="path-row">
-      <input id="entradaLabel" class="path-input" type="text" value="Nenhum selecionado" readonly />
-      <button id="btnSelectEntrada" class="btn-icon" title="Selecionar entrada">📁</button>
-    </div>
-    <div class="hint"></div>
+      <input id="entradaLabel" class="path-input" type="text" placeholder="Selecione a pasta com os arquivos..." readonly />
 
-    <div class="path-row">
-      <input id="saidaLabel" class="path-input" type="text" value="Nenhum selecionado" readonly />
-      <button id="btnSelectSaida" class="btn-icon" title="Selecionar saída">📁</button>
+      <button id="btnSelectEntrada" class="btn-icon" title="Selecionar entrada" type="button">
+        <img
+          class="btn-ico"
+          src="../assets/icones/ic_folder-24-outline-white.svg"
+          alt=""
+          aria-hidden="true"
+        />
+      </button>
     </div>
+    <div class="hint">Selecione uma pasta ou um arquivo .zip contendo os XMLs de entrada.</div>
+
+    <h4>Diretório de Destino (Onde salvar)</h4>
+    <div class="path-row">
+      <input id="saidaLabel" class="path-input" type="text" placeholder="Selecione a pasta de saída..." readonly />
+
+      <button id="btnSelectSaida" class="btn-icon" title="Selecionar saída" type="button">
+        <img
+          class="btn-ico"
+          src="../assets/icones/ic_folder-24-outline-white.svg"
+          alt=""
+          aria-hidden="true"
+        />
+      </button>
+    </div>
+    <div class="hint">Essa pasta receberá os relatórios gerados pelo parser.</div>
 
     <!-- Botões extras -->
     <div class="actions">
-      <button id="btnAbrir" class="btn-primary">Abrir pasta</button>
+      <button id="btnAbrir" class="btn-primary" type="button">Abrir pasta de saída</button>
     </div>
 
     <!-- Tipo de parser -->
@@ -40,55 +59,61 @@
 
     <!-- Controles -->
     <div class="buttons-bottom">
-      <button id="btnSalvar" class="btn-secondary">Salvar como padrão</button>
-      <button id="btnLimpar" class="btn-secondary">Limpar configurações</button>
-      <button id="btnIniciar" class="btn-executar">▶️ Executar Parser</button>
+      <button id="btnSalvar" class="btn-secondary" type="button">Salvar configurações de entrada e saída</button>
+      <button id="btnLimpar" class="btn-secondary" type="button">Limpar configurações</button>
+
+      <button id="btnIniciar" class="btn-executar" type="button">
+        <img
+          class="btn-ico-play"
+          src="../assets/icones/ic_play-24-outline-white.svg"
+          alt=""
+          aria-hidden="true"
+        />
+        Executar Parser
+      </button>
     </div>
 
   </div>
 
   <!-- POPUP DE RESUMO -->
-<div id="popupResumo" class="popup-resumo" style="display:none;">
-  <div class="popup-content">
-    <h3>Resumo da execução</h3>
-    <p><strong>Status:</strong> <span id="resStatus">—</span></p>
-    <p><strong>Início:</strong> <span id="resInicio">—</span></p>
-    <p><strong>Fim:</strong> <span id="resFim">—</span></p>
-    <p><strong>Duração:</strong> <span id="resDuracao">—</span></p>
-    <p><strong>Arquivos encontrados:</strong> <span id="resArq">—</span></p>
-    <p><strong>Processados OK:</strong> <span id="resOk">—</span></p>
-    <p><strong>Qtd. erros:</strong> <span id="resErros">—</span></p>
+  <div id="popupResumo" class="popup-resumo" style="display:none;">
+    <div class="popup-content">
+      <h3>Resumo da execução</h3>
+      <p><strong>Status:</strong> <span id="resStatus">—</span></p>
+      <p><strong>Início:</strong> <span id="resInicio">—</span></p>
+      <p><strong>Fim:</strong> <span id="resFim">—</span></p>
+      <p><strong>Duração:</strong> <span id="resDuracao">—</span></p>
+      <p><strong>Arquivos encontrados:</strong> <span id="resArq">—</span></p>
+      <p><strong>Processados OK:</strong> <span id="resOk">—</span></p>
+      <p><strong>Qtd. erros:</strong> <span id="resErros">—</span></p>
 
-    <h4>Erros (se houver):</h4>
-    <pre id="resListaErros">—</pre>
+      <h4>Erros (se houver):</h4>
+      <pre id="resListaErros">—</pre>
 
-    <h4>Trecho do log:</h4>
-    <pre id="resLog"></pre>
+      <h4>Trecho do log:</h4>
+      <pre id="resLog"></pre>
 
-    <button id="btnFecharPopup" class="btn-secondary fechar">Fechar</button>
-  </div>
-</div>
-
-<!-- MODAL DE CARREGAMENTO -->
-<div id="loadingOverlay" class="loading-overlay" style="display:none;">
-  <div class="loading-box">
-    <p id="progressCount" class="progress-count">—/—</p>
-    <div class="spinner"></div>
-    <p id="loadingText">Iniciando parser...</p>
-
-    <div class="progress-container">
-      <div id="progressBar" class="progress-bar"></div>
+      <button id="btnFecharPopup" class="btn-secondary fechar" type="button">Fechar</button>
     </div>
-
-    <button id="btnCancelar" class="btn-secondary">Cancelar</button>
   </div>
-</div>
 
+  <!-- MODAL DE CARREGAMENTO -->
+  <div id="loadingOverlay" class="loading-overlay" style="display:none;">
+    <div class="loading-box">
+      <p id="progressCount" class="progress-count">—/—</p>
+      <div class="spinner"></div>
+      <p id="loadingText">Iniciando parser...</p>
 
-<script defer src="../scripts/main.js"></script>
-<script defer src="../scripts/router.js"></script>
-<script defer src="../scripts/src_parser.js"></script>
+      <div class="progress-container">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
 
+      <button id="btnCancelar" class="btn-secondary" type="button">Cancelar</button>
+    </div>
+  </div>
 
+  <script defer src="../scripts/main.js"></script>
+  <script defer src="../scripts/router.js"></script>
+  <script defer src="../scripts/src_parser.js"></script>
 </body>
 </html>

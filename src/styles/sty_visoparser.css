@@ -1,144 +1,386 @@
-/*sty_visoparser */
+/* ../styles/sty_visoparser.css */
 
-body {
-  background: #f7f7f7;
-  font-family: "Segoe UI", Arial, sans-serif;
-  color: #222;
-  margin: 0;
-  padding: 0;
-}
-
-.parser-container {
-  max-width: 700px;
+/* Card principal */
+.main-card{
+  width: min(920px, calc(100% - 56px));
   margin: 40px auto;
-  background: #f7f7f7;
-  padding: 20px 30px;
-  border-radius: 8px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px 28px 22px 28px;
 }
 
-h2 {
-  font-weight: 600;
-  margin-bottom: 20px;
+/* Cabeçalho */
+.main-card h2{
+  margin: 0 0 18px 0;
+  text-align: center;
+  color: var(--brand);
+  font-size: 22px;
+  letter-spacing: 0.2px;
 }
 
-.path-row {
+/* Labels (seus h4 viram “labels” bonitos) */
+.main-card h4{
+  margin: 22px 3px -10px;
+  font-size: 13px;
+  color: var(--brand);
+  font-weight: 700;
+}
+
+/* Linha do caminho */
+.path-row{
   display: flex;
   align-items: center;
-  margin-bottom: 0;           /* tira o espaço depois do input */
-}
-
-/* apenas hints logo após um path-row */
-.path-row + .hint {
-  font-size: 12px;
-  color: #6b7280;
-  margin-top: -10px;            /* encosta bem no input */
-  margin-bottom: 6px;         /* espacinho mínimo antes do próximo bloco */
-  line-height: 1.2;           /* deixa o texto mais compacto */
-}
-
-.path-input {
-  flex: 1;
-  padding: 8px 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #eee;
-  font-size: 14px;
-}
-
-.btn-icon {
-  margin-left: 8px;
-  background: #0078d7;
-  border: none;
-  color: #fff;
-  font-size: 18px;
-  width: 42px;
-  height: 34px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.btn-icon:hover {
-  background: #005fa3;
-}
-
-.actions {
-  display: flex;
   gap: 10px;
-  margin: 10px 0 20px 0;
-}
-
-.fieldset-parser {
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background: #e8e7e4;
-  padding: 10px 15px;
   margin-bottom: 20px;
 }
 
-.fieldset-parser legend {
-  font-weight: 600;
+/* Input do caminho */
+.path-input{
+  flex: 1;
+  height: 42px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #f8fafc;
+  color: var(--text);
+  box-shadow: inset 0 1px 0 rgba(2,6,23,0.03);
 }
 
-.fieldset-parser label {
-  margin-right: 20px;
+.path-input::placeholder{
+  color: #94a3b8;
 }
 
-.buttons-bottom{
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-width: 250px;
-  margin: 0 auto;           /* <-- centraliza o bloco */
-}
-
-.btn-primary,
-.btn-secondary,
-.btn-executar {
-  font-size: 14px;
-  font-weight: 500;
-  border-radius: 6px;
-  padding: 8px 16px;
-  cursor: pointer;
-  border: none;
-}
-
-.btn-primary {
-  background: #0078d7;
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #005fa3;
-}
-
-.btn-secondary {
-  background: #e6e6e6;
-  border: 1px solid #ccc;
-}
-
-.btn-secondary:hover {
-  background: #dcdcdc;
-}
-
-.btn-executar {
-  background: #0078d7;
+/* Botão ícone (pasta) */
+.btn-icon{
+  width: 44px;
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid rgba(11,99,209,0.25);
+  background: var(--brand);
   color: #fff;
-  font-weight: 600;
-  border: none;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  transition: background-color .2s ease, transform .05s ease, box-shadow .2s ease;
+  box-shadow: 0 10px 18px rgba(11,99,209,0.16);
 }
 
-.btn-executar:hover {
-  background: #0060b8;
+.btn-icon:hover{
+  background: var(--brand-2);
+  box-shadow: 0 14px 22px rgba(11,99,209,0.22);
+}
+.btn-icon:active{ transform: translateY(1px); }
+
+/* Dicas abaixo dos campos */
+.hint{
+  margin: -10px 6px 0;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.35;
 }
 
-.status-box {
-  margin-top: 15px;
-  padding: 10px;
-  background: #efefef;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+/* Botões auxiliares (abrir pasta) */
+.actions{
+  margin-top: 12px;
+}
+
+/* Fieldset do parser */
+/* Fieldset do parser */
+.fieldset-parser{
+  margin-top: 18px;
+  border: 1px solid #dbe3ef;         /* um pouco mais suave */
+  border-radius: 12px;
+  padding: 14px 16px 14px;
+
+  /* cinza bem leve (sem pesar) */
+  background: #f3f6fb;
+
+  /* leve profundidade */
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+/* "Tipo de Parser" maior e mais evidente */
+.fieldset-parser legend{
+  padding: 0 10px;
+  font-weight: 800;
+  font-size: 14px;                   /* maior */
+  color: #1f2937;                    /* mais escuro */
+}
+
+/* Aproxima as opções do título */
+.fieldset-parser label{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  /* remove aquele espaço grande em cima */
+  margin: 6px 14px 0 0;              /* antes era 10px */
+  padding: 6px 10px;                 /* um pouco menor */
+
+  border-radius: 10px;
+  transition: background-color .2s ease, transform .05s ease;
+  user-select: none;
+}
+
+/* Hover mais elegante */
+.fieldset-parser label:hover{
+  background: rgba(11,99,209,0.08);
+}
+
+/* Bolinha do radio com cor da marca */
+.fieldset-parser input[type="radio"]{
+  accent-color: var(--brand);
+}
+
+/* (Opcional) deixa o texto levemente mais “clean” */
+.fieldset-parser label{
+  font-size: 13px;
+  color: #111827;
+}
+
+/* Botões do rodapé */
+.buttons-bottom{
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+
+  /* destaque do fundo */
+  padding: 14px 14px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  /* “eleva” um pouco */
+  box-shadow: 0 10px 22px rgba(2, 6, 23, 0.06);
+}
+
+.buttons-bottom .btn-secondary{
+  background: #fff;
+  border-color: #787f86;
+  box-shadow: 0 6px 14px rgba(2, 6, 23, 0.06);
+}
+
+.buttons-bottom .btn-secondary:hover{
+  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.10);
+  transform: translateY(-1px);
+}
+
+.buttons-bottom .btn-executar{
+  border-color: #000000;
+  box-shadow: 0 14px 26px rgba(11, 99, 209, 0.22);
+}
+.buttons-bottom .btn-executar:hover{
+  box-shadow: 0 18px 34px rgba(11, 99, 209, 0.28);
+}
+
+/* ---------------------------
+   POPUP RESUMO
+--------------------------- */
+.popup-resumo{
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  z-index: 9999;
+}
+
+.popup-content{
+  width: min(780px, 100%);
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  box-shadow: 0 22px 55px rgba(2, 6, 23, 0.35);
+  padding: 18px 18px 14px;
+}
+
+.popup-content h3{
+  margin: 4px 0 12px;
+  color: var(--brand);
+}
+
+.popup-content p{
+  margin: 6px 0;
+  color: #334155;
+}
+
+.popup-content pre{
+  background: #0b1220;
+  color: #e2e8f0;
+  border-radius: 12px;
+  padding: 12px;
+  overflow: auto;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.35;
+  border: 1px solid rgba(148,163,184,0.22);
+}
+
+.popup-content .fechar{
+  margin-top: 12px;
+  float: right;
+}
+
+/* ---------------------------
+   LOADING OVERLAY
+--------------------------- */
+.loading-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  z-index: 9998;
+}
+
+.loading-box{
+  width: min(520px, 100%);
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  box-shadow: 0 22px 55px rgba(2, 6, 23, 0.35);
+  padding: 18px;
+  text-align: center;
+}
+
+.progress-count{
+  font-weight: 800;
+  color: var(--brand);
+  margin: 0 0 10px 0;
   font-size: 14px;
-  color: #333;
+}
+
+#loadingText{
+  margin: 10px 0 14px;
+  color: #334155;
+  font-weight: 600;
+}
+
+/* Spinner */
+.spinner{
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 4px solid rgba(11,99,209,0.18);
+  border-top-color: var(--brand);
+  margin: 0 auto;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin{
+  to { transform: rotate(360deg); }
+}
+
+.progress-container{
+  height: 10px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid #dbe3ef;
+  margin: 10px 0 14px;
+}
+
+.progress-bar{
+  height: 100%;
+  width: 0%;
+  background: var(--brand);
+  border-radius: 999px;
+  transition: width .25s ease;
+}
+
+/* Dropdown (menu de opções) */
+.dropdown{
+  position: fixed;              /* <-- ESSENCIAL pra respeitar left/top do rect */
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+
+  min-width: 200px;
+  padding: 6px;
+
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 22px 55px rgba(2, 6, 23, 0.22);
+
+  z-index: 20000;
+}
+
+/* Botões dentro do dropdown */
+.dropdown button{
+  width: 100%;
+  border: 0;
+  background: transparent;
+
+  padding: 10px 10px;
+  border-radius: 10px;
+
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text);
+  text-align: left;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  cursor: pointer;
+}
+
+/* Hover / active */
+.dropdown button:hover{
+  background: rgba(11, 99, 209, 0.08);
+}
+.dropdown button:active{
+  background: rgba(11, 99, 209, 0.14);
+}
+
+/* (Opcional) uma setinha no topo */
+.dropdown::before{
+  content: "";
+  position: absolute;
+  top: -6px;
+  right: 14px;
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  border-left: 1px solid var(--border);
+  border-top: 1px solid var(--border);
+  transform: rotate(45deg);
+}
+
+/* =========================
+   ÍCONES (SVG) NOS BOTÕES
+========================= */
+
+.btn-icon{
+  display: grid;
+  place-items: center;
+}
+
+.btn-icon .btn-ico{
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+/* Botão "Executar Parser" com ícone play */
+#btnIniciar.btn-executar{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#btnIniciar .btn-ico-play{
+  width: 18px;
+  height: 18px;
+  display: block;
 }
 
 /* ===== POPUP DE RESUMO ===== */
@@ -153,10 +395,11 @@ h2 {
   align-items: center;
   justify-content: center;
   z-index: 9999;
+  color: black;
 }
 
 .popup-content {
-  background: #fff;
+  background: #ffffff;
   border-radius: 8px;
   padding: 20px 25px;
   width: 480px;
@@ -176,141 +419,10 @@ h2 {
   border: 1px solid #ddd;
   max-height: 200px;
   overflow-y: auto;
+  color: black;
 }
 
 .popup-content .fechar {
   margin-top: 15px;
   width: 100%;
 }
-
-/* === MODAL DE CARREGAMENTO === */
-.loading-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-.loading-box {
-  background: #ffffff;
-  padding: 30px 40px;
-  border-radius: 10px;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-  width: 360px;
-}
-
-.spinner {
-  border: 4px solid #ccc;
-  border-top: 4px solid #0078d7;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  animation: spin 0.8s linear infinite;
-  margin: 0 auto 20px auto;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.progress-container {
-  width: 100%;
-  height: 10px;
-  background: #eee;
-  border-radius: 5px;
-  overflow: hidden;
-  margin-top: 15px;
-}
-
-.progress-bar {
-  height: 10px;
-  width: 0%;
-  background: #0078d7;
-  transition: width 0.3s ease;
-}
-
-.progress-count {
-  font-size: 16px;
-  font-weight: 600;
-  color: #0078d7;
-  margin-bottom: 8px;
-}
-
-/* Btn de seleção */
-
-.dropdown {
-  position: absolute;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-  display: none;
-  flex-direction: column;
-  min-width: 180px;
-  z-index: 9999;
-}
-
-.dropdown button {
-  background: none;
-  border: none;
-  padding: 10px 14px;
-  text-align: left;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.dropdown button:hover {
-  background-color: #f2f2f2;
-}
-
-/* ======== RESPONSIVIDADE ======== */
-@media (max-width: 1024px) {
-  .parser-container {
-    max-width: 90%;
-  }
-}
-
-@media (max-width: 768px) {
-  .parser-container {
-    max-width: 95%;
-    padding: 15px;
-  }
-
-  .path-row {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .btn-icon {
-    width: 100%;
-    height: 38px;
-  }
-
-  .actions {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .buttons-bottom {
-    width: 100%;
-    max-width: none;
-  }
-
-.buttons-bottom button{
-  width: 250px;             /* <-- deixa todos iguais */
-}
-
-  .btn-primary,
-  .btn-secondary,
-  .btn-executar {
-    width: 100%;
-  }
-
-
-}
-

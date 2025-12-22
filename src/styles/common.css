@@ -234,3 +234,95 @@ h3 {
     font-size: 13px;
   }
 }
+
+/* ../styles/common.css */
+
+/* Reset básico */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; }
+
+/* Variáveis de tema (ajuste o azul para o da Visonet) */
+:root{
+  --brand: #0B63D1;          /* azul principal */
+  --brand-2: #1C78FF;        /* hover */
+  --text: #0f172a;           /* slate-900 */
+  --muted: #64748b;          /* slate-500 */
+  --bg: #f6f8fc;             /* fundo geral */
+  --card: #ffffff;           /* fundo do card */
+  --border: #dbe3ef;         /* borda leve */
+  --shadow: 0 18px 45px rgba(2, 6, 23, 0.10);
+  --radius: 14px;
+  --radius-sm: 10px;
+  --focus: 0 0 0 3px rgba(11, 99, 209, 0.18);
+  --danger: #dc2626;
+  --ok: #16a34a;
+  --warn: #f59e0b;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+}
+
+/* Fundo geral com “cara de app” */
+body{
+  font-family: var(--font);
+  color: var(--text);
+  background:
+    radial-gradient(1100px 400px at 55% 0%, rgba(11,99,209,0.12), transparent 55%),
+    radial-gradient(900px 380px at 0% 20%, rgba(28,120,255,0.08), transparent 60%),
+    linear-gradient(180deg, #ffffff 0%, var(--bg) 35%, var(--bg) 100%);
+}
+
+/* Botões base */
+button{
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.btn-primary, .btn-secondary, .btn-executar{
+  border-radius: 10px;
+  padding: 10px 14px;
+  border: 1px solid transparent;
+  transition: transform .05s ease, box-shadow .2s ease, background-color .2s ease, border-color .2s ease;
+  font-weight: 600;
+}
+
+.btn-primary{
+  background: var(--brand);
+  color: #fff;
+}
+.btn-primary:hover{ background: var(--brand-2); }
+.btn-primary:active{ transform: translateY(1px); }
+
+.btn-secondary{
+  background: #fff;
+  color: var(--text);
+  border-color: var(--border);
+}
+.btn-secondary:hover{
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+.btn-secondary:active{ transform: translateY(1px); }
+
+.btn-executar{
+  background: var(--brand);
+  color: #fff;
+  box-shadow: 0 10px 18px rgba(11,99,209,0.18);
+}
+.btn-executar:hover{
+  background: var(--brand-2);
+  box-shadow: 0 14px 22px rgba(11,99,209,0.22);
+}
+.btn-executar:active{ transform: translateY(1px); }
+
+/* Estado desabilitado */
+button:disabled{
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+/* Inputs base */
+input[type="text"]{
+  font-family: inherit;
+}
+

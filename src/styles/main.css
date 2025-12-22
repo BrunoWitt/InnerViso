@@ -1,151 +1,253 @@
-/* src/styles/main.css */
+/* =========================
+   LAYOUT GERAL
+========================= */
 
-/* ======== BASE ======== */
-html, body {
-  height: 100%;
-  margin: 0;
-  font-family: system-ui, Arial, sans-serif;
-}
-
-.layout {
-  display: grid;
-  grid-template-columns: 260px 1fr;
+.app-shell{
+  display: flex;
   min-height: 100vh;
 }
 
-/* ======== SIDEBAR ======== */
-.sidebar {
-  border-right: 1px solid #ddd;
-  background: #fafafa;
-  padding: 24px 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar{
+  width: 300px;                 /* <-- mais grossa */
+  padding: 18px 14px;
+  background: #ffffff;
+
+  /* linha divisória mais destacada */
+  border-right: 2px solid #cfd8e6;
+
+  /* leve sombra pra separar do conteúdo */
+  box-shadow: 8px 0 24px rgba(2, 6, 23, 0.04);
 }
 
-.brand {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #ffffff;
+.sidebar-logo{
+  display: grid;
+  place-items: center;
+  padding: 12px 8px 18px;
 }
 
-.brand-logo {
-  width: 200px; /* ajuste de tamanho ideal para o logo */
-  margin-bottom: -35px;
+.sidebar-logo img{
+  width: 210px;                 /* <-- logo maior */
+  max-width: 100%;
   height: auto;
   object-fit: contain;
-  user-select: none;
-  pointer-events: none;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  filter: drop-shadow(0 6px 10px rgba(2, 6, 23, 0.10)); /* destaca sem exagero */
 }
 
-.brand-logo:hover {
-  transform: scale(1.03);
-  opacity: 0.9;
-}
-
-.brand-link {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  text-decoration: none;
-}
-
-.brand-link:focus,
-.brand-link:hover {
-  outline: none;
-  filter: brightness(1.1);
-}
-
-/* ======== MENU ======== */
-.menu {
+/* Menu */
+.menu{
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  width: 100%;
+  gap: 10px;
+  margin-top: 8px;
 }
 
-.menu-item {
+/* Itens do menu (pais) */
+.menu-item{
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #0f172a;
+  border-radius: 12px;
+
+  padding: 12px 12px;
+  padding-left: 22px;
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.2px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  transition: background-color .2s ease, border-color .2s ease, transform .05s ease, box-shadow .2s ease;
+}
+
+.menu-item:hover{
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.menu-item:active{
+  transform: translateY(1px);
+}
+
+/* Ajusta o caret do Parser */
+.menu-caret{
+  font-size: 14px;
+  color: #64748b;
+  transition: transform .2s ease;
+}
+
+/* Quando o submenu do parser estiver aberto, vamos girar o caret via classe no botão */
+.menu-item.is-open .menu-caret{
+  transform: rotate(90deg);
+}
+
+/* Ícones do menu */
+.menu-ico{
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+}
+
+/* Texto + ícone alinhados */
+.menu-item{
+  justify-content: flex-start; /* não empurra tudo pra direita */
+  gap: 10px;
+}
+
+.menu-left{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* No botão do Parser, mantém caret à direita */
+#menu-parser{
+  justify-content: space-between;
+}
+
+/* Opcional: diminui um pouco o texto e deixa mais “UI” */
+.menu-text{
+  line-height: 1;
+}
+
+/* padrão: ícone + texto juntos */
+.menu-item{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;  /* <-- chave */
+  gap: 10px;
+}
+
+/* só o botão do Parser precisa separar (pra caret ir pra direita) */
+#menu-parser{
+  justify-content: space-between;
+}
+
+/* e o conteúdo da esquerda do parser fica agrupado */
+#menu-parser .menu-left{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
+
+/* =========================
+   ACTIVE STATE (OBRIGATÓRIO)
+========================= */
+
+/* item pai ativo */
+.menu-item.active{
+  background: rgba(11, 99, 209, 0.10);
+  border-color: rgba(11, 99, 209, 0.35);
+  color: var(--brand);
+  box-shadow: 0 10px 18px rgba(11, 99, 209, 0.10);
+  position: relative;
+}
+
+/* barra vertical à esquerda do ativo (pai) */
+.menu-item.active::before{
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 8px;
+  bottom: 8px;
+  width: 4px;
+  border-radius: 999px;
+  background: var(--brand);
+}
+
+/* =========================
+   SUBMENU (FILHOS)
+========================= */
+
+.submenu{
+  margin-top: -6px;           /* aproxima do pai */
+  margin-left: 12px;          /* indent */
+  padding-left: 12px;
+  border-left: 2px solid #e2e8f0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* filhos com cara de "lista/link" (menos botão) */
+.submenu-item{
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: #334155;
+
   text-align: left;
   padding: 10px 12px;
-  border: 0;
-  background: #f3f3f3;
-  cursor: pointer;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  transition: background 0.2s ease;
-}
-
-.menu-item:hover {
-  background: #eaeaea;
-}
-
-.menu-item.active {
-  background: #e5e5e5;
-  font-weight: 600;
-}
-
-/* ======== CONTEÚDO ======== */
-.content {
-  padding: 20px;
-}
-
-/* ======== PAINÉIS E GRID ======== */
-.grid-3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  align-items: start;
-}
-
-.panel {
-  border: 1px solid #e5e5e5;
-  padding: 12px 14px;
   border-radius: 10px;
-  background: #fff;
-  min-height: 280px;
+
+  font-weight: 700;
+  font-size: 13px;
+
+  transition: background-color .2s ease, color .2s ease;
 }
 
-.panel h2 {
-  margin-top: 0;
-  font-size: 1.1rem;
+.submenu-item:hover{
+  background: rgba(11, 99, 209, 0.06);
+  color: #0f172a;
 }
 
-.news-item {
-  margin: 10px 0;
+/* ativo no filho */
+.submenu-item.active{
+  background: rgba(11, 99, 209, 0.10);
+  color: var(--brand);
+  position: relative;
 }
 
-.news-item h3 {
-  margin: 0 0 4px;
-  font-size: 0.98rem;
-}
-
-.news-item small {
-  color: #666;
-  display: block;
-  margin-bottom: 4px;
-}
-
-.news-item p {
-  margin: 0;
-  font-size: 0.9rem;
-}
-
-/* ======== VERSÃO DO APP ======== */
-.app-version {
-  position: fixed;
+/* barra vertical no filho ativo */
+.submenu-item.active::before{
+  content: "";
+  position: absolute;
+  left: -12px;               /* encosta na linha do submenu */
+  top: 8px;
   bottom: 8px;
-  right: 12px;
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
-  pointer-events: none;
-  user-select: none;
-  font-family: sans-serif;
+  width: 4px;
+  border-radius: 999px;
+  background: var(--brand);
 }
+
+/* =========================
+   CONTEÚDO
+========================= */
+
+.content{
+  position: relative;
+}
+
+.content::before{
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(2, 6, 23, 0.06);
+  pointer-events: none;
+}
+
+/* versão no canto */
+.app-version{
+  position: fixed;
+  right: 14px;
+  bottom: 10px;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
 
 /* ======== HUB DE NOTÍCIAS ======== */
 .hub-title {
@@ -364,31 +466,32 @@ html, body {
   min-height: 100vh;
 }
 
+
 .sidebar{
-  width: 240px;
+  width: 300px;
+  padding: 12px 14px 16px;                 /* menos espaço no topo */
   background: #ffffff;
-  border-right: 1px solid #e5e7eb;
-  padding: 16px 14px;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch; /* <-- não centraliza */
+
+  border-right: 2px solid #cfd8e6;          /* linha mais evidente */
+  box-shadow: 8px 0 24px rgba(2, 6, 23, 0.04);
 }
 
 .sidebar-logo{
-  display: flex;
-  justify-content: center;
-  margin: 6px 0 14px;
+  display: grid;
+  place-items: center;
+  padding: 6px 8px 8px;                     /* aproxima do menu */
+  margin: 0;                                /* tira margem extra */
 }
 
 .sidebar-logo img{
-  max-width: 180px;
+  width: 190px;                              /* opcional: um pouco menor */
+  max-width: 100%;
   height: auto;
 }
 
+/* encosta o menu mais no logo */
 .menu{
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  margin-top: 6px;
 }
 
 .menu-item{
@@ -459,4 +562,28 @@ html, body {
 
 #content{
   padding: 0; /* suas views já tem card centralizado, então deixa elas controlar */
+}
+
+/* Alinhamento padrão do menu: ícone + texto juntinhos */
+.menu-item{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Hub/Comparador NÃO podem usar space-between */
+.menu-item:not(#menu-parser){
+  justify-content: flex-start;
+}
+
+/* Só o Parser separa pra jogar o caret pra direita */
+#menu-parser{
+  justify-content: space-between;
+}
+
+/* (se estiver usando menu-left no Parser) */
+#menu-parser .menu-left{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
 }
