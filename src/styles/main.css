@@ -587,3 +587,94 @@
   align-items: center;
   gap: 10px;
 }
+
+/* Sidebar vira coluna pra organizar melhor */
+.sidebar{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Mantém o menu agrupado */
+.menu{
+  flex: 0 0 auto;
+}
+
+/* Botão Modelo7 (estética dark + azul igual o app) */
+.btn-modelo7{
+  width: 100%;
+  margin-top: 4px;
+
+  border: 1px solid rgba(46, 145, 235, 0.55);
+  border-radius: 12px;
+
+  padding: 12px 14px;
+  background: linear-gradient(180deg, #2b2f36 0%, #1e2229 100%);
+  color: #eef6ff;
+
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  box-shadow: 0 10px 18px rgba(2, 6, 23, 0.10);
+  cursor: pointer;
+
+  transition: transform .08s ease, border-color .2s ease, filter .2s ease;
+}
+
+.btn-modelo7:hover{
+  border-color: rgba(46, 145, 235, 0.95);
+  transform: translateY(-1px);
+}
+
+.btn-modelo7:active{
+  transform: translateY(0px);
+  filter: brightness(0.98);
+}
+
+.btn-modelo7:focus-visible{
+  outline: 3px solid rgba(46, 145, 235, 0.30);
+  outline-offset: 2px;
+}
+
+.btn-modelo7-left{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* “bolinha” azul como detalhe do Modelo7 */
+.btn-modelo7-dot{
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(46, 145, 235, 0.95);
+  box-shadow: 0 0 0 4px rgba(46, 145, 235, 0.18);
+}
+
+.btn-modelo7-pill{
+  font-size: 11px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(46, 145, 235, 0.16);
+  border: 1px solid rgba(46, 145, 235, 0.45);
+  color: #dbeeff;
+}
+
+/* Log (opcional) */
+.sidebar-log{
+  margin: 0;
+  display: none; /* coloque block se quiser ver */
+  background: #0b1220;
+  color: #dbeafe;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 12px;
+  max-height: 140px;
+  overflow: auto;
+}

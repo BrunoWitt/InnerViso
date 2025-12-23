@@ -58,4 +58,13 @@ async function carregarNoticias() {
   }
 }
 
+document.getElementById("btnModelo7").addEventListener("click", async () => {
+  console.log("clicou modelo7");
+
+  const res = await window.api.runModelo7([]);
+  console.log("resultado modelo7:", res);
+
+  if (!res?.ok) alert(res?.err || "Falhou ao executar o Modelo7");
+});
+
 window.carregarNoticias = carregarNoticias;

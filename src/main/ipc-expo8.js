@@ -227,16 +227,14 @@ function registerExpo8Ipc() {
   });
 
   
-  ipcMain.handle("parserExpo8", async (event, listCodes, pathOut) => {
+  ipcMain.handle("parserExpo8", async (event, listCodes, pathOut, nomeSaida) => {
     const url = "http://10.0.0.232:1051/due_router/EXPO8";
+    //const url = "http://127.0.0.1:8000/due_router/EXPO8";
 
     const tipo = "EXPO8";
 
     const { entradaServidor, saidaServidor } = await criar_pastas(tipo);
     const {pathInLinux, pathOutLinux} = await converter_pastas(entradaServidor, saidaServidor)
-
-    console.log(pathInLinux)
-    console.log(pathOutLinux)
 
     const wcId = event.sender.id;
     const controller = new AbortController();
@@ -254,6 +252,7 @@ function registerExpo8Ipc() {
           RAW_DUE_NUMBER: listCodes,
           PATHIN: pathInLinux,
           PATHOUT: pathOutLinux,
+          nomeSaida: String(nomeSaida || null),
         },
         paramsSerializer: (params) =>
           Object.entries(params)

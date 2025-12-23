@@ -4,6 +4,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const os = require('os');
 const axios = require('axios');
+const { NONAME } = require('dns');
 const tokenToSaidaServidor = new Map();
 
 const BASE_UNC = '\\\\10.0.0.237\\visonet\\Sistemas\\FileSystem\\WSVISOparser';
@@ -95,7 +96,7 @@ function converter_pastas(pathInServer, pathOutServer) {
   return { pathInLinux, pathOutLinux };
 }
 
-async function executarParser(pathInServer, pathOutServer, tipoParser, token) {
+async function executarParser(pathInServer, pathOutServer, tipoParser, token, nomeSaida) {
   /**
    * Faz contato com o webservice para executar o parser.
    * @param pathInServer: Pasta de entrada do servidor
@@ -106,10 +107,15 @@ async function executarParser(pathInServer, pathOutServer, tipoParser, token) {
    */
   
   const endpoints = {
+      //NFE: 'http://127.0.0.1:8000/nfe_router/nfe',
       NFE:  'http://10.0.0.232:1051/nfe_router/nfe',
+      //IMPO1: 'http://127.0.0.1:8000/di_router/IMPO1',
       IMPO1:'http://10.0.0.232:1051/di_router/IMPO1',
+      //IMPO8: 'http://127.0.0.1:8000/di_router/IMPO8',
       IMPO8:'http://10.0.0.232:1051/di_router/IMPO8',
-      SPED: 'http://10.0.0.232:1051/sped_router/sped', 
+      //SPED: 'http://127.0.0.1:8000/sped_router/sped',
+      SPED: 'http://10.0.0.232:1051/sped_router/sped',
+      //BASE: 'http://127.0.0.1:8000/nfe_router/base_reintegra', 
       BASE: 'http://10.0.0.232:1051/nfe_router/base_reintegra',
     };
 
@@ -123,6 +129,7 @@ async function executarParser(pathInServer, pathOutServer, tipoParser, token) {
       pathIn: pathInLinux,
       pathOut: pathOutLinux,
       token: String(token || 'electron-ui'),
+      nomeSaida: String(nomeSaida || null)
     },
     timeout: 0,
     validateStatus: () => true, // ok, mas agora vamos checar manualmente
@@ -228,22 +235,30 @@ function registerParserIpc() {
     }
   });
 
-  async function resgate_arquivos_do_servidor(pathOutServer, pathOutLocal) {
+  async function resgate_arquivos_do_servidor(pathOutServer, pathOutLocal, tipoParser) {
     const arquivos = await fs.readdir(pathOutServer)
-  
-    for(const arquivo of arquivos) {
-      if(path.extname(arquivo).toLowerCase() === '.xlsx') {
+
+    // Extensões a copiar
+    const extensoes = new Set(['.xlsx'])
+    if ((tipoParser || '').toUpperCase() === 'SPED') {
+      extensoes.add('.txt')
+    }
+
+    for (const arquivo of arquivos) {
+      const ext = path.extname(arquivo).toLowerCase()
+
+      if (extensoes.has(ext)) {
         await fs.copyFile(
           path.join(pathOutServer, arquivo),
           path.join(pathOutLocal, arquivo)
         )
-        console.log('Arquivo .xlsx copiado.')
+        console.log(`Arquivo ${ext} copiado: ${arquivo}`)
       }
     }
   }
 
   // ---------- iniciar parser ----------
-  ipcMain.handle('iniciar-parser', async (_event, entradaLocal, saidaLocal, tipoParser, token) => {
+  ipcMain.handle('iniciar-parser', async (_event, entradaLocal, saidaLocal, tipoParser, token, nomeSaida) => {
     
     const { entradaServidor, saidaServidor } = await criar_pastas(entradaLocal, tipoParser); //Cria as pastas no servidor para o WB ler
 
@@ -251,14 +266,14 @@ function registerParserIpc() {
 
     (async () => {
       try {
-        const result = await executarParser(entradaServidor, saidaServidor, tipoParser, token);
+        const result = await executarParser(entradaServidor, saidaServidor, tipoParser, token, nomeSaida);
 
         const resultPath = path.join(saidaServidor, `.result_${token}.json`);
         await fs.writeJson(resultPath, result, { spaces: 2 });
 
         await fs.ensureDir(saidaLocal);
 
-        resgate_arquivos_do_servidor(saidaServidor, saidaLocal)
+        resgate_arquivos_do_servidor(saidaServidor, saidaLocal, tipoParser)
 
         await fs.writeFile(path.join(saidaServidor, `.done_${token}`), 'OK');
       } catch (err) {

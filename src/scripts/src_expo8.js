@@ -12,6 +12,8 @@ function initExpo8() {
     const listContainer = document.getElementById("codes-list");
     const loadingOverlay = document.getElementById("loading-overlay");
     const btnCancelar = document.getElementById("cancel-parser-btn");
+    const nomeSaidaInput = document.getElementById("output-name-input");
+    const limparNomeBtn = document.getElementById("clear-output-name-btn");
 
     let cancelRequested = false;
 
@@ -51,6 +53,20 @@ function initExpo8() {
             console.log(listCodes)
         });
     }
+
+    function sanitizeFileStem(s) {
+        return (s || "")
+            .trim()
+            .replace(/[\\/:*?"<>|]/g, "-") // inválidos no Windows
+            .replace(/\s+/g, " ")
+            .slice(0, 60);
+        }
+
+        limparNomeBtn?.addEventListener("click", () => {
+        if (!nomeSaidaInput) return;
+        nomeSaidaInput.value = "";
+        nomeSaidaInput.focus();
+    });
 
     // ===== PROGRESS (polling) =====
 let progressTimer = null;
@@ -291,7 +307,8 @@ let progressTimer = null;
 
     // Rodar parser
     btnParser.addEventListener("click", async () => {
-    const pathOut = lblSaida.value;
+        const nomeSaida = sanitizeFileStem(nomeSaidaInput?.value || "");
+        const pathOut = lblSaida.value;
 
     if (!window.listCodes.length) {
         alert("Adicione pelo menos um código.");
@@ -309,7 +326,7 @@ let progressTimer = null;
     startProgressPolling();
 
     try {
-    const result = await window.api.parserExpo8(window.listCodes, pathOut);
+    const result = await window.api.parserExpo8(window.listCodes, pathOut, nomeSaida);
     mostrarResultado(result, pathOut);
     } catch (err) {
     mostrarResultado({

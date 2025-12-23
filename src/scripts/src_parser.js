@@ -10,6 +10,8 @@ function initParser() {
   const btnRun = document.getElementById("btnIniciar");
   const btnSave = document.getElementById("btnSalvar");
   const btnClean = document.getElementById("btnLimpar");
+  const inpNome = document.getElementById("nomeSaida");
+  const btnLimparNome = document.getElementById("btnLimparNome");
 
   // ========= helpers =========
   function bindSafe(el, event, handler) {
@@ -18,6 +20,14 @@ function initParser() {
     if (el[key]) el.removeEventListener(event, el[key]);
     el.addEventListener(event, handler);
     el[key] = handler;
+  }
+
+  function sanitizeFileStem(s) {
+    return (s || "")
+      .trim()
+      .replace(/[\\/:*?"<>|]/g, "-")  // inválidos no Windows
+      .replace(/\s+/g, " ")
+      .slice(0, 60);
   }
 
   // ========= carregar padrao.json =========
@@ -61,6 +71,11 @@ function initParser() {
       console.error("Erro ao limpar configurações:", error);
       alert("Erro ao limpar configurações. Veja o console para mais detalhes.");
     }
+  });
+
+  btnLimparNome?.addEventListener("click", () => {
+    if (inpNome) inpNome.value = "";
+    inpNome?.focus();
   });
 
   // ========= abrir pasta de saída =========
@@ -181,6 +196,8 @@ function initParser() {
     const loadingText = document.getElementById("loadingText");
     const progressCount = document.getElementById("progressCount");
     const btnCancelar = document.getElementById("btnCancelar");
+    const nomeSaida = sanitizeFileStem(inpNome?.value || "");
+
 
     const token = Date.now().toString();
 
@@ -217,7 +234,7 @@ function initParser() {
     }, 600);
 
     try {
-      await window.api.iniciarParser(entrada, saida, tipoParser, token);
+      await window.api.iniciarParser(entrada, saida, tipoParser, token, nomeSaida || null);
     } catch (err) {
       console.error("Erro ao iniciar parser:", err);
       clearInterval(progTimer);

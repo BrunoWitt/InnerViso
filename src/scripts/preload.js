@@ -20,15 +20,16 @@ try {
     getNotices: () => ipcRenderer.invoke("get-notices"),
     getNoticesCached: () => ipcRenderer.invoke("get-notices-cached"),
     saveNotices: (data) => ipcRenderer.invoke("salvar-notices", data),
-    parserExpo8: (listCodes, caminho_saida) => ipcRenderer.invoke("parserExpo8", listCodes, caminho_saida),
+    parserExpo8: (listCodes, caminho_saida, nomeSaida) => ipcRenderer.invoke("parserExpo8", listCodes, caminho_saida, nomeSaida),
     readExpo8Log: () => ipcRenderer.invoke("readExpo8Log"),
     runExpo8: (dues, saida) => ipcRenderer.invoke("run-expo8", dues, saida),
     cancelExpo8: () => ipcRenderer.invoke("cancelExpo8"),
     getExpo8Progress: () => ipcRenderer.invoke("getExpo8Progress"),
+    runModelo7: (args = []) => ipcRenderer.invoke('modelo7:run', args),
 
     // Parser WSViso
 
-    iniciarParser: (entrada, saida, tipoParser, token) => ipcRenderer.invoke('iniciar-parser', entrada, saida, tipoParser, token),
+    iniciarParser: (entrada, saida, tipoParser, token, nomeSaida) => ipcRenderer.invoke('iniciar-parser', entrada, saida, tipoParser, token, nomeSaida),
     parserStatus: (token) => ipcRenderer.invoke('parser:status', token),
     parserProgress: (token) => ipcRenderer.invoke('parser:progress', token),
     parserCancel:   (token) => ipcRenderer.invoke('parser:cancel', token),

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../styles/common.css" />
+    <link rel="stylesheet" href="../styles/buscadorEP.css" />
+    <title>Upload de planilhas</title>
+  </head>
+
+  <body>
+    <main class="buscador-wrapper" role="main">
+      <section class="card-upload">
+        <h1>Enviar planilhas</h1>
+
+        <div class="field">
+          <label for="fileA">Planilha A</label>
+          <input
+            id="fileA"
+            type="file"
+            accept=".xlsx,.xls,.csv"
+          />
+          <small id="fileAName">Nenhum arquivo selecionado</small>
+        </div>
+
+        <div class="field">
+          <label for="fileB">Planilha B</label>
+          <input
+            id="fileB"
+            type="file"
+            accept=".xlsx,.xls,.csv"
+          />
+          <small id="fileBName">Nenhum arquivo selecionado</small>
+        </div>
+
+        <div class="actions">
+          <button id="btnProcessar" type="button" disabled>Processar</button>
+        </div>
+
+        <p id="msg" class="msg"></p>
+      </section>
+    </main>
+
+    <script src="../scripts/src_buscadorEp.js"></script>
+  </body>
+
+
+
+</html>
