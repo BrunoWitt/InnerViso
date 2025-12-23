@@ -58,13 +58,49 @@ async function carregarNoticias() {
   }
 }
 
+function ensureLoadingOverlay() {
+  let overlay = document.getElementById("loadingOverlay");
+  if (overlay) return overlay;
+
+  overlay = document.createElement("div");
+  overlay.id = "loadingOverlay";
+  overlay.setAttribute("aria-hidden", "true");
+  overlay.innerHTML = `
+    <div class="loadingCard" role="dialog" aria-modal="true" aria-label="Carregando">
+      <div class="spinner" aria-hidden="true"></div>
+      <div class="loadingText" id="loadingText">Carregando...</div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  return overlay;
+}
+
+function setLoading(isLoading, text = "Carregando...") {
+  const overlay = ensureLoadingOverlay();
+  const loadingText = overlay.querySelector("#loadingText");
+  if (loadingText) loadingText.textContent = text;
+
+  overlay.style.display = isLoading ? "flex" : "none";
+  overlay.setAttribute("aria-hidden", String(!isLoading));
+}
+
+// Seu listener com modal
 document.getElementById("btnModelo7").addEventListener("click", async () => {
   console.log("clicou modelo7");
 
-  const res = await window.api.runModelo7([]);
-  console.log("resultado modelo7:", res);
+  setLoading(true, "Abrindo o Modelo 7...");
 
-  if (!res?.ok) alert(res?.err || "Falhou ao executar o Modelo7");
+  try {
+    const res = await window.api.runModelo7([]);
+    console.log("resultado modelo7:", res);
+
+    if (!res?.ok) {
+      alert(res?.err || "Falhou ao executar o Modelo7");
+    }
+  } finally {
+    setLoading(false);
+  }
 });
+
 
 window.carregarNoticias = carregarNoticias;
