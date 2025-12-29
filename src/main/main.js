@@ -12,6 +12,7 @@ const { registerParserIpc } = require('./ipc-parser');
 const { registerExpo8Ipc } = require('./ipc-expo8');
 const { registerComparatorIpc } = require('./ipc-comparador');
 const { registerModelo7Ipc } = require('./modelo7')
+const { registerBuscadorEpIPC } = require('./ipc-buscadorEp');
 
 console.log('Versão atual:', app.getVersion());
 
@@ -54,6 +55,7 @@ if (!gotTheLock) {
     registerExpo8Ipc();
     registerComparatorIpc();
     registerModelo7Ipc();
+    registerBuscadorEpIPC();
 
     // Notícias
     setupNotices();

@@ -11,6 +11,8 @@ const initializers = {
 
   // view "shell" que carrega import/export dentro dela
   parser:       () => window.initParserShell?.(),
+
+  buscadorEp:   () => window.initBuscadorEp?.(),
 };
 
 // expõe para o parser shell conseguir chamar init da view filha

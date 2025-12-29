@@ -33,8 +33,6 @@ try {
     parserStatus: (token) => ipcRenderer.invoke('parser:status', token),
     parserProgress: (token) => ipcRenderer.invoke('parser:progress', token),
     parserCancel:   (token) => ipcRenderer.invoke('parser:cancel', token),
-
-
     copiarSaida: (remoto, local) => ipcRenderer.invoke('copiar-saida', remoto, local),
 
     lerProgresso(saidaServidor, token) {
@@ -70,12 +68,15 @@ try {
       } catch { return null; }
     },
 
-  });
+    // Buscador EP
+    selectBaseFile: () => ipcRenderer.invoke('select-base-file'),
+    selectSearchFile: () => ipcRenderer.invoke('select-search-file'),
+    selectPathOutFolder: () => ipcRenderer.invoke('select-path-out-folder'),
+    buscadorEpRun: (payload, pathOutLocal) => ipcRenderer.invoke('buscador-ep-run', payload, pathOutLocal),
 
-  contextBridge.exposeInMainWorld("api", {
+    //Expo8
     runExpo8: (dues, output) => ipcRenderer.invoke("run-expo8", dues, output),
   });
-
 
   console.log('[preload] API exposta com sucesso');
 } catch (e) {

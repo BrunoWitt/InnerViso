@@ -34,10 +34,11 @@ function createMainWindow() {
     },
   });
 
+    /*
     win.setMenuBarVisibility(false); // esconde a barra
     win.setAutoHideMenuBar(true);    // (opcional) só aparece se apertar ALT
     win.removeMenu();  
-
+    */
     win.maximize()
 
   win.loadFile(appHtml);

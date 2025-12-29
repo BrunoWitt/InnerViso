@@ -4,46 +4,209 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../styles/common.css" />
-    <link rel="stylesheet" href="../styles/sty_expo8.css" />
+    <link rel="stylesheet" href="../styles/buscadorEP.css" />
     <title>Upload de planilhas</title>
   </head>
 
   <body>
     <main class="buscador-wrapper" role="main">
-      <section class="card-upload">
-        <h1>Enviar planilhas</h1>
+      <!-- Buscador de EP (conteúdo central) -->
+      <section class="ep-page" aria-label="Buscador de EP">
+        <div class="ep-card">
+          <header class="ep-card__header">
+            <div></div>
 
-        <div class="field">
-          <label for="fileA">Planilha A</label>
-          <input
-            id="fileA"
-            type="file"
-            accept=".xlsx,.xls,.csv"
-          />
-          <small id="fileAName">Nenhum arquivo selecionado</small>
+            <h1 class="ep-title">Buscador de EP</h1>
+
+          </header>
+
+          <div class="ep-card__body">
+            <div class="ep-grid">
+              <!-- COLUNA ESQUERDA -->
+              <section class="ep-panel" aria-label="Planilha de base">
+                <header class="ep-panel__header">
+                  <h2 class="ep-panel__title">Planilha de base</h2>
+
+                  <button id="btnLimparBase" class="ep-btn ep-btn--ghost" type="button">
+                    Limpar
+                  </button>
+                </header>
+
+                <div class="ep-field">
+                  <label class="ep-label" for="inputBasePath">Arquivo base</label>
+
+                  <div class="ep-input-row">
+                    <input
+                      id="inputBasePath"
+                      class="ep-input"
+                      type="text"
+                      placeholder="Selecione a planilha base (.xlsx / .csv)"
+                      readonly
+                    />
+
+                    <button
+                      id="btnSelecionarBase"
+                      class="ep-icon-btn"
+                      type="button"
+                      aria-label="Selecionar arquivo base"
+                      title="Selecionar arquivo base"
+                    >
+                      <!-- ícone pasta (inline svg) -->
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                          d="M10 4l2 2h8a2 2 0 012 2v1H2V6a2 2 0 012-2h6zm12 6v10a2 2 0 01-2 2H4a2 2 0 01-2-2V10h20z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+
+                  <p class="ep-help">
+                    A planilha “base” é a referência principal (onde estão seus EPs/itens).
+                  </p>
+                </div>
+
+                <div class="ep-preview" role="region" aria-label="Prévia da planilha base">
+                  <div class="ep-preview__head">Prévia da planilha</div>
+
+                  <div id="previewBase" class="ep-preview__body">
+                    <div class="ep-empty">
+                      <div class="ep-empty__title">Nenhum arquivo carregado</div>
+                      <div class="ep-empty__subtitle">
+                        Selecione uma planilha para visualizar as primeiras linhas.
+                      </div>
+                    </div>
+
+                    <!-- Exemplo de tabela (remova quando for renderizar via JS) -->
+                    <!--
+                    <table class="ep-table">
+                      <thead>
+                        <tr>
+                          <th>Código</th>
+                          <th>Descrição</th>
+                          <th>NCM</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>EP001</td>
+                          <td>Produto exemplo...</td>
+                          <td>1234.56.78</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    -->
+                  </div>
+                </div>
+              </section>
+
+              <!-- COLUNA DIREITA -->
+              <section class="ep-panel" aria-label="Planilha de busca">
+                <header class="ep-panel__header">
+                  <h2 class="ep-panel__title">Planilha de busca</h2>
+
+                  <button id="btnLimparBusca" class="ep-btn ep-btn--ghost" type="button">
+                    Limpar
+                  </button>
+                </header>
+
+                <div class="ep-field">
+                  <label class="ep-label" for="inputBuscaPath">Arquivo de busca</label>
+
+                  <div class="ep-input-row">
+                    <input
+                      id="inputBuscaPath"
+                      class="ep-input"
+                      type="text"
+                      placeholder="Selecione a planilha de busca (.xlsx / .csv)"
+                      readonly
+                    />
+
+                    <button
+                      id="btnSelecionarBusca"
+                      class="ep-icon-btn"
+                      type="button"
+                      aria-label="Selecionar arquivo de busca"
+                      title="Selecionar arquivo de busca"
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                          d="M10 4l2 2h8a2 2 0 012 2v1H2V6a2 2 0 012-2h6zm12 6v10a2 2 0 01-2 2H4a2 2 0 01-2-2V10h20z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+
+                  <p class="ep-help">
+                    A planilha “busca” é a que você quer consultar/comparar contra a base.
+                  </p>
+                </div>
+
+                <div class="ep-preview" role="region" aria-label="Prévia da planilha de busca">
+                  <div class="ep-preview__head">Prévia da planilha</div>
+
+                  <div id="previewBusca" class="ep-preview__body">
+                    <div class="ep-empty">
+                      <div class="ep-empty__title">Nenhum arquivo carregado</div>
+                      <div class="ep-empty__subtitle">
+                        Selecione uma planilha para visualizar as primeiras linhas.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <!-- Barra inferior (no padrão do app) -->
+            <div class="ep-footer-bar">
+            <!-- lado esquerdo: pasta de saída -->
+            <div class="ep-footer-left">
+              <div class="ep-field">
+                <label class="ep-label" for="inputSaidaPath">Pasta de saída</label>
+
+                <div class="ep-input-row">
+                  <input
+                    id="inputSaidaPath"
+                    class="ep-input"
+                    type="text"
+                    placeholder="Selecione a pasta de saída"
+                    readonly
+                  />
+
+                  <button
+                    id="btnSelecionarSaida"
+                    class="ep-icon-btn"
+                    type="button"
+                    aria-label="Selecionar pasta de saída"
+                    title="Selecionar pasta de saída"
+                  >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path
+                        d="M10 4l2 2h8a2 2 0 012 2v1H2V6a2 2 0 012-2h6zm12 6v10a2 2 0 01-2 2H4a2 2 0 01-2-2V10h20z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- lado direito: ações -->
+            <div class="ep-footer-actions">
+              <button id="btnLimparTudo" class="ep-btn ep-btn--outline" type="button">
+                Limpar tudo
+              </button>
+
+              <button id="btnExecutarBusca" class="ep-btn ep-btn--primary" type="button">
+                Executar busca
+              </button>
+            </div>
+          </div>
+
+          </div>
         </div>
-
-        <div class="field">
-          <label for="fileB">Planilha B</label>
-          <input
-            id="fileB"
-            type="file"
-            accept=".xlsx,.xls,.csv"
-          />
-          <small id="fileBName">Nenhum arquivo selecionado</small>
-        </div>
-
-        <div class="actions">
-          <button id="btnProcessar" type="button" disabled>Processar</button>
-        </div>
-
-        <p id="msg" class="msg"></p>
       </section>
+
     </main>
 
     <script src="../scripts/src_buscadorEp.js"></script>
   </body>
-
-
-
 </html>
