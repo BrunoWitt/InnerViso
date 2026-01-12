@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Coletar-Di-Hoje</title>
+
+    <!-- Estilo global Visonet -->
+    <link rel="stylesheet" href="../styles/common.css" />
+    <!-- Estilo específico do Expo8 -->
+    <link rel="stylesheet" href="../styles/sty_expo8.css" />
+  </head>
+
+  <body>
+    <div class="parser-container main-card expo8-container">
+      <div class="hint">Clique no botão de executar para coletar as DIs.</div>
+
+
+      <div class="footer-actions">
+        <button id="run-parser-btn" class="primary" type="button">
+          <img
+            class="btn-ico-play"
+            src="../assets/icones/ic_play-24-outline-white.svg"
+            alt=""
+            aria-hidden="true"
+          />
+          Executar Coleta das DIs
+        </button>
+      </div>
+    </div>
+
+    <!-- MODAL DE CARREGAMENTO / RESULTADO -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+      <div class="loading-box expo8-loading">
+
+        <!-- ===== LOADING ===== -->
+        <div id="coletar-di-loading">
+          <div class="spinner"></div>
+
+          <p
+            id="expo8-progress-message"
+            class="expo8-progress-message"
+          >
+            Iniciando coleta das DIs...
+          </p>
+
+          <button
+            id="cancel-parser-btn"
+            class="expo8-cancel-btn"
+            type="button"
+          >
+            Cancelar
+          </button>
+        </div>
+
+        <!-- ===== RESULTADO ===== -->
+        <div
+          id="coletar-di-result"
+          class="hidden"
+          style="margin-top:16px;"
+        >
+          <p class="expo8-progress-message">
+            DIs coletadas:
+          </p>
+
+          <textarea
+            id="coletar-di-textarea"
+            readonly
+            style="
+              width:100%;
+              height:140px;
+              resize:none;
+              font-family:monospace;
+              margin-top:8px;
+            "
+          ></textarea>
+
+          <div
+            style="
+              margin-top:12px;
+              display:flex;
+              gap:8px;
+              justify-content:flex-end;
+            "
+          >
+            <button
+              id="copy-dis-btn"
+              class="primary"
+              type="button"
+            >
+              Copiar DIs
+            </button>
+
+            <button
+              id="close-result-btn"
+              class="primary"
+              type="button"
+            >
+              Fechar
+            </button>
+          </div>
+        </div>
+
+
+    <script src="../scripts/src_expo8.js"></script>
+  </body>
+</html>

@@ -34,13 +34,108 @@
           <button class="submenu-item" data-mode="export" type="button">Exportação</button>
         </div>
 
+        
+        <button id="menu-scraper" class="menu-item" data-view="scraper" type="button">
+          <span class="menu-left">
+            <img class="menu-ico" src="../assets/vrum/ic_file-24-outline-blue.svg" alt="" aria-hidden="true">
+            <span class="menu-text">Scraper</span>
+          </span>
+          <span id="scraper-caret" class="menu-caret">▸</span>
+        </button>
+
+        <!-- Submenu principal -->
+        <div id="scraper-submenu" class="submenu">
+
+          <!-- ======================= DI ======================= -->
+          <div class="submenu-group">
+            <button class="submenu-item has-children" type="button" aria-expanded="false">
+              <span class="menu-text">DI</span>
+              <span class="menu-caret">▸</span>
+            </button>
+
+            <div class="submenu nested" hidden>
+              <button class="submenu-item" data-mode="coletar-di" type="button">
+                Coletar DI de hoje
+              </button>
+              <button class="submenu-item" data-mode="coletar-di-cnpj" type="button">
+                Coletar DI pelo CNPJ
+              </button>
+              <button class="submenu-item" data-mode="baixar-di" type="button">
+                Baixar DI
+              </button>
+              <button class="submenu-item" data-mode="baixar-di-pdf" type="button">
+                Baixar DI e converter para PDF
+              </button>
+            </div>
+          </div>
+
+          <!-- ======================= LI ======================= -->
+          <div class="submenu-group">
+            <button class="submenu-item has-children" type="button" aria-expanded="false">
+              <span class="menu-text">LI</span>
+              <span class="menu-caret">▸</span>
+            </button>
+
+            <div class="submenu nested" hidden>
+              <button class="submenu-item" data-mode="coletar-li" type="button">
+                Coletar LI de hoje
+              </button>
+              <button class="submenu-item" data-mode="coletar-li-cnpj" type="button">
+                Coletar LI pelo CNPJ
+              </button>
+              <button class="submenu-item" data-mode="baixar-li" type="button">
+                Baixar LI
+              </button>
+            </div>
+          </div>
+
+          <!-- ======================= ATO ======================= -->
+          <div class="submenu-group">
+            <button class="submenu-item has-children" type="button" aria-expanded="false">
+              <span class="menu-text">ATO</span>
+              <span class="menu-caret">▸</span>
+            </button>
+
+            <div class="submenu nested" hidden>
+              <button class="submenu-item" data-mode="baixar-ato" type="button">
+                Baixar ATO
+              </button>
+              <button class="submenu-item" data-mode="baixar-ato-cnpj" type="button">
+                Baixar ATO pelo CNPJ
+              </button>
+            </div>
+          </div>
+
+
+          <!-- ======================= DUE ======================= -->
+          <div class="submenu-group">
+            <button class="submenu-item has-children" type="button" aria-expanded="false">
+              <span class="menu-text">DUE</span>
+              <span class="menu-caret">▸</span>
+            </button>
+
+            <div class="submenu nested" hidden>
+              <button class="submenu-item" data-mode="due-download" type="button">
+                Baixar DUE
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+
+
         <button class="menu-item" data-view="Comparador" type="button">
           <img class="menu-ico" src="../assets/icones/ic_comparador-24-blue.svg" alt="" aria-hidden="true">
           <span class="menu-text">Comparador</span>
         </button>
-
+        
+        <!--
+        Local do icone do buscador
+        ../assets/icones/ic_buscadorEp-24-blue.svg
+        -->
         <button class="menu-item" data-view="buscadorEp" type="button">
-          <img class="menu-ico" src="../assets/icones/ic_buscadorEp-24-blue.svg" alt="" aria-hidden="true">
+          <img class="menu-ico" src="../assets/icones/ic_comparador-24-blue.svg" alt="" aria-hidden="true">
           <span class="menu-text">Buscador Ep</span>
         </button>
 
@@ -68,12 +163,16 @@
   </div>
 
   <script src="../scripts/main.js"></script>
-  <script src="../scripts/router.js"></script>
   <script src="../scripts/src_parser.js"></script>
   <script src="../scripts/src_comparador.js"></script>
   <script src="../scripts/src_expo8.js"></script>
   <script defer src="../scripts/router.js"></script>
   <script defer src="../scripts/parser_menu.js"></script>
+  <script defer src="../scripts/scraper_menu.js"></script>
   <script defer src="../scripts/parser.js"></script>
   <script defer src="../scripts/src_buscadorEp.js"></script>
+  <script defer src="../scripts/coletarDi.js"></script>
+  <script defer src="../scripts/baixarDi.js"></script>
+  <script defer src="../scripts/baixarLi.js"></script>
+  <script defer src="../scripts/baixarDue.js"></script>
 </body>

@@ -104,3 +104,18 @@ document.getElementById("btnModelo7").addEventListener("click", async () => {
 
 
 window.carregarNoticias = carregarNoticias;
+
+window.addEventListener("click", (e) => {
+  const insideParser = e.target.closest("#menu-parser, #parser-submenu");
+  const insideScraper = e.target.closest("#menu-scraper, #scraper-submenu");
+
+  // se clicar fora do parser
+  if (!insideParser) {
+    window.closeParserMenu?.(true);
+  }
+
+  // se clicar fora do scraper
+  if (!insideScraper) {
+    window.closeScraperMenu?.(true);
+  }
+}, true); // 👈 o segredo está aqui: use capture = true

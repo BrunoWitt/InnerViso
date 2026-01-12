@@ -590,3 +590,22 @@
   transform: translateY(1px);
   box-shadow: 0 5px 12px rgba(11,99,209,0.14);
 }
+
+.coletar-di-actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.coletar-di-actions button {
+  min-width: 120px;
+}
+
+.loading-box {
+  position: relative;
+}
+
+.expo8-cancel-btn {
+  margin-top: 16px;
+}

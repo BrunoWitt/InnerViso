@@ -13,6 +13,10 @@ const initializers = {
   parser:       () => window.initParserShell?.(),
 
   buscadorEp:   () => window.initBuscadorEp?.(),
+  coletarDi:    () => window.initColetarDi?.(),
+  baixarDi:     () => window.initBaixarDi?.(),
+  baixarLi:     () => window.initBaixarLi?.(),
+  baixarDue:     () => window.initBaixarDue?.(),
 };
 
 // expõe para o parser shell conseguir chamar init da view filha
@@ -69,7 +73,7 @@ window.loadView = loadView;
 function setupMenuRouting() {
   document.querySelectorAll('.menu-item').forEach(btn => {
     // IMPORTANTE: não deixa o router prender click no menu-parser
-    if (btn.id === "menu-parser") return;
+    if (btn.id === "menu-parser" || btn.id === "menu-scraper") return;
 
     btn.addEventListener('click', () => loadView(btn.dataset.view));
   });

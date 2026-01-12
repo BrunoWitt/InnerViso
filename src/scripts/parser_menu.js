@@ -9,16 +9,18 @@
 
   if (!parserBtn || !submenu) return;
 
-  function closeParserMenu(save = true) {
-    submenu.style.display = "none";
-    parserBtn.classList.remove("is-open");
-    if (save) localStorage.setItem("parser_submenu_open", "0");
-  }
-
   function openParserMenu(save = true) {
     submenu.style.display = "flex";
     parserBtn.classList.add("is-open");
+    parserBtn.querySelector(".menu-caret").textContent = "▾";
     if (save) localStorage.setItem("parser_submenu_open", "1");
+  }
+
+  function closeParserMenu(save = true) {
+    submenu.style.display = "none";
+    parserBtn.classList.remove("is-open");
+    parserBtn.querySelector(".menu-caret").textContent = "▸";
+    if (save) localStorage.setItem("parser_submenu_open", "0");
   }
 
   function clearActive() {
@@ -123,9 +125,4 @@
     });
 
   // ======= Fecha submenu ao clicar fora (opcional) =======
-  document.addEventListener("click", (e) => {
-    if (!parserBtn.contains(e.target) && !submenu.contains(e.target)) {
-      closeParserMenu(true);
-    }
-  });
 })();

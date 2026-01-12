@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Baixar DI</title>
+
+    <!-- Estilo global Visonet -->
+    <link rel="stylesheet" href="../styles/common.css" />
+    <!-- Estilo específico (reaproveita Expo8) -->
+    <link rel="stylesheet" href="../styles/sty_expo8.css" />
+  </head>
+
+  <body>
+    <div class="parser-container main-card expo8-container">
+      <h2 class="parser-title">Baixar DI</h2>
+
+      <!-- =========================
+           ENTRADA DE DIs
+      ========================== -->
+      <div class="section">
+        <div class="section-title">Entrada de números de DI</div>
+
+        <div class="field-row">
+          <input
+            type="text"
+            id="code-input"
+            placeholder="Ex.: 2608320570 | 2608320570,2608320202 | 2608320570 2608320202"
+          />
+
+          <button id="add-code-btn" class="primary" type="button">
+            + Adicionar DI
+          </button>
+        </div>
+
+        <div class="hint">
+          Você pode informar várias DIs separadas por vírgula, espaço ou quebra de linha.
+        </div>
+
+        <div id="codes-list" class="codes-list"></div>
+      </div>
+
+      <!-- =========================
+           PASTA DE SAÍDA
+      ========================== -->
+      <div class="section">
+        <div class="section-title">Pasta de saída</div>
+
+        <div class="path-row">
+          <input
+            type="text"
+            id="output-path-input"
+            class="path-input"
+            placeholder="Nenhum selecionado"
+            readonly
+          />
+
+          <button
+            id="choose-folder-btn"
+            class="btn-icon"
+            title="Selecionar saída"
+            type="button"
+          >
+            <img
+              class="btn-ico"
+              src="../assets/icones/ic_folder-24-outline-white.svg"
+              alt=""
+              aria-hidden="true"
+            />
+          </button>
+        </div>
+
+        <div class="hint">
+          Os arquivos XML das DIs serão salvos nesta pasta.
+        </div>
+
+        <div class="actions">
+          <button id="open-folder-btn" class="btn-primary" type="button">
+            Abrir pasta de saída
+          </button>
+        </div>
+      </div>
+
+      <!-- =========================
+           AÇÕES
+      ========================== -->
+      <div class="footer-actions">
+        <button id="run-parser-btn" class="primary" type="button">
+          <img
+            class="btn-ico-play"
+            src="../assets/icones/ic_play-24-outline-white.svg"
+            alt=""
+            aria-hidden="true"
+          />
+          Baixar DIs
+        </button>
+      </div>
+    </div>
+
+    <!-- =========================
+         MODAL DE CARREGAMENTO
+    ========================== -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+      <div class="loading-box expo8-loading">
+        <div class="spinner"></div>
+
+        <p id="expo8-progress-message" class="expo8-progress-message">
+          Baixando arquivos XML das DIs...
+        </p>
+
+        <p id="expo8-progress-count" class="expo8-progress-count">
+          0 / 0
+        </p>
+
+        <div id="expo8-progress-wrap" class="expo8-progress-wrap">
+          <div id="expo8-progress-fill" class="expo8-progress-fill"></div>
+        </div>
+
+        <button id="cancel-parser-btn" class="expo8-cancel-btn" type="button">
+          Cancelar
+        </button>
+      </div>
+    </div>
+
+    <!-- JS específico do Baixar DI -->
+    <script src="../scripts/src_baixarDi.js"></script>
+  </body>
+</html>

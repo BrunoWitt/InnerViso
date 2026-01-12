@@ -13,6 +13,11 @@ const { registerExpo8Ipc } = require('./ipc-expo8');
 const { registerComparatorIpc } = require('./ipc-comparador');
 const { registerModelo7Ipc } = require('./modelo7')
 const { registerBuscadorEpIPC } = require('./ipc-buscadorEp');
+const { registerColetarDiIpc } = require('./ipc-coletarDi');
+const { registerBaixarDiIpc } = require("./ipc-baixar-di");
+const { registerBaixarLiIpc } = require("./ipc-baixar-li")
+const { registerBaixarDueIpc } = require("./ipc-baixar-due")
+
 
 console.log('Versão atual:', app.getVersion());
 
@@ -56,6 +61,10 @@ if (!gotTheLock) {
     registerComparatorIpc();
     registerModelo7Ipc();
     registerBuscadorEpIPC();
+    registerColetarDiIpc();
+    registerBaixarDiIpc();
+    registerBaixarLiIpc();
+    registerBaixarDueIpc();
 
     // Notícias
     setupNotices();
