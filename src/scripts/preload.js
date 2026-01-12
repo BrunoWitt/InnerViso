@@ -144,8 +144,17 @@ try {
     selectBaseFile: () => ipcRenderer.invoke('select-base-file'),
     selectSearchFile: () => ipcRenderer.invoke('select-search-file'),
     selectPathOutFolder: () => ipcRenderer.invoke('select-path-out-folder'),
-    buscadorEpRun: (payload, pathOutLocal) =>
-      ipcRenderer.invoke('buscador-ep-run', payload, pathOutLocal),
+    previewXlsx: (filePath, opts) => ipcRenderer.invoke("xlsx-preview", filePath, opts),
+    openPath: (targetPath) => ipcRenderer.invoke("open-path", targetPath),
+
+    buscadorEpStart: (payload) => ipcRenderer.invoke('buscador-ep-start', payload),
+    buscadorEpProgress: (reqId) => ipcRenderer.invoke('buscador-ep-progress', reqId),
+    buscadorEpCancel: (reqId) => ipcRenderer.invoke('buscador-ep-cancel', reqId),
+    buscadorEpDownload: (reqId, pathOutLocal) => ipcRenderer.invoke('buscador-ep-download', reqId, pathOutLocal),
+
+
+    //Expo8
+    runExpo8: (dues, output) => ipcRenderer.invoke("run-expo8", dues, output),
   });
 
   console.log('[preload] API exposta com sucesso');

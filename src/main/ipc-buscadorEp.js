@@ -1,13 +1,16 @@
-// src/main/ipc-buscadorEp.js
-const { ipcMain, dialog } = require('electron');
-const fs = require('fs-extra');
-const path = require('path');
-const os = require('os');
-const axios = require('axios');
-const FormData = require("form-data");
-const { inflate } = require('zlib');
+    // src/main/ipc-buscadorEp.js
+    const { ipcMain, dialog, shell } = require("electron");
+    const fs = require("fs-extra");
+    const path = require("path");
+    const os = require("os");
+    const axios = require("axios");
+    const FormData = require("form-data");
+    const crypto = require("crypto");
+    const XLSX = require("xlsx");
+    
 
-function _filenameFromContentDisposition(cd) {
+    
+    function _filenameFromContentDisposition(cd) {
     if (!cd) return null;
     const m =
         /filename\*=(?:UTF-8'')?([^;]+)/i.exec(cd) ||
@@ -15,133 +18,249 @@ function _filenameFromContentDisposition(cd) {
         /filename=([^;]+)/i.exec(cd);
     if (!m) return null;
     return decodeURIComponent(m[1].replace(/"/g, "").trim());
-}
+    }
 
-function registerBuscadorEpIPC() {
+    function _shortReqId() {
+        return crypto.randomBytes(5).toString("hex");
+    }
+
+    async function _ensureXlsxExists(filePath) {
+        if (!filePath) throw new Error("Caminho do arquivo não informado.");
+        if (!(await fs.pathExists(filePath))) throw new Error(`Arquivo não encontrado: ${filePath}`);
+        const ext = path.extname(filePath).toLowerCase();
+        if (ext !== ".xlsx") {
+            throw new Error(`Arquivo inválido (${ext}). Envie .xlsx`);
+        }
+    }
+
+
+    async function _saveArrayBufferToDisk(arrayBuffer, headers, outDir) {
+    const cd = headers?.["content-disposition"];
+    const filename = _filenameFromContentDisposition(cd) || `resultado_${Date.now()}.txt`;
+
+    const finalOutDir =
+        outDir && String(outDir).trim()
+        ? String(outDir).trim()
+        : path.join(os.homedir(), "Downloads");
+
+    await fs.ensureDir(finalOutDir);
+
+    const ext = path.extname(filename) || ".txt";
+    const base = path.basename(filename, ext);
+    let outFilePath = path.join(finalOutDir, filename);
+
+    if (await fs.pathExists(outFilePath)) {
+        outFilePath = path.join(finalOutDir, `${base}_${Date.now()}${ext}`);
+    }
+
+    await fs.writeFile(outFilePath, Buffer.from(arrayBuffer));
+    return outFilePath;
+    }
+
+    function registerBuscadorEpIPC() {
     let dialogOpen = false;
 
-    ipcMain.handle('select-base-file', async () => {
-        /**
-         * Função responsável por abrir a caixa de dialogo para seleção do arquivo base do Buscador EP.
-         */
+    const API_BASE = "http://127.0.0.1:8000/api";
+    const API_START = `${API_BASE}/buscador_ep/start`;
+    const API_PROGRESS = (reqId) => `${API_BASE}/progress/${reqId}`;
+    const API_CANCEL = (reqId) => `${API_BASE}/progress/cancel/${reqId}`;
+    const API_RESULT = (reqId) => `${API_BASE}/buscador_ep/result/${reqId}`;
+
+    ipcMain.handle("select-base-file", async () => {
         if (dialogOpen) return null;
         dialogOpen = true;
-        
-        try{
-            const result = await dialog.showOpenDialog({
-                properties: ['openFile'],
-                filters: [
-                    { name: 'Excel Files', extensions: ['xlsx', 'xls'] },]
-            })
-
-            if (result.canceled || result.filePaths.length === 0) return null;
-            return result.filePaths[0];
+        try {
+        const result = await dialog.showOpenDialog({
+            properties: ["openFile"],
+            filters: [{ name: "Excel Files", extensions: ["xlsx"] }],
+        });
+        if (result.canceled || result.filePaths.length === 0) return null;
+        return result.filePaths[0];
         } finally {
-            dialogOpen = false;
+        dialogOpen = false;
         }
-    })
+    });
 
-    ipcMain.handle('select-search-file', async () => {
-        /**
-         * Função responsável por abrir a caixa de dialogo para seleção do arquivo de busca do Buscador EP.
-         */
+
+    ipcMain.handle("select-search-file", async () => {
         if (dialogOpen) return null;
         dialogOpen = true;
-
-        try{
-            const result = await dialog.showOpenDialog({
-                properties: ['openFile'],
-                filters: [
-                    { name: 'Excel Files', extensions: ['xlsx', 'xls'] },]
-            })
-            if (result.canceled || result.filePaths.length === 0) return null;
-            return result.filePaths[0];
+        try {
+        const result = await dialog.showOpenDialog({
+            properties: ["openFile"],
+            filters: [{ name: "Excel Files", extensions: ["xlsx"] }],
+        });
+        if (result.canceled || result.filePaths.length === 0) return null;
+        return result.filePaths[0];
         } finally {
-            dialogOpen = false;
+        dialogOpen = false;
         }
-    })
+    });
 
-    ipcMain.handle('select-path-out-folder', async () => {
-        /**
-         * Função responsável por abrir a caixa de dialogo para seleção da pasta de saída do Buscador EP.
-         */
+
+    ipcMain.handle("select-path-out-folder", async () => {
         if (dialogOpen) return null;
         dialogOpen = true;
-
-        try{
-            const result = await dialog.showOpenDialog({
-                properties: ['openDirectory'],
-            })
-            if (result.canceled || result.filePaths.length === 0) return null;
-            return result.filePaths[0];
+        try {
+        const result = await dialog.showOpenDialog({
+            properties: ["openDirectory"],
+        });
+        if (result.canceled || result.filePaths.length === 0) return null;
+        return result.filePaths[0];
         } finally {
-            dialogOpen = false;
+        dialogOpen = false;
         }
-    })
+    });
 
-    ipcMain.handle('buscador-ep-run', async (event, payload, pathOutLocal) => {
-        /**
-         * Função responsável por executar o backend. 
-         * Trata os caminhos path e transforma em FormData para envio via HTTP.
-         */
-        API_URL = 'http://127.0.0.1:8000/api/buscador_ep'; 
-        const {
-            basePath,
-            searchPath,
-            bert_weight = 0.5,
-            cnpj_sheet_name = null,
-        } = payload || {};
+    ipcMain.handle("open-path", async (event, targetPath) => {
+        try {
+            const p = String(targetPath || "").trim();
+            if (!p) return { ok: false, error: "Caminho vazio." };
 
-        if (!basePath || !searchPath) throw new Error("basePath e searchPath são obrigatórios.");
-        if (!(await fs.pathExists(basePath))) throw new Error(`BASE não encontrada: ${basePath}`);
-        if (!(await fs.pathExists(searchPath))) throw new Error(`BUSCA não encontrada: ${searchPath}`);
+            const exists = await fs.pathExists(p);
+            if (!exists) return { ok: false, error: `Caminho não encontrado: ${p}` };
+
+            const stat = await fs.stat(p);
+
+            // Se for pasta: abre a pasta
+            if (stat.isDirectory()) {
+            const res = await shell.openPath(p);
+            if (res) return { ok: false, error: res }; // shell.openPath retorna string vazia se ok
+            return { ok: true };
+            }
+
+            // Se for arquivo: destaca no Explorer/Finder
+            shell.showItemInFolder(p);
+            return { ok: true };
+        } catch (err) {
+            return { ok: false, error: err?.message || String(err) };
+        }
+    });
+
+    //Preview dos excel
+    function previewXlsx(filePath, { sheetName = null, maxRows = 100 } = {}) {
+        const wb = XLSX.readFile(filePath, { cellDates: true });
+
+        const chosenSheet = sheetName || wb.SheetNames[0];
+        const ws = wb.Sheets[chosenSheet];
+        if (!ws) throw new Error(`Aba não encontrada: ${chosenSheet}`);
+
+        // 2D array (linhas/colunas)
+        const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false });
+
+        // corta para N linhas
+        const sliced = aoa.slice(0, Math.max(1, maxRows));
+
+        const header = (sliced[0] || []).map((h, i) => (String(h || "").trim() ? String(h) : `Col ${i + 1}`));
+        const rows = sliced.slice(1).map((r) => header.map((_, i) => (r?.[i] ?? "")));
+
+        return {
+            sheetNames: wb.SheetNames,
+            sheet: chosenSheet,
+            header,
+            rows,
+        };
+    }
+
+    ipcMain.handle("xlsx-preview", async (event, filePath, opts) => {
+        await _ensureXlsxExists(filePath);
+        return { ok: true, data: previewXlsx(filePath, opts) };
+    });
+
+    // 1) START
+    ipcMain.handle("buscador-ep-start", async (event, payload) => {
+        const { basePath, searchPath, bert_weight = 0.5, cnpj_sheet_name = null } = payload || {};
+        await _ensureXlsxExists(basePath);
+        await _ensureXlsxExists(searchPath);
+
+        const reqId = _shortReqId();
 
         const form = new FormData();
-        form.append('first_file', fs.createReadStream(basePath), { filename: path.basename(basePath) });
-        form.append('second_file', fs.createReadStream(searchPath), { filename: path.basename(searchPath) });
+        form.append("first_file", fs.createReadStream(basePath), { filename: path.basename(basePath) });
+        form.append("second_file", fs.createReadStream(searchPath), { filename: path.basename(searchPath) });
 
-        const response = await axios.post(API_URL, form, {
-            params: {
-                bert_weight,
-                cnpj_sheet_name: cnpj_sheet_name || undefined,
-            },
-            headers: {...form.getHeaders() },
-            responseType: 'arraybuffer',
-            timeout: 0,
-            validateStatus: () => true,
-            maxBodyLength: Infinity,
-            maxContentLength: Infinity,
+        const response = await axios.post(API_START, form, {
+        params: {
+            bert_weight,
+            cnpj_sheet_name: cnpj_sheet_name || undefined,
+        },
+        headers: {
+            ...form.getHeaders(),
+            "X-Request-Id": reqId,
+        },
+        responseType: "json",
+        timeout: 0,
+        validateStatus: () => true,
+        maxBodyLength: Infinity,
+        maxContentLength: Infinity,
         });
 
         if (response.status !== 200) {
-            let details = "";
-            try { details = Buffer.from(response.data).toString("utf-8"); } catch {}
-            throw new Error(`Backend retornou HTTP ${response.status}${details ? `: ${details}` : ""}`);
+        throw new Error(`START: Backend retornou HTTP ${response.status}: ${JSON.stringify(response.data)}`);
         }
 
-        const cd = response.headers['content-disposition'];
-        const filename = _filenameFromContentDisposition(cd) || `resultado_${Date.now()}.txt`;
+        const returned = response.data?.req_id || reqId;
+        return { ok: true, req_id: returned };
+    });
 
-        const outDir =
-            (pathOutLocal && String(pathOutLocal).trim())
-            ? String(pathOutLocal).trim()
-            : path.join(os.homedir(), "Downloads");
 
-        await fs.ensureDir(outDir);
-
-        // ✅ monta caminho final; evita sobrescrever se já existir
-        const ext = path.extname(filename) || ".txt";
-        const base = path.basename(filename, ext);
-        let outFilePath = path.join(outDir, filename);
-
-        if (await fs.pathExists(outFilePath)) {
-            outFilePath = path.join(outDir, `${base}_${Date.now()}${ext}`);
-        }
-
-        await fs.writeFile(outFilePath, Buffer.from(response.data));
-
-        return { ok: true, saved: true, filePath: outFilePath };
+    // 2) PROGRESS
+    ipcMain.handle("buscador-ep-progress", async (event, req_id) => {
+        if (!req_id) throw new Error("req_id não informado.");
+        const response = await axios.get(API_PROGRESS(req_id), {
+        responseType: "json",
+        timeout: 0,
+        validateStatus: () => true,
         });
-}
 
-module.exports = { registerBuscadorEpIPC };
+        if (response.status === 404) return { ok: false, status: "missing" };
+        if (response.status !== 200) {
+        return { ok: false, status: "http_error", http_status: response.status, data: response.data };
+        }
+        return { ok: true, data: response.data };
+    });
+
+
+    ipcMain.handle("buscador-ep-cancel", async (event, req_id) => {
+        if (!req_id) throw new Error("req_id não informado.");
+
+        const response = await axios.post(API_CANCEL(req_id), null, {
+            timeout: 0,
+            validateStatus: () => true,
+        });
+
+        if (response.status !== 200) {
+            throw new Error(`CANCEL: Backend retornou HTTP ${response.status}: ${JSON.stringify(response.data)}`);
+        }
+
+        return { ok: true, data: response.data };
+    });
+
+
+
+    // 3) DOWNLOAD RESULT
+    ipcMain.handle("buscador-ep-download", async (event, req_id, pathOutLocal) => {
+        if (!req_id) throw new Error("req_id não informado.");
+
+        const response = await axios.get(API_RESULT(req_id), {
+        responseType: "arraybuffer",
+        timeout: 0,
+        validateStatus: () => true,
+        maxBodyLength: Infinity,
+        maxContentLength: Infinity,
+        });
+
+        if (response.status !== 200) {
+        let details = "";
+        try {
+            details = Buffer.from(response.data).toString("utf-8");
+        } catch {}
+        throw new Error(`RESULT: Backend retornou HTTP ${response.status}${details ? `: ${details}` : ""}`);
+        }
+
+        const outFilePath = await _saveArrayBufferToDisk(response.data, response.headers, pathOutLocal);
+        return { ok: true, saved: true, filePath: outFilePath };
+    });
+    }
+
+    module.exports = { registerBuscadorEpIPC };

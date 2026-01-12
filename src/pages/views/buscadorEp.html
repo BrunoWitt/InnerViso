@@ -207,6 +207,68 @@
 
     </main>
 
+    <!-- Overlay de loading / progresso -->
+    <div id="epLoadingOverlay" class="ep-loading ep-hidden" role="dialog" aria-modal="true">
+    <div class="ep-loading__card">
+      <div class="ep-loading__title">Processando…</div>
+      <div id="epLoadingMsg" class="ep-loading__msg">Iniciando…</div>
+
+      <div class="ep-loading__bar">
+        <div id="epLoadingBar" class="ep-loading__barFill" style="width: 0%"></div>
+      </div>
+
+      <div class="ep-loading__meta">
+        <span id="epLoadingPct">0%</span>
+        <span id="epLoadingReq"></span>
+      </div>
+
+      <!-- NOVO: botão cancelar -->
+      <div class="ep-loading__actions">
+        <button id="epCancelBtn" class="expo8-cancel-btn" type="button">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de resultado (sucesso/erro/cancelado) -->
+  <div id="epResultModal" class="ep-modal ep-hidden" role="dialog" aria-modal="true" aria-label="Resultado do processamento">
+    <div class="ep-modal__card">
+      <div class="ep-modal__head">
+        <div id="epResultIcon" class="ep-modal__icon" aria-hidden="true">✓</div>
+
+        <div class="ep-modal__titles">
+          <div id="epResultTitle" class="ep-modal__title">Concluído</div>
+          <div id="epResultSubtitle" class="ep-modal__subtitle">Arquivo salvo com sucesso.</div>
+        </div>
+
+        <button id="epResultCloseX" class="ep-modal__close" type="button" aria-label="Fechar">✕</button>
+      </div>
+
+      <div class="ep-modal__body">
+        <div class="ep-modal__row">
+          <div class="ep-modal__label">Caminho</div>
+          <div class="ep-modal__value">
+            <code id="epResultPath" class="ep-modal__path">—</code>
+          </div>
+        </div>
+
+        <div class="ep-modal__row ep-modal__row--log">
+          <div class="ep-modal__label">Log</div>
+          <pre id="epResultLog" class="ep-modal__log"></pre>
+        </div>
+      </div>
+
+      <div class="ep-modal__actions">
+        <button id="epResultOpenPath" class="ep-btn ep-btn--primary" type="button">
+          Abrir caminho
+        </button>
+        <button id="epResultCopyLog" class="ep-btn ep-btn--outline" type="button">Copiar log</button>
+        <button id="epResultClose" class="ep-btn ep-btn--primary" type="button">Fechar</button>
+      </div>
+    </div>
+  </div>
+
     <script src="../scripts/src_buscadorEp.js"></script>
   </body>
 </html>

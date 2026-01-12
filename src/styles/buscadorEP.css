@@ -365,3 +365,483 @@
     justify-content: flex-end;
   }
 }
+.ep-hidden { display: none !important; }
+
+.ep-loading {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.ep-loading__card {
+  width: min(520px, 92vw);
+  background: #101318;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 16px;
+  padding: 18px 18px 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+}
+
+.ep-loading__title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #fff;
+}
+
+.ep-loading__msg {
+  font-size: 14px;
+  color: rgba(255,255,255,.8);
+  margin-bottom: 12px;
+  min-height: 20px;
+}
+
+.ep-loading__bar {
+  height: 10px;
+  background: rgba(255,255,255,.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.ep-loading__barFill {
+  height: 100%;
+  background: #4aa3ff;
+  width: 0%;
+  transition: width .25s ease;
+}
+
+.ep-loading__meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 12px;
+  color: rgba(255,255,255,.7);
+}
+
+.ep-loading__actions{
+  margin-top: 14px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Aumenta a largura geral do card */
+.ep-card {
+  width: min(1240px, 100%); /* era 980px */
+}
+
+/* Preview mais alto */
+.ep-preview__body {
+  min-height: 460px; /* era 320px */
+  padding: 12px;
+}
+
+/* Barra meta do preview */
+.ep-preview-meta{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #334155;
+  background: #ffffff;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.ep-preview-meta__right{
+  opacity: .85;
+  white-space: nowrap;
+}
+
+/* Wrapper com scroll (vertical + horizontal se precisar) */
+.ep-table-wrap{
+  max-height: 520px;
+  overflow: auto;
+  border-radius: 10px;
+}
+
+/* Tabela mais “grid” */
+.ep-table--pretty{
+  width: 100%;
+  table-layout: fixed; /* essencial pra ellipsis funcionar bem */
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 12px;
+}
+
+.ep-table--pretty thead th{
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #f8fbff;
+  border-bottom: 1px solid #e6eefc;
+  padding: 10px 10px;
+  color: #0f172a;
+}
+
+.ep-table--pretty tbody td{
+  border-bottom: 1px solid #f1f5f9;
+  padding: 10px 10px;
+  color: #111827;
+  vertical-align: top;
+}
+
+/* Zebra + hover */
+.ep-table--pretty tbody tr:nth-child(odd){
+  background: #fbfdff;
+}
+.ep-table--pretty tbody tr:hover{
+  background: #eef6ff;
+}
+
+/* Células: padrão com ellipsis */
+.ep-cell{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Texto longo: quebra e limita linhas */
+.ep-cell--wrap{
+  white-space: normal;
+  word-break: break-word;
+  overflow: hidden;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 3;        /* ajusta aqui: 2, 3, 4... */
+  -webkit-box-orient: vertical;
+}
+
+/* Numérico alinhado */
+.ep-cell--num{
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* “Código” com cara de código (opcional) */
+.ep-cell--mono{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 11.5px;
+}
+
+.ep-page { padding: 24px 18px 40px; }
+.ep-grid { gap: 18px; }
+.ep-panel { padding: 18px; }
+
+/* ===== Preview: layout melhor (meta fixa + tabela com scroll) ===== */
+
+.ep-preview__body{
+  padding: 0;                 /* agora quem tem padding é meta + wrap */
+  overflow: hidden;           /* evita scroll “duplo” que costuma bugar render */
+  min-height: 0;
+}
+
+.ep-preview__meta{
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--ep-muted);
+  background: #fff;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.ep-preview__meta b{
+  color: var(--ep-text);
+}
+
+.ep-table-wrap{
+  padding: 10px 12px 12px;
+  overflow: auto;  /* scroll só aqui */
+  /* ↓↓↓ isso resolve seu item 2 (rodapé visível) */
+  max-height: clamp(180px, 26vh, 260px);
+}
+
+/* Tabela mais “limpa” */
+.ep-table{
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 12px;
+}
+
+.ep-table thead th{
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #fbfdff;
+  color: var(--ep-text);
+  font-weight: 800;
+  text-align: left;
+  border-bottom: 1px solid #e7eef7;
+  padding: 10px 10px;
+  box-shadow: 0 1px 0 rgba(0,0,0,.03);
+}
+
+/* Zebra + hover (fica mais fácil de ler) */
+.ep-table tbody tr:nth-child(even) td{
+  background: #f7fbff;
+}
+.ep-table tbody tr:hover td{
+  background: #eaf4ff;
+}
+
+.ep-table tbody td{
+  border-bottom: 1px solid #eef2f7;
+  padding: 10px 10px;
+  color: #111827;
+  vertical-align: top;
+}
+
+/* ===== Correção do “descrição some” =====
+   1) garante wrap consistente
+   2) evita bug de overflow/texto “sumindo” em células longas
+*/
+.ep-cell{
+  display: block;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.25;
+}
+
+/* Opcional (recomendado): limita coluna muito longa sem explodir layout */
+.ep-table td, .ep-table th{
+  max-width: 380px; /* ajuste se quiser */
+}
+.ep-page{
+  padding: 22px 18px 24px; /* era 36/56 */
+}
+
+.ep-grid{
+  gap: 16px;               /* era 22 */
+  padding: 0 22px 16px;    /* era 26/22 */
+}
+
+.ep-preview__head{
+  padding: 8px 12px;       /* um pouco menor */
+}
+
+.ep-preview__body{
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.ep-preview__meta{
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--ep-muted);
+  background: #fff;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.ep-table-wrap{
+  overflow: auto;
+  max-height: 240px; /* deixa o rodapé aparecer */
+}
+
+.ep-table{
+  width: 100%;
+  table-layout: fixed;   /* crucial */
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 12px;
+}
+
+.ep-table thead th{
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #fbfdff;
+  border-bottom: 1px solid #e7eef7;
+  padding: 10px;
+  text-align: left;
+}
+
+.ep-table tbody td{
+  border-bottom: 1px solid #eef2f7;
+  padding: 10px;
+  vertical-align: top;
+}
+
+/* larguras fixas para colunas “curtas” */
+.ep-table th:nth-child(1), .ep-table td:nth-child(1){ width: 90px; }
+.ep-table th:nth-child(2), .ep-table td:nth-child(2){ width: 110px; }
+.ep-table th:nth-child(3), .ep-table td:nth-child(3){ width: 110px; }
+/* descrição ocupa o resto */
+.ep-table th:nth-child(4), .ep-table td:nth-child(4){ width: auto; }
+
+/* texto */
+.ep-cell{
+  display: block;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.25;
+}
+
+.ep-cell--nowrap{
+  white-space: nowrap;    /* evita NCM quebrar */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* zebra + hover */
+.ep-table tbody tr:nth-child(even) td{ background: #f7fbff; }
+.ep-table tbody tr:hover td{ background: #eaf4ff; }
+
+/* ===== Modal de resultado ===== */
+.ep-modal{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000; /* acima do overlay */
+}
+
+.ep-modal__card{
+  width: min(760px, 94vw);
+  max-height: min(78vh, 720px);
+  overflow: hidden;
+
+  background: #0f1217;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 16px;
+  box-shadow: 0 16px 50px rgba(0,0,0,.45);
+  display: flex;
+  flex-direction: column;
+}
+
+.ep-modal__head{
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 14px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.ep-modal__icon{
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  font-size: 18px;
+  background: rgba(74,163,255,.18);
+  color: #8fd0ff;
+}
+
+.ep-modal__titles{ min-width: 0; }
+
+.ep-modal__title{
+  color: #fff;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.ep-modal__subtitle{
+  margin-top: 4px;
+  color: rgba(255,255,255,.70);
+  font-size: 12px;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ep-modal__close{
+  border: none;
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.85);
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.ep-modal__close:hover{ background: rgba(255,255,255,.12); }
+
+.ep-modal__body{
+  padding: 12px 14px;
+  overflow: auto;
+}
+
+.ep-modal__row{
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 10px;
+  align-items: start;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.ep-modal__row--log{
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.ep-modal__label{
+  color: rgba(255,255,255,.70);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ep-modal__value{
+  min-width: 0;
+}
+
+.ep-modal__path{
+  display: block;
+  padding: 10px 10px;
+  border-radius: 10px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.08);
+  color: rgba(255,255,255,.92);
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.ep-modal__log{
+  margin: 0;
+  padding: 10px 10px;
+  border-radius: 10px;
+  background: rgba(0,0,0,.35);
+  border: 1px solid rgba(255,255,255,.08);
+  color: rgba(255,255,255,.88);
+  font-size: 12px;
+  line-height: 1.35;
+
+  max-height: 320px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.ep-modal__actions{
+  padding: 12px 14px 14px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+
+/* variações de status */
+.ep-modal--success .ep-modal__icon{ background: rgba(0,255,140,.14); color: #7bffbf; }
+.ep-modal--error   .ep-modal__icon{ background: rgba(255,90,90,.14); color: #ff9d9d; }
+.ep-modal--cancel  .ep-modal__icon{ background: rgba(255,210,90,.14); color: #ffd36b; }
+
