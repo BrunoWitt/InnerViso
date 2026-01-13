@@ -78,6 +78,9 @@ try {
       ipcRenderer.invoke("coletar-di-cnpj", { cnpjs, initialDate, endDate }),
     cancelColetarDiCnpj: () =>
       ipcRenderer.invoke("cancelar-coletar-di-cnpj"),
+    coletarLi: () => ipcRenderer.invoke("coletar-li"),
+    cancelColetarLi: () => ipcRenderer.invoke("cancelar-coletar-li"),
+
 
 
     // =========================

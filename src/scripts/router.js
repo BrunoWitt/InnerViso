@@ -18,6 +18,7 @@ const initializers = {
   baixarLi:     () => window.initBaixarLi?.(),
   baixarDue:     () => window.initBaixarDue?.(),
   coletarDiCnpjs: () => window.initColetarDiCnpj?.(),
+  coletarLi:    () => window.initColetarLi?.(),
 
   // ✅ adiciona aliases (pra cobrir como o menu/loader pode estar chamando)
   coletarDiCnpj: () => window.initColetarDiCnpj?.(),

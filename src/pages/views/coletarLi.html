@@ -1,1 +1,81 @@
-<h1>Em desenvolvimento...</h1>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <title>Coletar LI (Hoje)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- CSS do Scrapper -->
+    <link rel="stylesheet" href="../styles/sty_scrapper.css" />
+    </head>
+
+    <body>
+    <main class="page-wrapper">
+        <section class="card">
+        <h1 class="card-title">Coletar LI (Hoje)</h1>
+
+        <p class="hint">Clique no botão para coletar as LIs de hoje.</p>
+
+        <div class="footer-actions">
+            <button id="run-coletar-li-btn" class="btn-primary btn-large" type="button">
+            Executar Coleta das LIs
+            </button>
+        </div>
+        </section>
+    </main>
+
+    <!-- MODAL DE CARREGAMENTO / RESULTADO -->
+    <div id="loading-overlay-li" class="loading-overlay hidden">
+        <div class="loading-box expo8-loading">
+        <!-- ===== LOADING ===== -->
+        <div id="coletar-li-loading">
+            <div class="spinner"></div>
+
+            <p id="li-progress-message" class="expo8-progress-message">
+            Iniciando coleta das LIs...
+            </p>
+
+            <button id="cancel-li-btn" class="expo8-cancel-btn" type="button">
+            Cancelar
+            </button>
+        </div>
+
+        <!-- ===== RESULTADO ===== -->
+        <div id="coletar-li-result" class="hidden" style="margin-top:16px;">
+            <p class="expo8-progress-message">LIs coletadas:</p>
+
+            <textarea
+            id="coletar-li-textarea"
+            readonly
+            style="
+                width:100%;
+                height:140px;
+                resize:none;
+                font-family:monospace;
+                margin-top:8px;
+            "
+            ></textarea>
+
+            <div
+            style="
+                margin-top:12px;
+                display:flex;
+                gap:8px;
+                justify-content:flex-end;
+            "
+            >
+            <button id="copy-lis-btn" class="btn-primary" type="button">
+                Copiar LIs
+            </button>
+
+            <button id="close-li-result-btn" class="btn-primary" type="button">
+                Fechar
+            </button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <script src="../../../scripts/coletarLi.js"></script>
+</body>
+</html>
