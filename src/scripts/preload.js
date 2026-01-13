@@ -84,6 +84,9 @@ try {
       ipcRenderer.invoke("coletar-li-cnpj", { cnpjs, initialDate, endDate }),
     cancelColetarLiCnpj: () =>
       ipcRenderer.invoke("cancelar-coletar-li-cnpj"),
+    baixarAtoCnpj: (cnpjs) => ipcRenderer.invoke("baixar-ato-cnpj", { cnpjs }),
+    cancelBaixarAtoCnpj: () => ipcRenderer.invoke("cancelar-baixar-ato-cnpj"),
+
 
     // =========================
     // PARSER WSViso
