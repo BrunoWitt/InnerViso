@@ -46,8 +46,6 @@ try {
     cancelExpo8: () => ipcRenderer.invoke("cancelExpo8"),
     getExpo8Progress: () => ipcRenderer.invoke("getExpo8Progress"),
 
-    
-
     // =========================
     // MODELO 7
     // =========================
@@ -76,6 +74,11 @@ try {
       ipcRenderer.invoke("baixar-due", listDues, pathOut),
     cancelBaixarDue: () =>
       ipcRenderer.invoke("cancelar-baixar-due"),
+    coletarDiCnpj: (cnpjs, initialDate, endDate) =>
+      ipcRenderer.invoke("coletar-di-cnpj", { cnpjs, initialDate, endDate }),
+    cancelColetarDiCnpj: () =>
+      ipcRenderer.invoke("cancelar-coletar-di-cnpj"),
+
 
     // =========================
     // PARSER WSViso

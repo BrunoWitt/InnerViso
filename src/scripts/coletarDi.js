@@ -1,8 +1,6 @@
 function initColetarDi() {
   console.log("[coletarDi] iniciado");
 
-  
-
   const btnParser = document.getElementById("run-parser-btn");
   const loadingOverlay = document.getElementById("loading-overlay");
   const btnCancelar = document.getElementById("cancel-parser-btn");

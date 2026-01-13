@@ -1,1 +1,113 @@
-<h1>Em desenvolvimento...</h1>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <title>Scraper por CNPJ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../styles/sty_scrapper.css" />
+</head>
+
+<body>
+    <main class="page-wrapper">
+        <section class="card">
+        <h1 class="card-title">Scraper por CNPJ</h1>
+
+        <div class="section">
+            <label class="section-label">Entrada de CNPJs</label>
+
+            <div class="input-action-row">
+            <input
+                id="cnpj-input"
+                type="text"
+                class="text-input"
+                placeholder="Ex.: 12.345.678/0001-90 | 12345678000190"
+            />
+
+            <button id="add-cnpj-btn" type="button" class="btn-primary">
+                + Adicionar CNPJ
+            </button>
+            </div>
+
+            <p class="hint">Você pode adicionar vários CNPJs; eles serão listados abaixo.</p>
+
+            <p id="cnpj-warning" class="cnpj-warning is-hidden" aria-live="polite">
+            Você precisa informar pelo menos um CNPJ antes de adicionar.
+            </p>
+
+            <div id="cnpj-list" class="list-container"></div>
+        </div>
+
+        <div class="section">
+            <label class="section-label">Período</label>
+
+            <div class="date-grid">
+            <div class="form-group">
+                <label>Data inicial</label>
+                <input id="dataInicial" type="date" class="text-input" />
+            </div>
+
+            <div class="form-group">
+                <label>Data final</label>
+                <input id="dataFinal" type="date" class="text-input" />
+            </div>
+            </div>
+        </div>
+
+        <div class="footer-actions">
+            <button type="button" id="btnProcessar" class="btn-primary btn-large">
+            Executar coleta
+            </button>
+        </div>
+        </section>
+    </main>
+
+    <!-- ============================
+        MODAL / OVERLAY (LOADING + RESULTADO)
+        ============================ -->
+    <div id="loading-overlay" class="loading-overlay hidden" aria-hidden="true">
+        <div class="loading-box scraper-loading">
+
+        <!-- ===== LOADING ===== -->
+        <div id="coletar-di-cnpj-loading">
+            <div class="spinner"></div>
+
+            <p id="scraper-progress-message" class="scraper-progress-message">
+            Iniciando coleta...
+            </p>
+
+            <button id="cancelar-coleta-btn" class="scraper-cancel-btn" type="button">
+            Cancelar
+            </button>
+
+        </div>
+
+        <!-- ===== RESULTADO ===== -->
+        <div id="coletar-di-cnpj-result" class="hidden" style="margin-top: 14px;">
+            <p class="scraper-progress-message">
+            DIs coletadas:
+            </p>
+
+            <textarea
+            id="coletar-di-cnpj-textarea"
+            readonly
+            class="scraper-result-textarea"
+            spellcheck="false"
+            ></textarea>
+
+            <div class="scraper-actions">
+            <button id="copy-dis-btn" class="btn-primary" type="button">
+                Copiar todas
+            </button>
+
+            <button id="close-result-btn" class="btn-primary" type="button">
+                Fechar
+            </button>
+            </div>
+        </div>
+
+        </div>
+    </div>
+
+    <script src="../../../scripts/coletarDiCnpjs.js"></script>
+</body>
+</html>

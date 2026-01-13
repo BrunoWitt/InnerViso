@@ -17,6 +17,11 @@ const initializers = {
   baixarDi:     () => window.initBaixarDi?.(),
   baixarLi:     () => window.initBaixarLi?.(),
   baixarDue:     () => window.initBaixarDue?.(),
+  coletarDiCnpjs: () => window.initColetarDiCnpj?.(),
+
+  // ✅ adiciona aliases (pra cobrir como o menu/loader pode estar chamando)
+  coletarDiCnpj: () => window.initColetarDiCnpj?.(),
+  "coletar-di-cnpj": () => window.initColetarDiCnpj?.(),
 };
 
 // expõe para o parser shell conseguir chamar init da view filha
@@ -58,6 +63,7 @@ async function loadView(viewName) {
     document.querySelectorAll(".menu-item")
       .forEach(btn => btn.classList.toggle("active", btn.dataset.view === viewName));
 
+      console.log("[router] view carregada:", viewName);
     initializers[viewName]?.();
 
   } catch (e) {
