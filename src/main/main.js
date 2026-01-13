@@ -19,6 +19,7 @@ const { registerBaixarLiIpc } = require("./ipc-baixar-li")
 const { registerBaixarDueIpc } = require("./ipc-baixar-due")
 const { registerColedarDiCnpj } = require("./ipc-coletar-di-cnpj");
 const { registerColetarLiIpc } = require("./ipc-coletar-li");
+const { registerColetarLiCnpj } = require("./ipc-coletar-li-cnpj");
 
 
 console.log('Versão atual:', app.getVersion());
@@ -69,6 +70,7 @@ if (!gotTheLock) {
     registerBaixarDueIpc();
     registerColedarDiCnpj();
     registerColetarLiIpc();
+    registerColetarLiCnpj();
 
     // Notícias
     setupNotices();
