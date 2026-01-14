@@ -152,7 +152,7 @@ function registerDiPdf() {
 
         sendProgress("Enviando solicitação para o backend (DI → PDF)...");
 
-        const url = "http://10.0.0.230:2026/di-pdf/download-and-convert";
+        const url = "http://10.0.0.230:2026/di/download-di-pdf";
 
         const headers = {
             "X-DI-List": dis.join(","),
