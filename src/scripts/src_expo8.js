@@ -307,7 +307,7 @@ let progressTimer = null;
 
     // Rodar parser
     btnParser.addEventListener("click", async () => {
-        const nomeSaida = sanitizeFileStem(nomeSaidaInput?.value || "");
+        let nomeSaida = sanitizeFileStem(nomeSaidaInput?.value || "");
         const pathOut = lblSaida.value;
 
     if (!window.listCodes.length) {
@@ -326,6 +326,9 @@ let progressTimer = null;
     startProgressPolling();
 
     try {
+        if (nomeSaida.trim() === "") {
+            nomeSaida = "expo8"
+        }
     const result = await window.api.parserExpo8(window.listCodes, pathOut, nomeSaida);
     mostrarResultado(result, pathOut);
     } catch (err) {

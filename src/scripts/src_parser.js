@@ -196,7 +196,7 @@ function initParser() {
     const loadingText = document.getElementById("loadingText");
     const progressCount = document.getElementById("progressCount");
     const btnCancelar = document.getElementById("btnCancelar");
-    const nomeSaida = sanitizeFileStem(inpNome?.value || "");
+    let nomeSaida = sanitizeFileStem(inpNome?.value || "");
 
 
     const token = Date.now().toString();
@@ -234,6 +234,9 @@ function initParser() {
     }, 600);
 
     try {
+      if (nomeSaida.trim() === "") {
+        nomeSaida = tipoParser
+      }
       await window.api.iniciarParser(entrada, saida, tipoParser, token, nomeSaida || null);
     } catch (err) {
       console.error("Erro ao iniciar parser:", err);
