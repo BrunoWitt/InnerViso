@@ -7,9 +7,7 @@
     const FormData = require("form-data");
     const crypto = require("crypto");
     const XLSX = require("xlsx");
-    
 
-    
     function _filenameFromContentDisposition(cd) {
     if (!cd) return null;
     const m =
@@ -60,7 +58,7 @@
     function registerBuscadorEpIPC() {
     let dialogOpen = false;
 
-    const API_BASE = "http://127.0.0.1:8000/api";
+    const API_BASE = "http:/10.0.0.232:1053/api";
     const API_START = `${API_BASE}/buscador_ep/start`;
     const API_PROGRESS = (reqId) => `${API_BASE}/progress/${reqId}`;
     const API_CANCEL = (reqId) => `${API_BASE}/progress/cancel/${reqId}`;
@@ -169,7 +167,18 @@
 
     // 1) START
     ipcMain.handle("buscador-ep-start", async (event, payload) => {
-        const { basePath, searchPath, bert_weight = 0.5, cnpj_sheet_name = null } = payload || {};
+        const p = payload || {};
+        const basePath = p.basePath;
+        const searchPath = p.searchPath;
+
+        let bert_weight = Number.parseFloat(String(p.bert_weight ?? "0.5"));
+        if (!Number.isFinite(bert_weight)) bert_weight = 0.5;
+        bert_weight = Math.max(0, Math.min(1, bert_weight));
+
+        const cnpj_sheet_name = (p.cnpj_sheet_name && String(p.cnpj_sheet_name).trim())
+        ? String(p.cnpj_sheet_name).trim()
+        : null;
+
         await _ensureXlsxExists(basePath);
         await _ensureXlsxExists(searchPath);
 
@@ -235,8 +244,6 @@
 
         return { ok: true, data: response.data };
     });
-
-
 
     // 3) DOWNLOAD RESULT
     ipcMain.handle("buscador-ep-download", async (event, req_id, pathOutLocal) => {

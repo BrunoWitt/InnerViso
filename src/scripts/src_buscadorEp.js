@@ -23,6 +23,10 @@
     const inputBasePath = document.getElementById("inputBasePath");
     const inputBuscaPath = document.getElementById("inputBuscaPath");
     const inputOutPath = document.getElementById("inputSaidaPath");
+    // Configurações (NOVO)
+    const inputCnpjSheetName = document.getElementById("inputCnpjSheetName");
+    const inputBertWeight = document.getElementById("inputBertWeight");
+
 
     // ===== Modal Resultado + Log =====
     const resultModal = document.getElementById("epResultModal");
@@ -259,6 +263,8 @@
         const basePath = inputBasePath.value.trim();
         const searchPath = inputBuscaPath.value.trim();
         const outDir = inputOutPath.value.trim();
+        const cnpjSheetNameRaw = (inputCnpjSheetName?.value || "").trim();
+        const bertWeightRaw = inputBertWeight?.value;
 
         if (!basePath || !searchPath) {
         _setResultModal(
@@ -318,13 +324,22 @@
         _pushLog("INFO", `Busca: ${searchPath}`);
         _pushLog("INFO", `Saída: ${outDir || "(Downloads)"}`);
 
+        let bertWeight = Number.parseFloat(String(bertWeightRaw ?? "0.5"));
+        if (!Number.isFinite(bertWeight)) bertWeight = 0.5;
+        bertWeight = Math.max(0, Math.min(1, bertWeight));
+
+        const cnpjSheetName = cnpjSheetNameRaw ? cnpjSheetNameRaw : null;
+
+        _pushLog("INFO", `BERT weight: ${bertWeight}`);
+        _pushLog("INFO", `CNPJ sheet: ${cnpjSheetName || "(primeira aba)"}`);
+
         try {
         // 1) START
         const start = await window.api.buscadorEpStart({
             basePath,
             searchPath,
-            bert_weight: 0.5,
-            cnpj_sheet_name: null,
+            bert_weight: bertWeight,
+            cnpj_sheet_name: cnpjSheetName,
         });
 
         currentReqId = start?.req_id;

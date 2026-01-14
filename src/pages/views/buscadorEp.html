@@ -21,6 +21,39 @@
           </header>
 
           <div class="ep-card__body">
+            <!-- Configurações da busca -->
+            <div class="ep-panel" aria-label="Configurações da busca" style="margin-bottom: 12px;">
+              <header class="ep-panel__header">
+                <h2 class="ep-panel__title">Configurações</h2>
+              </header>
+
+              <div class="ep-field" style="display:grid; grid-template-columns: 1fr 240px; gap: 12px;">
+                <div>
+                  <label class="ep-label" for="inputCnpjSheetName">Nome da aba (CNPJ) — opcional</label>
+                  <input
+                    id="inputCnpjSheetName"
+                    class="ep-input"
+                    type="text"
+                    placeholder="Ex.: Planilha1 (se vazio, usa a primeira aba)"
+                  />
+                </div>
+
+                <div>
+                  <label class="ep-label" for="inputBertWeight">Peso do BERT (0 a 1)</label>
+                  <input
+                    id="inputBertWeight"
+                    class="ep-input"
+                    type="number"
+                    min="0"
+                    max="1"
+                    step="0.05"
+                    value="0.5"
+                  />
+                  <p class="ep-help">0 = só TF-IDF • 1 = só BERT • 0.5 = híbrido (padrão)</p>
+                </div>
+              </div>
+            </div>
+
             <div class="ep-grid">
               <!-- COLUNA ESQUERDA -->
               <section class="ep-panel" aria-label="Planilha de base">

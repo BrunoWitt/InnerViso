@@ -124,6 +124,8 @@ async function executarParser(pathInServer, pathOutServer, tipoParser, token, no
 
   const {pathInLinux, pathOutLinux} = converter_pastas(pathInServer, pathOutServer)
 
+  console.log("foi enviado para o backend a requisição")
+
   const response = await axios.get(url, {
     params: {
       pathIn: pathInLinux,

@@ -845,3 +845,178 @@
 .ep-modal--error   .ep-modal__icon{ background: rgba(255,90,90,.14); color: #ff9d9d; }
 .ep-modal--cancel  .ep-modal__icon{ background: rgba(255,210,90,.14); color: #ffd36b; }
 
+/* =========================
+   CONFIGURAÇÕES (BERT + ABA CNPJ)
+   Alvo: a .ep-field que contém o #inputBertWeight
+   ========================= */
+.ep-field:has(#inputBertWeight) {
+  display: grid !important;
+  grid-template-columns: 1fr 260px;
+  gap: 16px;
+  align-items: start;
+  margin-bottom: 14px;
+}
+
+/* “Cartõezinhos” internos (um para sheet e outro para BERT) */
+.ep-field:has(#inputBertWeight) > div {
+  background: #ffffff;
+  border: 1px solid rgba(76, 90, 110, 0.15);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(76, 90, 110, 0.08);
+}
+
+/* Títulos/labels */
+.ep-field:has(#inputBertWeight) .ep-label {
+  display: block;
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 8px;
+  color: #0f172a;
+}
+
+/* Inputs (mesma estética do app) */
+.ep-field:has(#inputBertWeight) .ep-input {
+  width: 100%;
+  height: 42px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(76, 90, 110, 0.25);
+  background: #f8fafc;
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+
+.ep-field:has(#inputBertWeight) .ep-input:focus {
+  outline: none;
+  border-color: rgba(13, 90, 219, 0.55);
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(13, 90, 219, 0.12);
+}
+
+/* Caixa do BERT: centraliza e deixa “controle” mais bonito */
+.ep-field:has(#inputBertWeight) > div:last-child {
+  text-align: center;
+}
+
+#inputBertWeight {
+  max-width: 120px;
+  margin: 0 auto;
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+/* Remove setinhas do input number (fica mais clean) */
+#inputBertWeight::-webkit-outer-spin-button,
+#inputBertWeight::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+#inputBertWeight[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Textos de ajuda (deixa mais discreto e organizado) */
+.ep-field:has(#inputBertWeight) .ep-help {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.35;
+  color: rgba(15, 23, 42, 0.65);
+}
+
+/* Placeholder mais suave */
+.ep-field:has(#inputBertWeight) .ep-input::placeholder {
+  color: rgba(15, 23, 42, 0.35);
+}
+
+/* Responsivo: em telas menores empilha */
+@media (max-width: 860px) {
+  .ep-field:has(#inputBertWeight) {
+    grid-template-columns: 1fr;
+  }
+  #inputBertWeight {
+    max-width: 160px;
+  }
+}
+
+/* =========================
+   CONFIGURAÇÕES (slim)
+   ========================= */
+.ep-field:has(#inputBertWeight) {
+  display: grid !important;
+  grid-template-columns: 1fr 220px;
+  gap: 12px;
+  align-items: start;
+  margin: 10px 0 12px;
+}
+
+/* cards internos mais discretos */
+.ep-field:has(#inputBertWeight) > div {
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(76, 90, 110, 0.12);
+  border-radius: 12px;
+  padding: 10px 12px;
+  box-shadow: 0 4px 12px rgba(76, 90, 110, 0.06);
+}
+
+/* label menor */
+.ep-field:has(#inputBertWeight) .ep-label {
+  display: block;
+  font-weight: 700;
+  font-size: 12px;
+  margin-bottom: 6px;
+  color: rgba(15, 23, 42, 0.9);
+}
+
+/* inputs mais baixos */
+.ep-field:has(#inputBertWeight) .ep-input {
+  width: 100%;
+  height: 36px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(76, 90, 110, 0.22);
+  background: rgba(248, 250, 252, 0.9);
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+
+.ep-field:has(#inputBertWeight) .ep-input:focus {
+  outline: none;
+  border-color: rgba(13, 90, 219, 0.45);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(13, 90, 219, 0.10);
+}
+
+/* BERT card: bem clean */
+.ep-field:has(#inputBertWeight) > div:last-child {
+  text-align: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+#inputBertWeight {
+  max-width: 92px;
+  margin: 2px auto 0;
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+/* remove setinhas */
+#inputBertWeight::-webkit-outer-spin-button,
+#inputBertWeight::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+#inputBertWeight[type="number"] { -moz-appearance: textfield; }
+
+/* some com help na área de config (caso exista) */
+.ep-field:has(#inputBertWeight) .ep-help {
+  display: none !important;
+}
+
+/* responsivo */
+@media (max-width: 860px) {
+  .ep-field:has(#inputBertWeight) { grid-template-columns: 1fr; }
+  #inputBertWeight { max-width: 120px; }
+}
+
