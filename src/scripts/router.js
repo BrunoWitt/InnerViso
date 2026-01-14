@@ -20,6 +20,7 @@ const initializers = {
   coletarDiCnpjs: () => window.initColetarDiCnpj?.(),
   coletarLi:    () => window.initColetarLi?.(),
   baixarAtoCnpj: () => window.initBaixarAtoCnpj?.(),
+  baixarDiPdf: () => window.initBaixarDiPdf?.(),
 
   // ✅ adiciona aliases (pra cobrir como o menu/loader pode estar chamando)
   coletarDiCnpj: () => window.initColetarDiCnpj?.(),

@@ -1,1 +1,124 @@
-<h1>Em desenvolvimento...</h1>
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>DI para PDF</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../styles/sty_scrapper.css" />
+  </head>
+
+  <body>
+    <main class="page-wrapper">
+      <section class="card">
+        <h1 class="card-title">DI para PDF</h1>
+
+        <!-- Entrada de DIs -->
+        <div class="section">
+          <label class="section-label">Entrada de DIs</label>
+
+          <div class="input-action-row">
+            <input
+              id="di-input"
+              type="text"
+              class="text-input"
+              placeholder="Ex.: 2404762787 | 2405511559 (separe por | ou ,)"
+            />
+
+            <button id="add-di-btn" type="button" class="btn-primary">
+              + Adicionar DI
+            </button>
+          </div>
+
+          <p class="hint">Você pode adicionar várias DIs; elas serão listadas abaixo.</p>
+
+          <p id="di-warning" class="cnpj-warning is-hidden" aria-live="polite">
+            Você precisa informar pelo menos uma DI antes de adicionar.
+          </p>
+
+          <div id="di-list" class="list-container"></div>
+        </div>
+
+        <!-- Pasta de saída -->
+        <div class="section">
+          <label class="section-label">Pasta de saída</label>
+
+          <div class="input-action-row">
+            <input
+              id="output-path"
+              type="text"
+              class="text-input"
+              placeholder="Selecione a pasta..."
+              readonly
+            />
+
+            <button id="choose-output-btn" type="button" class="btn-primary">
+              Escolher pasta
+            </button>
+
+            <button id="open-output-btn" type="button" class="btn-primary" disabled>
+              Abrir pasta
+            </button>
+          </div>
+
+          <p class="hint">
+            O backend gera os arquivos no diretório da rede e o app copia para a pasta selecionada.
+          </p>
+        </div>
+
+        <div class="footer-actions">
+          <button type="button" id="btnProcessar" class="btn-primary btn-large">
+            Gerar PDF(s)
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- MODAL / OVERLAY -->
+    <div id="loading-overlay" class="loading-overlay hidden" aria-hidden="true">
+      <div class="loading-box scraper-loading">
+        <!-- LOADING -->
+        <div id="di-pdf-loading">
+          <div class="spinner"></div>
+
+          <p id="scraper-progress-message" class="scraper-progress-message">
+            Iniciando...
+          </p>
+
+          <button id="cancelar-btn" class="scraper-cancel-btn" type="button">
+            Cancelar
+          </button>
+        </div>
+
+        <!-- RESULTADO -->
+        <div id="di-pdf-result" class="hidden" style="margin-top: 14px;">
+          <p class="scraper-progress-message">
+            Arquivos gerados (copiados para a pasta escolhida):
+          </p>
+
+          <textarea
+            id="di-pdf-textarea"
+            readonly
+            class="scraper-result-textarea"
+            spellcheck="false"
+          ></textarea>
+
+          <div class="scraper-actions">
+            <button id="copy-btn" class="btn-primary" type="button">
+              Copiar lista
+            </button>
+
+            <button id="open-output-btn-modal" class="btn-primary" type="button">
+              Abrir pasta de saída
+            </button>
+
+            <button id="close-result-btn" class="btn-primary" type="button">
+              Fechar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../../../scripts/baixarDiPdf.js"></script>
+  </body>
+</html>

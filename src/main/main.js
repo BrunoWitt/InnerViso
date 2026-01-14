@@ -21,6 +21,7 @@ const { registerColedarDiCnpj } = require("./ipc-coletar-di-cnpj");
 const { registerColetarLiIpc } = require("./ipc-coletar-li");
 const { registerColetarLiCnpj } = require("./ipc-coletar-li-cnpj");
 const { registerBaixarAtoCnpj } = require("./ipc-baixar-ato-cnpj");
+const { registerDiPdf } = require("./ipc-di-pdf");
 
 console.log('Versão atual:', app.getVersion());
 
@@ -72,6 +73,7 @@ if (!gotTheLock) {
     registerColetarLiIpc();
     registerColetarLiCnpj();
     registerBaixarAtoCnpj();
+    registerDiPdf();
 
     // Notícias
     setupNotices();

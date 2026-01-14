@@ -86,6 +86,19 @@ try {
       ipcRenderer.invoke("cancelar-coletar-li-cnpj"),
     baixarAtoCnpj: (cnpjs) => ipcRenderer.invoke("baixar-ato-cnpj", { cnpjs }),
     cancelBaixarAtoCnpj: () => ipcRenderer.invoke("cancelar-baixar-ato-cnpj"),
+    selectDiPdfOutputDir: () => ipcRenderer.invoke("select-di-pdf-output-dir"),
+
+    diPdfDownloadAndConvert: (dis, userOutDir) =>
+      ipcRenderer.invoke("di-pdf-download-and-convert", { dis, userOutDir }),
+
+    cancelDiPdf: () => ipcRenderer.invoke("cancelar-di-pdf"),
+
+    onDiPdfProgress: (cb) => {
+      ipcRenderer.removeAllListeners("di-pdf-progress");
+      ipcRenderer.on("di-pdf-progress", (_e, payload) => cb?.(payload));
+    },
+    openPath: (p) => ipcRenderer.invoke("open-path-dipdf", p),
+
 
 
     // =========================
