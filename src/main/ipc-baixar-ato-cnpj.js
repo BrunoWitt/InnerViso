@@ -5,6 +5,10 @@ const axios = require("axios");
 function registerBaixarAtoCnpj() {
     const running = new Map();
 
+    // ✅ evita “ficar preso” em handler antigo / duplicado
+    try { ipcMain.removeHandler("cancelar-baixar-ato-cnpj"); } catch {}
+    try { ipcMain.removeHandler("baixar-ato-cnpj"); } catch {}
+
     // ============================
     // CANCELAR BAIXAR ATO (CNPJ)
     // ============================
@@ -20,9 +24,9 @@ function registerBaixarAtoCnpj() {
         }
     });
 
-    // ============================
-    // BAIXAR ATO POR CNPJ
-    // ============================
+  // ============================
+  // BAIXAR ATO POR CNPJ
+  // ============================
     ipcMain.handle("baixar-ato-cnpj", async (event, payload = {}) => {
         const controller = new AbortController();
         running.set(event.sender.id, { controller });
@@ -42,15 +46,9 @@ function registerBaixarAtoCnpj() {
             };
         }
 
-        // ✅ AJUSTE A URL CONFORME SEU SWAGGER
-        // Pelo print que você mandou, existe:
-        //   GET /ato/collect/Documents/due_cnpj  (header: cnpj)
-        // Se o ATO “por CNPJ” for outro path, troca aqui.
         const url = "http://10.0.0.230:2026/ato/collect/Documents/due_cnpj";
 
-        const headers = {
-            cnpj: cleanCnpjs.join(","),
-        };
+        const headers = { cnpj: cleanCnpjs.join(",") };
 
         const resp = await axios.get(url, {
             timeout: 0,
@@ -58,62 +56,52 @@ function registerBaixarAtoCnpj() {
             headers,
         });
 
-        // Normaliza retorno (pode vir objeto ou [obj, 200])
         const rawData = resp?.data;
-        let data = rawData ?? {};
         let httpStatus = resp?.status;
+        let data = rawData;
 
-        if (Array.isArray(rawData)) {
-            data = rawData[0] ?? {};
-            if (typeof rawData[1] === "number") httpStatus = rawData[1];
+        // ✅ wrapper [payload, 200]
+        if (Array.isArray(rawData) && rawData.length === 2 && typeof rawData[1] === "number") {
+            data = rawData[0];
+            httpStatus = rawData[1];
         }
 
-        // Extrai lista de “docs” (bem tolerante)
         let docs = [];
 
-        // caso venha { responses: [...] }
-        let responses = data?.responses;
-
-        if (typeof responses === "string") {
-            try {
-            responses = JSON.parse(responses);
-            } catch {
-            // deixa como string e tenta regex depois
-            }
-        }
-
-        if (Array.isArray(responses)) {
-            docs = responses
-            .map((r) => r?.response ?? r?.file ?? r?.path ?? r?.name ?? r)
+        // ✅ CASO PRINCIPAL: backend retorna lista pura
+        if (Array.isArray(data)) {
+            docs = data
             .map((v) => (v === null || v === undefined ? "" : String(v).trim()))
             .filter((v) => v.length > 0);
-        }
+        } else if (data && typeof data === "object") {
+            let responses = data?.responses;
 
-        // caso venha algo como { documents: [...] } / { docs: [...] } / { files: [...] }
-        if (!docs.length) {
-            const candidates =
-            data?.documents || data?.docs || data?.files || data?.atos || data?.result;
+            if (typeof responses === "string") {
+            try { responses = JSON.parse(responses); } catch {}
+            }
 
-            if (Array.isArray(candidates)) {
-            docs = candidates
+            if (Array.isArray(responses)) {
+            docs = responses
+                .map((r) => r?.response ?? r?.file ?? r?.path ?? r?.name ?? r)
                 .map((v) => (v === null || v === undefined ? "" : String(v).trim()))
                 .filter((v) => v.length > 0);
             }
-        }
 
-        // caso venha "string"
-        if (!docs.length && typeof data === "string") {
-            // tenta quebrar por linhas/virgula
+            if (!docs.length) {
+            const candidates =
+                data?.documents || data?.docs || data?.files || data?.atos || data?.result;
+
+            if (Array.isArray(candidates)) {
+                docs = candidates
+                .map((v) => (v === null || v === undefined ? "" : String(v).trim()))
+                .filter((v) => v.length > 0);
+            }
+            }
+        } else if (typeof data === "string") {
             docs = String(data)
             .split(/\r?\n|,|;/g)
             .map((s) => s.trim())
             .filter(Boolean);
-        }
-
-        // fallback: se responses era string com paths, tenta extrair tokens "parecidos"
-        if (!docs.length && typeof responses === "string") {
-            const matches = responses.match(/[A-Za-z0-9._-]+\.(pdf|zip|xml)\b/gi);
-            docs = Array.from(new Set(matches || []));
         }
 
         docs = Array.from(new Set(docs));
