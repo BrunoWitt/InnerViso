@@ -99,7 +99,13 @@ try {
     },
     openPath: (p) => ipcRenderer.invoke("open-path-dipdf", p),
 
-
+    // baixarAto
+    baixarAto: (numAto, userOutDir) => ipcRenderer.invoke("baixar-ato", { numAto, userOutDir }),
+    cancelBaixarAto: () => ipcRenderer.invoke("cancelar-baixar-ato"),
+    selectBaixarAtoOutputDir: () => ipcRenderer.invoke("select-baixar-ato-output-dir"),
+    openPathAto: (p) => ipcRenderer.invoke("open-path-ato", p),
+    baixarAtoGetPage: (csvPath, offset, limit) => ipcRenderer.invoke("baixar-ato-get-page", { csvPath, offset, limit }),
+    onBaixarAtoProgress: (cb) => ipcRenderer.on("baixar-ato-progress", (_e, payload) => cb(payload)),
 
     // =========================
     // PARSER WSViso

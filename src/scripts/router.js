@@ -21,13 +21,17 @@ const initializers = {
   coletarLi:    () => window.initColetarLi?.(),
   baixarAtoCnpj: () => window.initBaixarAtoCnpj?.(),
   baixarDiPdf: () => window.initBaixarDiPdf?.(),
+  baixarAto: () => window.initBaixarAto?.(),
+  "baixar-ato": () => window.initBaixarAto?.(),
+
 
   // ✅ adiciona aliases (pra cobrir como o menu/loader pode estar chamando)
   coletarDiCnpj: () => window.initColetarDiCnpj?.(),
   "coletar-di-cnpj": () => window.initColetarDiCnpj?.(),
   coletarLiCnpj: () => window.initColetarLiCnpj?.(),
   "coletar-li-cnpj": () => window.initColetarLiCnpj?.(), // opcional alias
-};
+  };
+
 
 // expõe para o parser shell conseguir chamar init da view filha
 window.initializers = initializers;

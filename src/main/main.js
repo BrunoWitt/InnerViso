@@ -22,6 +22,7 @@ const { registerColetarLiIpc } = require("./ipc-coletar-li");
 const { registerColetarLiCnpj } = require("./ipc-coletar-li-cnpj");
 const { registerBaixarAtoCnpj } = require("./ipc-baixar-ato-cnpj");
 const { registerDiPdf } = require("./ipc-di-pdf");
+const { registerBaixarAto } = require("./ipc-baixar-ato");
 
 console.log('Versão atual:', app.getVersion());
 
@@ -74,7 +75,8 @@ if (!gotTheLock) {
     registerColetarLiCnpj();
     registerBaixarAtoCnpj();
     registerDiPdf();
-
+    registerBaixarAto();
+    
     // Notícias
     setupNotices();
     setInterval(startNoticesAutoUpdate, MINUTOS * 60 * 1000);

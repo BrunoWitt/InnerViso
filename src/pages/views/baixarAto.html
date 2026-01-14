@@ -1,1 +1,128 @@
-<h1>Em desenvolvimento...</h1>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <title>Baixar ATO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../styles/sty_scrapper.css" />
+</head>
+
+<body>
+    <main class="page-wrapper">
+        <section class="card">
+        <h1 class="card-title">Baixar ATO</h1>
+
+        <div class="section">
+            <label class="section-label">Número do Ato</label>
+
+            <div class="input-action-row">
+            <input
+                id="ato-input"
+                type="text"
+                class="text-input"
+                placeholder="Ex.: 20230004180"
+            />
+
+            <button id="btnClearAto" type="button" class="btn-primary">
+                Limpar
+            </button>
+            </div>
+
+            <p id="ato-warning" class="cnpj-warning is-hidden" aria-live="polite">
+            Informe um número de Ato válido.
+            </p>
+        </div>
+
+        <div class="section">
+            <label class="section-label">Pasta de saída</label>
+
+            <input
+            id="output-path"
+            type="text"
+            class="text-input"
+            placeholder="Selecione a pasta..."
+            readonly
+            />
+
+            <div class="input-action-row" style="margin-top: 10px;">
+            <button id="choose-output-btn" type="button" class="btn-primary">
+                Escolher pasta
+            </button>
+
+            <button id="open-output-btn" type="button" class="btn-primary" disabled>
+                Abrir pasta
+            </button>
+            </div>
+
+            <p class="hint" style="margin-top: 10px;">
+            O backend gera o CSV no diretório da rede e o app copia para a pasta selecionada.
+            Para não travar, exibimos apenas um preview da 1ª coluna (use “Carregar mais”).
+            </p>
+        </div>
+
+        <div class="footer-actions">
+            <button type="button" id="btnProcessar" class="btn-primary btn-large">
+            Processar
+            </button>
+        </div>
+        </section>
+    </main>
+
+    <!-- MODAL / OVERLAY (LOADING + RESULTADO) -->
+    <div id="loading-overlay" class="loading-overlay hidden" aria-hidden="true">
+        <div class="loading-box scraper-loading">
+
+        <!-- LOADING -->
+        <div id="baixar-ato-loading">
+            <div class="spinner"></div>
+
+            <p id="scraper-progress-message" class="scraper-progress-message">
+            Iniciando...
+            </p>
+
+            <button id="cancelar-btn" class="scraper-cancel-btn" type="button">
+            Cancelar
+            </button>
+        </div>
+
+        <!-- RESULTADO -->
+        <div id="baixar-ato-result" class="hidden" style="margin-top: 14px;">
+            <p class="scraper-progress-message" id="result-title">
+            Códigos (1ª coluna do CSV):
+            </p>
+
+            <textarea
+            id="baixar-ato-textarea"
+            readonly
+            class="scraper-result-textarea"
+            spellcheck="false"
+            ></textarea>
+
+            <div class="scraper-actions">
+            <button id="copy-btn" class="btn-primary" type="button">
+                Copiar (visíveis)
+            </button>
+
+            <button id="load-more-btn" class="btn-primary" type="button">
+                Carregar mais
+            </button>
+
+            <button id="open-output-btn-modal" class="btn-primary" type="button">
+                Abrir pasta de saída
+            </button>
+
+            <button id="close-result-btn" class="btn-primary" type="button">
+                Fechar
+            </button>
+            <button id="show-all-btn" class="btn-primary" type="button">
+                Exibir todos
+            </button>
+            </div>
+        </div>
+
+        </div>
+    </div>
+
+    <script src="../../../scripts/baixarAto.js"></script>
+</body>
+</html>
