@@ -245,7 +245,7 @@ function registerBaixarAto() {
 
       await fs.ensureDir(pathOutWin);
 
-      const url = "http://10.0.0.230:2026/ato/collect/Documents/due";
+      const url = "http://10.0.0.230:1071/ato/collect/Documents/due";
 
       sendProgress("Enviando solicitação para o backend (Baixar Ato)...");
       await axios.get(url, {

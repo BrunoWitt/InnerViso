@@ -82,9 +82,7 @@ if (!gotTheLock) {
     setInterval(startNoticesAutoUpdate, MINUTOS * 60 * 1000);
 
     // AutoUpdater só em produção
-    if (app.isPackaged) {
-      setupAutoUpdater();
-    }
+    setupAutoUpdater();
 
     log.info('App iniciado - versão', app.getVersion());
   });

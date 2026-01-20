@@ -6,7 +6,7 @@ const os = require("os");
 
 // ===== CONFIG =====
 const BASE_UNC = "G:\\Sistemas\\FileSystem\\WSVISOScraper";
-const BACKEND_URL = "http://10.0.0.230:2026/di/download/xml";
+const BACKEND_URL = "http://10.0.0.230:1071/di/download/xml";
 // ===================
 
 // ---------- helpers reaproveitados ----------

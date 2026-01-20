@@ -46,7 +46,7 @@ function registerBaixarAtoCnpj() {
             };
         }
 
-        const url = "http://10.0.0.230:2026/ato/collect/Documents/due_cnpj";
+        const url = "http://10.0.0.230:1071/ato/collect/Documents/due_cnpj";
 
         const headers = { cnpj: cleanCnpjs.join(",") };
 

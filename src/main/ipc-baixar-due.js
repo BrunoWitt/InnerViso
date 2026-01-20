@@ -6,7 +6,7 @@ const os = require("os");
 
 // ===== CONFIG =====
 const BASE_UNC = "G:\\Sistemas\\FileSystem\\WSVISOScraper";
-const BACKEND_URL = "http://10.0.0.232:1052/due/download";
+const BACKEND_URL = "http://10.0.0.230:1071/due/download";
 // ===================
 
 // ---------- helpers ----------
@@ -19,6 +19,7 @@ function dataHoraBRParaNome() {
     "0"
   )}-${String(d.getMinutes()).padStart(2, "0")}`;
 }
+
 
 async function gerarStampUnico(baseDir, stampBase) {
   let stamp = stampBase;

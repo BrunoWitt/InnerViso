@@ -52,7 +52,7 @@ function registerColedarDiCnpj() {
             };
         }
 
-        const url = "http://10.0.0.230:2026/di/collect/period/cnpj";
+        const url = "http://10.0.0.230:1071/di/collect/period/cnpj";
 
         const headers = {
             cnpj: cleanCnpjs.join(","),

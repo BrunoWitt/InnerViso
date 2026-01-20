@@ -24,7 +24,7 @@ function registerColetarDiIpc() {
 
     try {
       // 🔴 URL REAL DO BACKEND
-      const url = "http://10.0.0.230:2026/di/collect/today";
+      const url = "http://10.0.0.230:1071/di/collect/today";
 
       const resp = await axios.get(url, {
         timeout: 0,
