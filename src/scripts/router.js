@@ -3,40 +3,31 @@ window.hubLoaded = false;
 const initializers = {
   hub:          () => window.carregarNoticias?.(window.hubLoaded),
 
-  // view "importação" (tua wsvisoparser.html)
-  wsvisoparser: () => window.initParser?.(),      // mantém como você já está usando hoje
-
+  wsvisoparser: () => window.initParser?.(),
   comparador:   () => window.initComparador?.(),
   expo8:        () => window.initExpo8?.(),
 
-  // view "shell" que carrega import/export dentro dela
-  parser:       () => window.initParserShell?.(),
+  // ✅ VIEW DO BAIXAR RE (nome da view = downloadRe)
+  downloadRe:   () => window.initDownloadRe?.(),
 
   buscadorEp:   () => window.initBuscadorEp?.(),
   coletarDi:    () => window.initColetarDi?.(),
   baixarDi:     () => window.initBaixarDi?.(),
   baixarLi:     () => window.initBaixarLi?.(),
-  baixarDue:     () => window.initBaixarDue?.(),
+  baixarDue:    () => window.initBaixarDue?.(),
   coletarDiCnpjs: () => window.initColetarDiCnpj?.(),
   coletarLi:    () => window.initColetarLi?.(),
   baixarAtoCnpj: () => window.initBaixarAtoCnpj?.(),
-  baixarDiPdf: () => window.initBaixarDiPdf?.(),
-  baixarAto: () => window.initBaixarAto?.(),
+  baixarDiPdf:  () => window.initBaixarDiPdf?.(),
+  baixarAto:    () => window.initBaixarAto?.(),
   "baixar-ato": () => window.initBaixarAto?.(),
 
+  // aliases (se quiser)
+  initDownloadRe: () => window.initDownloadRe?.(),
+};
 
-  // ✅ adiciona aliases (pra cobrir como o menu/loader pode estar chamando)
-  coletarDiCnpj: () => window.initColetarDiCnpj?.(),
-  "coletar-di-cnpj": () => window.initColetarDiCnpj?.(),
-  coletarLiCnpj: () => window.initColetarLiCnpj?.(),
-  "coletar-li-cnpj": () => window.initColetarLiCnpj?.(), // opcional alias
-  };
-
-
-// expõe para o parser shell conseguir chamar init da view filha
 window.initializers = initializers;
 
-// util
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 async function waitForApi(timeoutMs = 3000) {
   const t0 = Date.now();
@@ -48,7 +39,6 @@ async function waitForApi(timeoutMs = 3000) {
 }
 
 function cleanupFloatingUI() {
-  // mata dropdown órfão do botão de pasta (e qualquer outro menu flutuante seu)
   document.querySelectorAll(".dropdown").forEach((el) => el.remove());
 }
 
@@ -56,8 +46,7 @@ async function loadView(viewName) {
   const container = document.getElementById("content");
   if (!container) return;
 
-  cleanupFloatingUI(); // <<< ADD AQUI
-
+  cleanupFloatingUI();
   container.innerHTML = "<p>Carregando…</p>";
 
   try {
@@ -65,17 +54,16 @@ async function loadView(viewName) {
 
     const html = await window.api.loadView(viewName);
 
-    cleanupFloatingUI(); // <<< ADD AQUI TAMBÉM (pra garantir)
-
+    cleanupFloatingUI();
     container.innerHTML = html;
 
     document.querySelectorAll(".menu-item")
       .forEach(btn => btn.classList.toggle("active", btn.dataset.view === viewName));
 
-      requestAnimationFrame(() => {
-        console.log("[router] init view:", viewName, "existe?", !!initializers[viewName]);
-        initializers[viewName]?.();
-      });
+    requestAnimationFrame(() => {
+      console.log("[router] init view:", viewName, "existe?", !!initializers[viewName]);
+      initializers[viewName]?.();
+    });
 
   } catch (e) {
     container.innerHTML = `<p>Falha ao carregar view "${viewName}": ${e?.message || e}</p>`;
@@ -83,21 +71,16 @@ async function loadView(viewName) {
   }
 }
 
-// expõe para o menu do parser usar
 window.loadView = loadView;
 
 function setupMenuRouting() {
   document.querySelectorAll('.menu-item').forEach(btn => {
-    // IMPORTANTE: não deixa o router prender click no menu-parser
     if (btn.id === "menu-parser" || btn.id === "menu-scraper") return;
-
     btn.addEventListener('click', () => loadView(btn.dataset.view));
   });
 
-  // inicializa menu do parser (sidebar)
   window.initParserMenu?.();
 
-  // view padrão
   loadView('hub');
 }
 

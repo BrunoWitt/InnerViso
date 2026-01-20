@@ -609,3 +609,153 @@
 .expo8-cancel-btn {
   margin-top: 16px;
 }
+
+/* Botão ? no canto superior direito do card */
+.main-card {
+  position: relative; /* importante */
+}
+
+.help-top-right {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 5;
+}
+
+.btn-help {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+
+.btn-help:hover {
+  transform: scale(1.04);
+  background: rgba(255,255,255,0.14);
+}
+
+/* Modal do vídeo */
+.help-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 18px;
+}
+
+.help-modal-content {
+  width: min(920px, 95vw);
+  background: #121826;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  padding: 18px;
+  position: relative;
+  box-shadow: 0 18px 60px rgba(0,0,0,0.45);
+}
+
+.help-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.help-video-wrap {
+  margin-top: 12px;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.help-video-wrap iframe,
+.help-video-wrap video {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Botão ? no canto superior direito do card */
+.help-top-right{
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 999; /* garante que fique acima */
+}
+
+.btn-help{
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+
+  background: var(--brand);                 /* <-- antes era branco translúcido */
+  border: 1px solid rgba(11,99,209,0.35);   /* borda visível no branco */
+  color: #fff;
+
+  font-weight: 800;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+
+  box-shadow: 0 10px 18px rgba(11,99,209,0.22); /* dá destaque */
+}
+
+.btn-help:hover{
+  background: var(--brand-2);
+  transform: scale(1.04);
+}
+
+.main-card.expo8-container{
+  position: relative; /* <-- ESSENCIAL */
+  width: min(920px, calc(100% - 56px));
+  margin: 40px auto;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px 28px 22px 28px;
+}
+
+.expo8-container .help-top-right{
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 50;
+}
+.expo8-container .btn-help{
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: var(--brand);
+  border: 1px solid rgba(11,99,209,0.35);
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 10px 18px rgba(11,99,209,0.22);
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+
+.expo8-container .btn-help:hover{
+  background: var(--brand-2);
+  transform: scale(1.04);
+}

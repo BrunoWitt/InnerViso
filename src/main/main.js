@@ -23,6 +23,7 @@ const { registerColetarLiCnpj } = require("./ipc-coletar-li-cnpj");
 const { registerBaixarAtoCnpj } = require("./ipc-baixar-ato-cnpj");
 const { registerDiPdf } = require("./ipc-di-pdf");
 const { registerBaixarAto } = require("./ipc-baixar-ato");
+const { downloadRe } = require("./ipc-download-re")
 
 console.log('Versão atual:', app.getVersion());
 
@@ -76,6 +77,7 @@ if (!gotTheLock) {
     registerBaixarAtoCnpj();
     registerDiPdf();
     registerBaixarAto();
+    downloadRe();
     
     // Notícias
     setupNotices();
@@ -91,7 +93,7 @@ if (!gotTheLock) {
     if (process.platform !== 'darwin') app.quit();
   });
 
-  // (opcional, mas bom pro macOS)
+  // (opcional, mas bom pr  o macOS)
   app.on('activate', () => {
     if (mainWindow) focusMainWindow();
     else mainWindow = createMainWindow();

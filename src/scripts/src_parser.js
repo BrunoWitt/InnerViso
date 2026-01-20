@@ -318,6 +318,49 @@ function initParser() {
       document.getElementById("popupResumo").style.display = "none";
     });
   }
+
+const btnAjuda = document.getElementById("btnAjuda");
+const modalAjuda = document.getElementById("helpVideoModal");
+const btnFecharAjuda = document.getElementById("btnFecharAjuda");
+
+const video = document.getElementById("helpVideoPlayer");
+const source = document.getElementById("helpVideoSource");
+
+// caminho relativo dentro do seu app (ajuste se necessário)
+const VIDEO_URL = "../assets/vids/parserImportacao.mp4";
+
+function abrirAjuda() {
+  if (!modalAjuda || !video || !source) return;
+
+  source.src = VIDEO_URL;
+  video.load();       // recarrega o source
+  video.currentTime = 0;
+  video.play?.();     // tenta dar play
+
+  modalAjuda.style.display = "flex";
+}
+
+function fecharAjuda() {
+  if (!modalAjuda || !video || !source) return;
+
+  modalAjuda.style.display = "none";
+  video.pause?.();
+  source.src = "";
+  video.load();
+}
+
+btnAjuda?.addEventListener("click", abrirAjuda);
+btnFecharAjuda?.addEventListener("click", fecharAjuda);
+
+modalAjuda?.addEventListener("click", (e) => {
+  if (e.target === modalAjuda) fecharAjuda();
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && modalAjuda?.style.display !== "none") fecharAjuda();
+});
+
+
 }
 
 // 🔸 expõe globalmente para o router.js chamar depois de carregar o HTML

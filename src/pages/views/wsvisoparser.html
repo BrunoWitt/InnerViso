@@ -11,6 +11,13 @@
   <div class="main-card">
     <h2>Parser - Importação</h2>
 
+    <div class="help-top-right">
+      <button id="btnAjuda" class="btn-help" type="button" aria-label="Ajuda">
+        ?
+      </button>
+    </div>
+
+
     <!-- Caminhos -->
     <h4>Diretório de Origem (Arquivos para leitura)</h4>
     <div class="path-row">
@@ -126,6 +133,30 @@
       <button id="btnCancelar" class="btn-secondary" type="button">Cancelar</button>
     </div>
   </div>
+
+  <!-- MODAL AJUDA (VÍDEO) -->
+<div id="helpVideoModal" class="help-modal" style="display:none;">
+  <div class="help-modal-content" role="dialog" aria-modal="true" aria-label="Ajuda - Vídeo">
+    <button id="btnFecharAjuda" class="help-close" type="button" aria-label="Fechar ajuda">×</button>
+
+    <h3 style="margin-top:0;">Como funciona esta tela</h3>
+
+    <div class="help-video-wrap">
+      <video
+        id="helpVideoPlayer"
+        controls
+        autoplay
+        style="width:100%; height:100%; border-radius:12px;"
+      >
+        <source id="helpVideoSource" src="" type="video/mp4" />
+        Seu navegador não suporta vídeo em MP4.
+      </video>
+    </div>
+  </div>
+</div>
+
+
+  
 
   <script defer src="../scripts/main.js"></script>
   <script defer src="../scripts/router.js"></script>

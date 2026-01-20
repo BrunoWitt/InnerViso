@@ -15,10 +15,13 @@
         <div class="ep-card">
           <header class="ep-card__header">
             <div></div>
-
             <h1 class="ep-title">Buscador de EP</h1>
-
           </header>
+
+          <!-- Botão ? (ÚNICO) no canto do card -->
+          <div class="help-top-right">
+            <button id="btnAjuda" class="btn-help" type="button" aria-label="Ajuda">?</button>
+          </div>
 
           <div class="ep-card__body">
             <!-- Configurações da busca -->
@@ -84,7 +87,6 @@
                       aria-label="Selecionar arquivo base"
                       title="Selecionar arquivo base"
                     >
-                      <!-- ícone pasta (inline svg) -->
                       <svg viewBox="0 0 24 24" aria-hidden="true">
                         <path
                           d="M10 4l2 2h8a2 2 0 012 2v1H2V6a2 2 0 012-2h6zm12 6v10a2 2 0 01-2 2H4a2 2 0 01-2-2V10h20z"
@@ -108,26 +110,6 @@
                         Selecione uma planilha para visualizar as primeiras linhas.
                       </div>
                     </div>
-
-                    <!-- Exemplo de tabela (remova quando for renderizar via JS) -->
-                    <!--
-                    <table class="ep-table">
-                      <thead>
-                        <tr>
-                          <th>Código</th>
-                          <th>Descrição</th>
-                          <th>NCM</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>EP001</td>
-                          <td>Produto exemplo...</td>
-                          <td>1234.56.78</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    -->
                   </div>
                 </div>
               </section>
@@ -189,118 +171,128 @@
               </section>
             </div>
 
-            <!-- Barra inferior (no padrão do app) -->
+            <!-- Barra inferior -->
             <div class="ep-footer-bar">
-            <!-- lado esquerdo: pasta de saída -->
-            <div class="ep-footer-left">
-              <div class="ep-field">
-                <label class="ep-label" for="inputSaidaPath">Pasta de saída</label>
+              <!-- lado esquerdo: pasta de saída -->
+              <div class="ep-footer-left">
+                <div class="ep-field">
+                  <label class="ep-label" for="inputSaidaPath">Pasta de saída</label>
 
-                <div class="ep-input-row">
-                  <input
-                    id="inputSaidaPath"
-                    class="ep-input"
-                    type="text"
-                    placeholder="Selecione a pasta de saída"
-                    readonly
-                  />
+                  <div class="ep-input-row">
+                    <input
+                      id="inputSaidaPath"
+                      class="ep-input"
+                      type="text"
+                      placeholder="Selecione a pasta de saída"
+                      readonly
+                    />
 
-                  <button
-                    id="btnSelecionarSaida"
-                    class="ep-icon-btn"
-                    type="button"
-                    aria-label="Selecionar pasta de saída"
-                    title="Selecionar pasta de saída"
-                  >
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <path
-                        d="M10 4l2 2h8a2 2 0 012 2v1H2V6a2 2 0 012-2h6zm12 6v10a2 2 0 01-2 2H4a2 2 0 01-2-2V10h20z"
-                      />
-                    </svg>
-                  </button>
+                    <button
+                      id="btnSelecionarSaida"
+                      class="ep-icon-btn"
+                      type="button"
+                      aria-label="Selecionar pasta de saída"
+                      title="Selecionar pasta de saída"
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                          d="M10 4l2 2h8a2 2 0 012 2v1H2V6a2 2 0 012-2h6zm12 6v10a2 2 0 01-2 2H4a2 2 0 01-2-2V10h20z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </div>
+
+              <!-- lado direito: ações -->
+              <div class="ep-footer-actions">
+                <button id="btnLimparTudo" class="ep-btn ep-btn--outline" type="button">
+                  Limpar tudo
+                </button>
+
+                <button id="btnExecutarBusca" class="ep-btn ep-btn--primary" type="button">
+                  Executar busca
+                </button>
+              </div>
             </div>
-
-            <!-- lado direito: ações -->
-            <div class="ep-footer-actions">
-              <button id="btnLimparTudo" class="ep-btn ep-btn--outline" type="button">
-                Limpar tudo
-              </button>
-
-              <button id="btnExecutarBusca" class="ep-btn ep-btn--primary" type="button">
-                Executar busca
-              </button>
-            </div>
-          </div>
-
           </div>
         </div>
       </section>
-
     </main>
 
     <!-- Overlay de loading / progresso -->
     <div id="epLoadingOverlay" class="ep-loading ep-hidden" role="dialog" aria-modal="true">
-    <div class="ep-loading__card">
-      <div class="ep-loading__title">Processando…</div>
-      <div id="epLoadingMsg" class="ep-loading__msg">Iniciando…</div>
+      <div class="ep-loading__card">
+        <div class="ep-loading__title">Processando…</div>
+        <div id="epLoadingMsg" class="ep-loading__msg">Iniciando…</div>
 
-      <div class="ep-loading__bar">
-        <div id="epLoadingBar" class="ep-loading__barFill" style="width: 0%"></div>
-      </div>
-
-      <div class="ep-loading__meta">
-        <span id="epLoadingPct">0%</span>
-        <span id="epLoadingReq"></span>
-      </div>
-
-      <!-- NOVO: botão cancelar -->
-      <div class="ep-loading__actions">
-        <button id="epCancelBtn" class="expo8-cancel-btn" type="button">
-          Cancelar
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal de resultado (sucesso/erro/cancelado) -->
-  <div id="epResultModal" class="ep-modal ep-hidden" role="dialog" aria-modal="true" aria-label="Resultado do processamento">
-    <div class="ep-modal__card">
-      <div class="ep-modal__head">
-        <div id="epResultIcon" class="ep-modal__icon" aria-hidden="true">✓</div>
-
-        <div class="ep-modal__titles">
-          <div id="epResultTitle" class="ep-modal__title">Concluído</div>
-          <div id="epResultSubtitle" class="ep-modal__subtitle">Arquivo salvo com sucesso.</div>
+        <div class="ep-loading__bar">
+          <div id="epLoadingBar" class="ep-loading__barFill" style="width: 0%"></div>
         </div>
 
-        <button id="epResultCloseX" class="ep-modal__close" type="button" aria-label="Fechar">✕</button>
-      </div>
+        <div class="ep-loading__meta">
+          <span id="epLoadingPct">0%</span>
+          <span id="epLoadingReq"></span>
+        </div>
 
-      <div class="ep-modal__body">
-        <div class="ep-modal__row">
-          <div class="ep-modal__label">Caminho</div>
-          <div class="ep-modal__value">
-            <code id="epResultPath" class="ep-modal__path">—</code>
+        <div class="ep-loading__actions">
+          <button id="epCancelBtn" class="expo8-cancel-btn" type="button">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de resultado (sucesso/erro/cancelado) -->
+    <div id="epResultModal" class="ep-modal ep-hidden" role="dialog" aria-modal="true" aria-label="Resultado do processamento">
+      <div class="ep-modal__card">
+        <div class="ep-modal__head">
+          <div id="epResultIcon" class="ep-modal__icon" aria-hidden="true">✓</div>
+
+          <div class="ep-modal__titles">
+            <div id="epResultTitle" class="ep-modal__title">Concluído</div>
+            <div id="epResultSubtitle" class="ep-modal__subtitle">Arquivo salvo com sucesso.</div>
+          </div>
+
+          <button id="epResultCloseX" class="ep-modal__close" type="button" aria-label="Fechar">✕</button>
+        </div>
+
+        <div class="ep-modal__body">
+          <div class="ep-modal__row">
+            <div class="ep-modal__label">Caminho</div>
+            <div class="ep-modal__value">
+              <code id="epResultPath" class="ep-modal__path">—</code>
+            </div>
+          </div>
+
+          <div class="ep-modal__row ep-modal__row--log">
+            <div class="ep-modal__label">Log</div>
+            <pre id="epResultLog" class="ep-modal__log"></pre>
           </div>
         </div>
 
-        <div class="ep-modal__row ep-modal__row--log">
-          <div class="ep-modal__label">Log</div>
-          <pre id="epResultLog" class="ep-modal__log"></pre>
+        <div class="ep-modal__actions">
+          <button id="epResultOpenPath" class="ep-btn ep-btn--primary" type="button">
+            Abrir caminho
+          </button>
+          <button id="epResultCopyLog" class="ep-btn ep-btn--outline" type="button">Copiar log</button>
+          <button id="epResultClose" class="ep-btn ep-btn--primary" type="button">Fechar</button>
         </div>
       </div>
+    </div>
 
-      <div class="ep-modal__actions">
-        <button id="epResultOpenPath" class="ep-btn ep-btn--primary" type="button">
-          Abrir caminho
-        </button>
-        <button id="epResultCopyLog" class="ep-btn ep-btn--outline" type="button">Copiar log</button>
-        <button id="epResultClose" class="ep-btn ep-btn--primary" type="button">Fechar</button>
+    <!-- MODAL DE AJUDA (VÍDEO) -->
+    <div id="helpVideoModal" class="help-modal" style="display:none;" role="dialog" aria-modal="true" aria-label="Ajuda em vídeo">
+      <div class="help-modal-content">
+        <button id="btnFecharAjuda" class="help-close" type="button" aria-label="Fechar">✕</button>
+
+        <h3 style="margin:0; color:#fff;">Ajuda — Buscador de EP</h3>
+
+        <div class="help-video-wrap">
+          <video id="helpVideoPlayer" controls playsinline></video>
+        </div>
       </div>
     </div>
-  </div>
 
     <script src="../scripts/src_buscadorEp.js"></script>
   </body>

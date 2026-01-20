@@ -266,7 +266,6 @@ let progressTimer = null;
     });
 
     //Abrir pasta
-    //Abrir pasta
     let openingFolder = false;
     btnAbrirPasta.addEventListener("click", async () => {
     if (openingFolder) return;
@@ -329,6 +328,7 @@ let progressTimer = null;
         if (nomeSaida.trim() === "") {
             nomeSaida = "expo8"
         }
+    
     const result = await window.api.parserExpo8(window.listCodes, pathOut, nomeSaida);
     mostrarResultado(result, pathOut);
     } catch (err) {
@@ -344,6 +344,37 @@ let progressTimer = null;
     cancelRequested = false;
     setLoading(false);
     }
+    });
+
+    const btnAjuda = document.getElementById("btnAjuda");
+    const modal = document.getElementById("helpVideoModal");
+    const btnFechar2 = document.getElementById("btnFecharAjuda");
+    const iframe = document.getElementById("helpVideoIframe");
+
+    // Coloque aqui o link embed do seu vídeo
+    const VIDEO_EMBED_URL = "../assets/vids/Expo-8-Parser.mp4";
+
+    function abrirAjuda() {
+        iframe.src = VIDEO_EMBED_URL;
+        modal.style.display = "flex";
+    }
+
+    function fecharAjuda() {
+        modal.style.display = "none";
+        iframe.src = ""; // para o vídeo parar
+    }
+
+    btnAjuda?.addEventListener("click", abrirAjuda);
+    btnFechar2?.addEventListener("click", fecharAjuda);
+
+    // Clicar fora fecha
+    modal?.addEventListener("click", (e) => {
+        if (e.target === modal) fecharAjuda();
+    });
+
+    // ESC fecha
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && modal.style.display !== "none") fecharAjuda();
     });
 
 }

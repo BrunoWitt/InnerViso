@@ -168,6 +168,12 @@ try {
       }
     },
 
+    reSelectFolder: (kind) => ipcRenderer.invoke("re:dialog-select-folder", kind),
+    reRun: (payload) => ipcRenderer.invoke("re:run", payload),
+
+    // reaproveite se você já tem
+    openFolder: (pasta) => ipcRenderer.invoke("open-folder", pasta),
+
     // =========================
     // BUSCADOR EP
     // =========================

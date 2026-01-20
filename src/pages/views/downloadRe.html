@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Parser - Exportação | Baixar RE</title>
+
+    <link rel="stylesheet" href="../styles/common.css" />
+    <link rel="stylesheet" href="../styles/re.css" />
+</head>
+
+<body>
+    <div class="page">
+        <header class="topbar">
+        <h1>Parser - Exportação</h1>
+        <button id="btnAjuda" class="icon-btn" title="Ajuda">?</button>
+    </header>
+
+    <section class="card">
+        <h2>Baixar RE</h2>
+
+        <div class="grid-2">
+            <div class="field">
+            <label for="nomeSaida">Nome de saída (opcional)</label>
+            <div class="row">
+                <input id="nomeSaida" type="text" placeholder="Ex.: RE_1" />
+                <button id="btnLimparNome" class="btn secondary" type="button">Limpar</button>
+            </div>
+            <p class="hint">Se vazio, o backend pode usar o padrão.</p>
+            </div>
+
+        <div class="field">
+            <label for="pesoBert">Peso do BERT (0 a 1) (opcional)</label>
+            <input id="pesoBert" type="number" min="0" max="1" step="0.1" value="0.5" />
+            <p class="hint">Se seu endpoint não usar isso, ignore.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="grid-2">
+        <div class="card">
+            <div class="card-head">
+            <h2>Entrada (pasta com os Excel)</h2>
+            <button id="btnLimparEntrada" class="btn secondary" type="button">Limpar</button>
+        </div>
+
+        <div class="field">
+            <label>Pasta de entrada</label>
+            <div class="row">
+                <input id="entradaLabel" readonly placeholder="Selecione a pasta de entrada" />
+                <button id="btnSelectEntrada" class="btn primary" type="button">📁</button>
+            </div>
+            <p class="hint">Selecione a pasta onde estão os arquivos Excel de base.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-head">
+            <h2>Saída (onde salvar o Excel)</h2>
+            <button id="btnLimparSaida" class="btn secondary" type="button">Limpar</button>
+        </div>
+
+        <div class="field">
+            <label>Pasta de saída</label>
+            <div class="row">
+                <input id="saidaLabel" readonly placeholder="Selecione a pasta de saída" />
+                <button id="btnSelectSaida" class="btn primary" type="button">📁</button>
+            </div>
+            <p class="hint">O arquivo retornado será copiado para essa pasta.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="card footer">
+        <div class="left">
+            <div class="status">
+            <span class="dot" id="statusDot"></span>
+            <span id="statusLabel">Aguardando...</span>
+            </div>
+            <div class="mini">
+            <button id="btnAbrirSaida" class="btn secondary" type="button">Abrir pasta de saída</button>
+            </div>
+        </div>
+
+        <div class="right">
+            <button id="btnLimparTudo" class="btn secondary" type="button">Limpar tudo</button>
+            <button id="btnExecutar" class="btn success" type="button">Executar</button>
+        </div>
+        </section>
+    </div>
+
+    <div class="overlay" id="loadingOverlay" style="display:none;">
+        <div class="overlay-box">
+        <div class="spinner"></div>
+        <div>
+            <div class="overlay-title">Processando...</div>
+            <div class="overlay-sub" id="loadingText">Enviando requisição para o backend</div>
+        </div>
+        <button id="btnCancelar" class="btn secondary" type="button">Fechar</button>
+        </div>
+    </div>
+
+    <!-- MODAL AJUDA (VÍDEO) -->
+    <div id="helpVideoModal" class="help-modal" style="display:none;">
+    <div class="help-modal-content" role="dialog" aria-modal="true" aria-label="Ajuda - Vídeo">
+        <button id="btnFecharAjuda" class="help-close" type="button" aria-label="Fechar ajuda">×</button>
+
+        <h3 style="margin-top:0;">Como funciona esta tela</h3>
+
+        <div class="help-video-wrap">
+        <video id="helpVideo" controls autoplay>
+            <source id="helpVideoSource" src="" type="video/mp4" />
+            Seu navegador não suporta vídeo HTML5.
+        </video>
+        </div>
+    </div>
+    </div>
+
+
+</body>
+</html>

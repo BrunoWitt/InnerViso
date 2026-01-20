@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <title>WS Expo8</title>
 
+
+
     <!-- Estilo global Visonet -->
     <link rel="stylesheet" href="../styles/common.css" />
     <!-- Estilo específico do Expo8 -->
@@ -11,8 +13,15 @@
   </head>
 
   <body>
+
     <div class="parser-container main-card expo8-container">
       <h2 class="parser-title">Parser - Exportação</h2>
+
+      <div class="help-top-right">
+      <button id="btnAjuda" class="btn-help" type="button" aria-label="Ajuda">
+        ?
+      </button>
+    </div>
 
       <div class="section">
         <div class="section-title">Entrada de códigos de DUE</div>
@@ -139,6 +148,27 @@
         </button>
       </div>
     </div>
+
+    <!-- MODAL AJUDA (VÍDEO) -->
+    <div id="helpVideoModal" class="help-modal" style="display:none;">
+      <div class="help-modal-content" role="dialog" aria-modal="true" aria-label="Ajuda - Vídeo">
+        <button id="btnFecharAjuda" class="help-close" type="button" aria-label="Fechar ajuda">×</button>
+
+        <h3 style="margin-top:0;">Como funciona esta tela</h3>
+
+        <div class="help-video-wrap">
+          <iframe
+            id="helpVideoIframe"
+            src=""
+            title="Vídeo de ajuda"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </div>
+    </div>
+
 
     <script src="../scripts/src_expo8.js"></script>
   </body>

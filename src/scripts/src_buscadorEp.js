@@ -457,6 +457,49 @@
         showResultModal();
         }
     });
+
+    // ===== AJUDA (VÍDEO) =====
+    const btnAjuda = document.getElementById("btnAjuda");
+    const modal = document.getElementById("helpVideoModal");
+    const btnFechar2 = document.getElementById("btnFecharAjuda");
+    const video = document.getElementById("helpVideoPlayer");
+
+    // Coloque aqui o caminho do mp4 (relative ao HTML)
+    const VIDEO_URL = "../assets/vids/Buscador-EP.mp4";
+
+    function abrirAjuda() {
+    if (!modal || !video) return;
+
+    video.src = VIDEO_URL;      // <-- video, não iframe
+    video.load();
+    modal.style.display = "flex";
+    video.play().catch(() => {}); // autoplay pode ser bloqueado, ok
     }
+
+    function fecharAjuda() {
+    if (!modal || !video) return;
+
+    modal.style.display = "none";
+    video.pause();
+    video.currentTime = 0;
+    video.removeAttribute("src");
+    video.load();
+    }
+
+btnAjuda?.addEventListener("click", abrirAjuda);
+btnFechar2?.addEventListener("click", fecharAjuda);
+
+// Clicar fora fecha
+modal?.addEventListener("click", (e) => {
+  if (e.target === modal) fecharAjuda();
+});
+
+// ESC fecha
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && modal && modal.style.display !== "none") fecharAjuda();
+});
+
+
+}
 
     window.initBuscadorEp = initBuscadorEp;

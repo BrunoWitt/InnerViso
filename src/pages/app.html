@@ -28,12 +28,33 @@
           <span id="parser-caret" class="menu-caret">▸</span>
         </button>
 
+        <!-- ✅ SUBMENU DO PARSER (novo formato) -->
         <div id="parser-submenu" class="submenu">
-          <button class="submenu-item" data-mode="import" type="button">Importação</button>
-          <button class="submenu-item" data-mode="export" type="button">Exportação</button>
+
+          <!-- Importação (direto) -->
+          <button class="submenu-item" data-mode="importacao" type="button">
+            Importação
+          </button>
+
+          <!-- Exportação (com filhos) -->
+          <div class="submenu-group">
+            <button class="submenu-item has-children" type="button" aria-expanded="false">
+              <span class="menu-text">Exportação</span>
+              <span class="menu-caret">▸</span>
+            </button>
+
+            <div class="submenu nested" hidden>
+              <button class="submenu-item" data-mode="expo8" type="button">
+                EXPO8
+              </button>
+              <button class="submenu-item" data-mode="baixar-re" type="button">
+                Baixar RE
+              </button>
+            </div>
+          </div>
         </div>
 
-        
+
         <button id="menu-scraper" class="menu-item" data-view="scraper" type="button">
           <span class="menu-left">
             <img class="menu-ico" src="../assets/vrum/ic_file-24-outline-blue.svg" alt="" aria-hidden="true">
@@ -105,7 +126,6 @@
             </div>
           </div>
 
-
           <!-- ======================= DUE ======================= -->
           <div class="submenu-group">
             <button class="submenu-item has-children" type="button" aria-expanded="false">
@@ -125,17 +145,18 @@
           <img class="menu-ico" src="../assets/icones/ic_comparador-24-blue.svg" alt="" aria-hidden="true">
           <span class="menu-text">Comparador</span>
         </button>
-        
+
         <!--
         Local do icone do buscador
         ../assets/icones/ic_buscadorEp-24-blue.svg
         -->
         <button class="menu-item" data-view="buscadorEp" type="button">
-          <img class="menu-ico" src="../assets/icones/ic_comparador-24-blue.svg" alt="" aria-hidden="true">
+          <img class="menu-ico" src="../assets/icones/ic_search-24-outline-blue - Copia.svg" alt="" aria-hidden="true">
           <span class="menu-text">Buscador Ep</span>
         </button>
 
       </nav>
+
       <button id="btnModelo7" class="btn-modelo7" type="button">
         <span class="btn-modelo7-left">
           <span class="btn-modelo7-dot" aria-hidden="true"></span>
@@ -145,8 +166,7 @@
       </button>
 
       <pre id="log" class="sidebar-log"></pre>
-
-        <pre id="log"></pre>
+      <pre id="log"></pre>
 
     </aside>
 
@@ -154,7 +174,7 @@
       <div id="content"></div>
     </main>
 
-    <div class="app-version">v1.2.0</div>
+    <div class="app-version">v1.2.2</div>
 
   </div>
 
@@ -162,6 +182,8 @@
   <script src="../scripts/src_parser.js"></script>
   <script src="../scripts/src_comparador.js"></script>
   <script src="../scripts/src_expo8.js"></script>
+  <script src="../scripts/downloadRe.js"></script>
+
   <script defer src="../scripts/router.js"></script>
   <script defer src="../scripts/parser_menu.js"></script>
   <script defer src="../scripts/scraper_menu.js"></script>
