@@ -67,10 +67,6 @@ function registerColedarDiCnpj() {
             headers,
         });
 
-        // ✅ NORMALIZA O RETORNO DO BACKEND
-        // Pode vir:
-        // 1) { sistem, version, process, responses: [...] }
-        // 2) [ { sistem, ..., responses: [...] }, 200 ]
         const rawData = resp?.data;
 
         let data = rawData ?? {};

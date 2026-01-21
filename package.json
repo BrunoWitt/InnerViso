@@ -1,6 +1,6 @@
 {
   "name": "innerviso",
-  "version": "1.2.0",
+  "version": "1.2.3",
   "description": "Software interno da Visonet",
   "main": "src/main/main.js",
   "author": "Bruno-Witt",
@@ -8,7 +8,7 @@
   "scripts": {
     "start": "npx electron .",
     "build": "electron-builder",
-    "publish": "electron-builder"
+    "publish": "electron-builder --publish always"
   },
   "build": {
     "appId": "com.visonet.innerviso",
@@ -16,6 +16,9 @@
     "directories": {
       "output": "dist"
     },
+
+    "generateUpdatesFilesForAllChannels": true,
+
     "files": [
       "src/**/*",
       "backend/**/*",
