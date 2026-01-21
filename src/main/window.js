@@ -33,15 +33,29 @@ function createMainWindow() {
       sandbox: false,
     },
   });
+  
+    win.setMenuBarVisibility(false); // esconde a barra
+    win.setAutoHideMenuBar(true);    // (opcional) só aparece se apertar ALT
+    win.removeMenu();  
 
-    
-    //win.setMenuBarVisibility(false); // esconde a barra
-    //win.setAutoHideMenuBar(true);    // (opcional) só aparece se apertar ALT
-    //win.removeMenu();  
-    
     win.maximize()
 
   win.loadFile(appHtml);
+
+  win.webContents.on("before-input-event", (event, input) => {
+    // no Windows costuma vir F11; em alguns casos vem input.key === 'F11'
+    if (input.type === "keyDown" && input.key === "F11") {
+      event.preventDefault();
+      win.setFullScreen(!win.isFullScreen());
+    }
+
+    // (opcional) ESC sai do fullscreen
+    if (input.type === "keyDown" && input.key === "Escape" && win.isFullScreen()) {
+      event.preventDefault();
+      win.setFullScreen(false);
+    }
+  });
+
 
   win.webContents.on('did-finish-load', () => {
     win.webContents.executeJavaScript('console.log("[renderer] window.api =", typeof window.api)');
@@ -69,3 +83,6 @@ function createMainWindow() {
 module.exports = {
   createMainWindow,
 };
+
+// F11 = alterna tela cheia
+

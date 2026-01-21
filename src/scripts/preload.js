@@ -187,6 +187,8 @@ try {
     buscadorEpProgress: (reqId) => ipcRenderer.invoke('buscador-ep-progress', reqId),
     buscadorEpCancel: (reqId) => ipcRenderer.invoke('buscador-ep-cancel', reqId),
     buscadorEpDownload: (reqId, pathOutLocal) => ipcRenderer.invoke('buscador-ep-download', reqId, pathOutLocal),
+    buscadorEpDownloadExamples: () =>
+      ipcRenderer.invoke('buscador-ep-download-examples'),
 
 
     //Expo8

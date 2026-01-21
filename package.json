@@ -1,6 +1,6 @@
 {
   "name": "innerviso",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Software interno da Visonet",
   "main": "src/main/main.js",
   "author": "Bruno-Witt",
@@ -16,9 +16,7 @@
     "directories": {
       "output": "dist"
     },
-
     "generateUpdatesFilesForAllChannels": true,
-
     "files": [
       "src/**/*",
       "backend/**/*",
@@ -54,6 +52,7 @@
   "dependencies": {
     "axios": "^1.13.2",
     "cheerio": "^1.1.2",
+    "dotenv": "^17.2.3",
     "electron-log": "^5.4.3",
     "electron-updater": "^6.6.2",
     "form-data": "^4.0.5",

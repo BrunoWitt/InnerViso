@@ -1,6 +1,7 @@
 // src/main/main.js
 const { app } = require('electron');
 const log = require('electron-log');
+require('dotenv').config();
 
 const { createMainWindow } = require('./window');
 const { setupAutoUpdater } = require('./updater');

@@ -10,6 +10,7 @@
     const btnLimparBusca = document.getElementById("btnLimparBusca");
     const btnLimparTudo = document.getElementById("btnLimparTudo");
     const btnResOpenPath = document.getElementById("epResultOpenPath");
+    const btnBaixarExemplos = document.getElementById("btnBaixarExemplos");
 
     // ReqId / cancel
     let currentReqId = null;
@@ -491,15 +492,50 @@ btnFechar2?.addEventListener("click", fecharAjuda);
 
 // Clicar fora fecha
 modal?.addEventListener("click", (e) => {
-  if (e.target === modal) fecharAjuda();
+    if (e.target === modal) fecharAjuda();
 });
 
 // ESC fecha
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && modal && modal.style.display !== "none") fecharAjuda();
+    if (e.key === "Escape" && modal && modal.style.display !== "none") fecharAjuda();
 });
 
+    btnBaixarExemplos?.addEventListener("click", async () => {
+        try {
+            const resp = await window.api.buscadorEpDownloadExamples();
 
+            if (!resp?.ok) {
+            _setResultModal(
+                "error",
+                "Erro ao baixar exemplos",
+                resp?.error || "Não foi possível baixar as planilhas exemplo.",
+                "—",
+                `[${_ts()}] ERROR: Falha ao baixar planilhas exemplo`
+            );
+            showResultModal();
+            return;
+            }
+
+            _setResultModal(
+            "success",
+            "Exemplos baixados",
+            "As planilhas exemplo foram copiadas com sucesso.",
+            resp.targetPath,
+            `[${_ts()}] DONE: Planilhas exemplo copiadas`
+            );
+            showResultModal();
+        } catch (e) {
+            const msg = e?.message || String(e);
+            _setResultModal(
+            "error",
+            "Erro inesperado",
+            msg,
+            "—",
+            `[${_ts()}] ERROR: ${msg}`
+            );
+            showResultModal();
+        }
+    });
 }
 
     window.initBuscadorEp = initBuscadorEp;
