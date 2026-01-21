@@ -1,6 +1,6 @@
 {
   "name": "innerviso",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Software interno da Visonet",
   "main": "src/main/main.js",
   "author": "Bruno-Witt",

@@ -66,7 +66,7 @@ function registerColedarDiCnpj() {
             signal: controller.signal,
             headers,
         });
-
+        
         const rawData = resp?.data;
 
         let data = rawData ?? {};
